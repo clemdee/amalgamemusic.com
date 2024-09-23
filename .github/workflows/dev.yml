@@ -1,0 +1,25 @@
+on:
+  push:
+    branches: [dev]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Checkout LFS objects
+        run: git lfs pull
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Build Project
+        run: |
+          pnpm install
+          pnpm run build

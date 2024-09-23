@@ -1,0 +1,93 @@
+
+:root {
+  --background-color: #00001b;
+  --font-color: #eee;
+  --accent-color: XXX_COLOR_XXX;
+  --loading-background: 0% 0% / 100rem linear-gradient(135deg, transparent 0rem 50rem, #fff3 60rem, transparent 80rem);
+}
+
+@font-face {
+  font-family: neucha;
+  src: url('~/assets/fonts/Neucha-Regular.ttf');
+}
+
+@keyframes loading {
+  from {
+    background-position: 0rem;
+  }
+  to {
+    background-position: 100rem;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    translate: var(--animation-dx, 0rem) var(--animation-dy, 0rem);
+    opacity: var(--animation-opacity, 0);
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+html {
+  width: 100dvw;
+  height: 100dvh;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100dvw;
+  height: 100dvh;
+}
+
+#app {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  background-color: var(--background-color);
+  font-family: neucha;
+  // font-size: 1.4rem;
+  // line-height: 1.2em;
+  color: var(--font-color);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+section {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+  min-width: 100%;
+  z-index: 10;
+  padding: 3rem max(2rem, min(5rem, 10%));
+}
+
+a {
+  color: var(--font-color);
+}
+
+a:hover,
+a:active {
+  color: var(--accent-color);
+}
+
+iconify-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}

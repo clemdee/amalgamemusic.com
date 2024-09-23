@@ -1,0 +1,50 @@
+{
+  "name": "XXX_NAME_XXX",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.11.0",
+  "description": "XXX_DESCRIPTION_XXX",
+  "author": "Clément Desableau<https://github.com/clemdee",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite-ssg build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --build --force",
+    "lint": "eslint . --fix"
+  },
+  "dependencies": {
+    "iconify-icon": "^2.1.0",
+    "vue": "^3.4.29",
+    "vue-router": "^4.4.5"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.7.3",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/node": "^20.14.5",
+    "@unhead/vue": "^1.11.6",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/eslint-config-typescript": "^14.0.0",
+    "@vue/tsconfig": "^0.5.1",
+    "eslint": "^9.15.0",
+    "eslint-plugin-vue": "^9.23.0",
+    "lint-staged": "^15.2.10",
+    "sass": "^1.79.1",
+    "simple-git-hooks": "^2.11.1",
+    "typescript": "~5.4.0",
+    "vite": "^5.3.1",
+    "vite-plugin-qrcode": "^0.2.3",
+    "vite-plugin-vue-devtools": "^7.3.1",
+    "vite-ssg": "^0.23.8",
+    "vue-tsc": "^2.0.21"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue,json}": [
+      "eslint . --fix"
+    ]
+  }
+}
