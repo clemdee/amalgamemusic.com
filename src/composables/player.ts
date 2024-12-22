@@ -70,7 +70,7 @@ watch(element, () => {
     isPlaying.value = false;
   });
 
-  element.value.addEventListener('onended', () => {
+  element.value.addEventListener('ended', () => {
     playNext();
   });
 });
