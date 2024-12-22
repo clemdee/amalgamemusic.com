@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <div class="right-part">
+    <div class="middle-part">
       <div class="info-container">
         <span
           class="title"
@@ -27,6 +27,17 @@
           {{ props.music.title }}
         </span>
       </div>
+    </div>
+
+    <div class="right-part">
+      <button
+        @click="player.unqueueAtIndex(props.index)"
+      >
+        <iconify-icon
+          icon="mdi:close"
+          title="remove"
+        />
+      </button>
     </div>
   </div>
 </template>
@@ -127,7 +138,7 @@ const play = () => {
     background-color: #eef3;
   }
 
-  .right-part {
+  .middle-part {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 1rem;
@@ -143,5 +154,31 @@ const play = () => {
       }
     }
   }
+
+  .right-part {
+    display: none;
+    place-items: center;
+    gap: 1rem;
+    margin-left: auto;
+    padding: 1rem;
+
+    button {
+      aspect-ratio: 1;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background-color: #0003;
+    }
+
+    iconify-icon {
+      font-size: 1.5rem;
+    }
+  }
+
+  &:hover {
+    .right-part {
+      display: flex;
+    }
+  }
+
 }
 </style>

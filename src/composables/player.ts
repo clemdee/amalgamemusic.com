@@ -35,6 +35,13 @@ const queueNext = (music: Music) => {
   _queueAtIndex(music, currentIndex.value + 1);
 };
 
+const unqueueAtIndex = (index: number) => {
+  playlist.value.splice(index, 1);
+  if (currentIndex.value >= index) {
+    currentIndex.value--;
+  }
+};
+
 const isPlaying = ref(false);
 
 const play = () => {
@@ -140,6 +147,7 @@ export const usePlayer = () => {
     playNext,
     queue,
     queueNext,
+    unqueueAtIndex,
     isPlaying,
     play,
     pause,
