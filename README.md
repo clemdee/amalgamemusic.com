@@ -1,12 +1,12 @@
-# XXX_NAME_XXX
+# amalgamemusic
 
-Source code of [XXX_NAME_XXX.fr](XXX_URL_XXX)
+Source code of [amalgamemusic.fr](https://amalgamemusic.com)
 
 ## Installation
 
 ```sh
-git clone https://github.com/clemdee/XXX_REPOSITORY_XXX.git
-cd XXX_REPOSITORY_XXX
+git clone https://github.com/clemdee/amalgamemusic.git
+cd amalgamemusic
 pnpm install
 
 # switch to dev branch

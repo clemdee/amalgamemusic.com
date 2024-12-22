@@ -2,7 +2,7 @@
 :root {
   --background-color: #00001b;
   --font-color: #eee;
-  --accent-color: XXX_COLOR_XXX;
+  --accent-color: #f050fc;
   --loading-background: 0% 0% / 100rem linear-gradient(135deg, transparent 0rem 50rem, #fff3 60rem, transparent 80rem);
 }
 
@@ -84,6 +84,11 @@ a {
 a:hover,
 a:active {
   color: var(--accent-color);
+}
+
+button[disabled] {
+  color: gray;
+  cursor: default;
 }
 
 iconify-icon {

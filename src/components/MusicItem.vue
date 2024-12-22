@@ -1,0 +1,123 @@
+<template>
+  <div
+    class="music-item"
+    :class="{
+      current: isCurrent,
+      playing: isPlaying,
+    }"
+  >
+    <div class="top-part">
+      <div class="cover" />
+    </div>
+    <div class="bottom-part">
+      <div class="info-container">
+        <span
+          class="title"
+          :title="props.music.title"
+        >
+          {{ props.music.title }}
+        </span>
+      </div>
+      <div class="controls-container">
+        <MusicItemPlayButton
+          class="play"
+          :playing="isPlaying"
+          @click="play"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { computed } from 'vue';
+import type { Music } from '~/composables/music';
+import { player } from '~/composables/player';
+import { useCoverUrl } from '~/composables/utils';
+import MusicItemPlayButton from './PlayButton.vue';
+
+const props = defineProps<{
+  music: Music
+}>();
+
+const url = useCoverUrl(props.music.id);
+const cssUrl = computed(() => `url(${url.value})`);
+
+const isCurrent = computed(() => player.current?.id === props.music.id);
+const isPlaying = computed(() => isCurrent.value && player.isPlaying);
+
+const play = () => {
+  if (!isCurrent.value) {
+    player.queueNext(props.music);
+    player.playNext();
+  }
+  else {
+    player.togglePlay();
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.music-item {
+  width: 16rem;
+  border: 0.1rem solid #fff2;
+  border-radius: 1rem;
+  backdrop-filter: blur(0.2rem);
+  background-color: #fff2;
+  box-shadow: 0 0.3rem 2rem #0002;
+
+  .top-part {
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+
+    .cover {
+      width: 8rem;
+      aspect-ratio: 1;
+      background-image: v-bind('cssUrl');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      max-height: 5rem;
+      filter: drop-shadow(0.05rem 1rem 0.4rem #fff4);
+
+      img {
+        width: 100%;
+      }
+    }
+  }
+
+  .bottom-part {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    padding: 1rem;
+
+    .info-container {
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      .title {
+        white-space: nowrap;
+      }
+    }
+
+    .controls-container {
+      display: flex;
+      margin-top: -1rem;
+      overflow: hidden;
+      width: 0rem;
+      opacity: 0;
+      transition: opacity 200ms ease-out;
+    }
+  }
+
+  &:hover,
+  &.current {
+    .controls-container {
+      width: auto;
+      opacity: 1;
+    }
+  }
+}
+</style>
