@@ -25,9 +25,6 @@ const playNext = () => {
 
 const _queueAtIndex = (music: Music, index: number) => {
   playlist.value.splice(index, 0, music);
-  // if (currentIndex.value === -1) {
-  //   currentIndex.value = 0;
-  // }
 };
 
 const queue = (music: Music) => {

@@ -75,7 +75,12 @@
         />
       </button>
 
-      <button>
+      <button
+        :class="{
+          off: !playlistPanel.opened,
+        }"
+        @click="playlistPanel.toggle()"
+      >
         <iconify-icon
           icon="mdi:playlist-music"
           title="playlist"
@@ -89,8 +94,10 @@
 import { computed } from 'vue';
 import { usePlayer } from '~/composables/player';
 import MusicItemPlayButton from './PlayButton.vue';
+import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 
 const player = usePlayer();
+const playlistPanel = usePlaylistPanel();
 
 const title = computed(() => player.current?.title);
 const currentTimePercentage = computed(() => player.currentTimePercentage);

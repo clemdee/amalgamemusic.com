@@ -31,15 +31,15 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .play-button {
-  --size: 4rem;
-  width: var(--size);
-  height: var(--size);
+  --size_default: 4rem;
+  width: var(--size, var(--size_default));
+  height: var(--size, var(--size_default));
   border-radius: 1rem;
   background-color: #0007;
   box-shadow: 0 0.3rem 0.5rem #0002;
 
   iconify-icon {
-    font-size: 2rem;
+    font-size: calc(var(--size, var(--size_default)) / 2);
   }
 }
 </style>

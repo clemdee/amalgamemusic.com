@@ -1,24 +1,13 @@
 <template>
   <div
-    class="music-item"
+    class="playlist-music-item"
     :class="{
       current: isCurrent,
       playing: isPlaying,
     }"
   >
-    <div class="top-part">
+    <div class="left-part">
       <div class="cover" />
-    </div>
-
-    <div class="bottom-part">
-      <div class="info-container">
-        <span
-          class="title"
-          :title="props.music.title"
-        >
-          {{ props.music.title }}
-        </span>
-      </div>
 
       <div class="controls-container">
         <MusicItemPlayButton
@@ -26,6 +15,17 @@
           :playing="isPlaying"
           @click="play"
         />
+      </div>
+    </div>
+
+    <div class="right-part">
+      <div class="info-container">
+        <span
+          class="title"
+          :title="props.music.title"
+        >
+          {{ props.music.title }}
+        </span>
       </div>
     </div>
   </div>
@@ -39,6 +39,7 @@ import { useCoverUrl } from '~/composables/utils';
 import MusicItemPlayButton from './PlayButton.vue';
 
 const props = defineProps<{
+  index: number
   music: Music
 }>();
 
@@ -47,13 +48,16 @@ const player = usePlayer();
 const url = useCoverUrl(props.music.id);
 const cssUrl = computed(() => `url(${url.value})`);
 
-const isCurrent = computed(() => player.current?.id === props.music.id);
+const isCurrent = computed(() => {
+  const isCurrentId = player.current?.id === props.music.id;
+  const isCurrentIndex = player.currentIndex === props.index;
+  return isCurrentId && isCurrentIndex;
+});
 const isPlaying = computed(() => isCurrent.value && player.isPlaying);
 
 const play = () => {
   if (!isCurrent.value) {
-    player.queueNext(props.music);
-    player.playNext();
+    player.playIndex(props.index);
   }
   else {
     player.togglePlay();
@@ -62,40 +66,65 @@ const play = () => {
 </script>
 
 <style lang="scss" scoped>
-.music-item {
-  width: 16rem;
+.playlist-music-item {
+  height: 5rem;
+  width: 100%;
   border: 0.1rem solid #fff2;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   backdrop-filter: blur(0.2rem);
-  background-color: #fff2;
+  background-color: #8882;
   box-shadow: 0 0.3rem 2rem #0002;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 
-  .top-part {
-    display: grid;
+  .left-part {
+    display: flex;
     place-items: center;
-    padding: 2rem;
+    padding: 1rem;
 
     .cover {
-      width: 8rem;
+      width: 3rem;
       aspect-ratio: 1;
       background-image: v-bind('cssUrl');
-      background-size: contain;
+      background-size: 80%;
       background-position: center;
       background-repeat: no-repeat;
       max-height: 5rem;
-      filter: drop-shadow(0.05rem 1rem 0.4rem #fff4);
+      filter: drop-shadow(0.05rem 0.5rem 0.2rem #fff4);
 
       img {
         width: 100%;
       }
     }
+
+    .controls-container {
+      overflow: hidden;
+      width: 0rem;
+      opacity: 0;
+      transition: opacity 200ms ease-out;
+      --size: 3rem;
+    }
   }
 
-  .bottom-part {
+  &:hover,
+  &.current {
+    .cover {
+      display: none;
+    }
+    .controls-container {
+      width: auto;
+      opacity: 1;
+    }
+  }
+
+  .right-part {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 1rem;
     padding: 1rem;
+    padding-left: 0.5rem;
 
     .info-container {
       overflow: hidden;
@@ -104,23 +133,6 @@ const play = () => {
       .title {
         white-space: nowrap;
       }
-    }
-
-    .controls-container {
-      display: flex;
-      margin-top: -1rem;
-      overflow: hidden;
-      width: 0rem;
-      opacity: 0;
-      transition: opacity 200ms ease-out;
-    }
-  }
-
-  &:hover,
-  &.current {
-    .controls-container {
-      width: auto;
-      opacity: 1;
     }
   }
 }

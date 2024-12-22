@@ -86,9 +86,17 @@ a:active {
   color: var(--accent-color);
 }
 
+button {
+  transition: color 200ms ease;
+}
+
 button[disabled] {
   color: gray;
   cursor: default;
+}
+
+button.off {
+  color: gray;
 }
 
 iconify-icon {
