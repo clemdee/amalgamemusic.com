@@ -103,10 +103,6 @@ const play = () => {
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-
-      .title {
-        // white-space: nowrap;
-      }
     }
 
     .controls-container {
