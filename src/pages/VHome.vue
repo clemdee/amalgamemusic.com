@@ -25,7 +25,7 @@ const musics = computed<Music[]>(() => [
   },
   {
     id: createMusicId('130'),
-    title: '130 and actually this is a longer title',
+    title: '130 and actually this is an even longerer title because yes I like to test my limits',
     src: '/data/130_7.mp3',
   },
 ]);
