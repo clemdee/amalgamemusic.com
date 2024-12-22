@@ -1,7 +1,7 @@
 <template>
+  <RouterView />
   <ThePlayerBar />
   <ThePlaylistPanel />
-  <RouterView />
 </template>
 
 <script setup lang="ts">

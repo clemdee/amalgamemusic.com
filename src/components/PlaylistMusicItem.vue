@@ -109,12 +109,14 @@ const play = () => {
   }
 
   &:hover,
-  &.current {
+  &.current,
+  &:has(.play:focus-visible) {
     .cover {
       display: none;
     }
     .controls-container {
       width: auto;
+      overflow: visible;
       opacity: 1;
     }
   }

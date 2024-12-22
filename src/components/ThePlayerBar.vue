@@ -136,6 +136,11 @@ const setTime = (event: MouseEvent) => {
     font-size: 1.5rem;
   }
 
+  button {
+    border-radius: 0.1rem;
+    outline-offset: 0.2rem;
+  }
+
   .left,
   .middle,
   .right {
@@ -147,7 +152,7 @@ const setTime = (event: MouseEvent) => {
   }
 
   .play-button {
-    border-radius: 0.1rem;
+    border-radius: 0.3rem;
   }
 
   .title {
@@ -253,6 +258,10 @@ const setTime = (event: MouseEvent) => {
       justify-content: flex-end;
       margin-left: auto;
       padding-right: 2rem;
+    }
+
+    .play-button {
+      outline-offset: -0.2rem;
     }
   }
 

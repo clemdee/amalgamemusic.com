@@ -2,7 +2,7 @@
 :root {
   --background-color: #00001b;
   --font-color: #eee;
-  --accent-color: #f050fc;
+  --accent-color: #f0aef5;
   --loading-background: 0% 0% / 100rem linear-gradient(135deg, transparent 0rem 50rem, #fff3 60rem, transparent 80rem);
 }
 
@@ -84,6 +84,18 @@ a {
 a:hover,
 a:active {
   color: var(--accent-color);
+}
+
+*,
+::before,
+::after {
+  outline-offset: 0.1rem;
+  outline-width: 0.1rem;
+  outline-color: var(--accent-color);
+}
+
+:focus-visible {
+  outline-style: solid;
 }
 
 button {
