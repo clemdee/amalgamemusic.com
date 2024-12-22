@@ -78,6 +78,7 @@ const play = () => {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  transition: background-color 100ms ease;
 
   .left-part {
     display: flex;
@@ -119,6 +120,11 @@ const play = () => {
       overflow: visible;
       opacity: 1;
     }
+  }
+
+  &:hover,
+  &:has(.play:focus-visible) {
+    background-color: #eef3;
   }
 
   .right-part {

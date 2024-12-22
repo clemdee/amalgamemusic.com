@@ -69,6 +69,7 @@ const play = () => {
   backdrop-filter: blur(0.2rem);
   background-color: #fff2;
   box-shadow: 0 0.3rem 2rem #0002;
+  transition: background-color 100ms ease;
 
   .top-part {
     display: grid;
@@ -124,6 +125,11 @@ const play = () => {
       overflow: visible;
       opacity: 1;
     }
+  }
+
+  &:hover,
+  &:has(.play:focus-visible) {
+    background-color: #eef3;
   }
 }
 </style>
