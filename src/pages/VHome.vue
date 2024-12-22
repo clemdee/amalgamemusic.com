@@ -1,12 +1,14 @@
 <template>
   <section class="main">
-    <div class="musics">
-      <MusicItem
-        v-for="music in musics"
-        :key="music.id"
-        :music
-      />
-    </div>
+    <ClientOnly>
+      <div class="musics">
+        <MusicItem
+          v-for="music in musics"
+          :key="music.id"
+          :music
+        />
+      </div>
+    </ClientOnly>
   </section>
 </template>
 

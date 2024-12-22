@@ -32,13 +32,15 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import type { Music } from '~/composables/music';
-import { player } from '~/composables/player';
+import { usePlayer } from '~/composables/player';
 import { useCoverUrl } from '~/composables/utils';
 import MusicItemPlayButton from './PlayButton.vue';
 
 const props = defineProps<{
   music: Music
 }>();
+
+const player = usePlayer();
 
 const url = useCoverUrl(props.music.id);
 const cssUrl = computed(() => `url(${url.value})`);

@@ -87,8 +87,10 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { player } from '~/composables/player';
+import { usePlayer } from '~/composables/player';
 import MusicItemPlayButton from './PlayButton.vue';
+
+const player = usePlayer();
 
 const title = computed(() => player.current?.title);
 const currentTimePercentage = computed(() => player.currentTimePercentage);

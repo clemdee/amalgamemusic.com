@@ -1,7 +1,7 @@
 import type { Music } from './music';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 
-const element = document.createElement('audio');
+const element = ref<HTMLAudioElement>();
 
 const playlist = ref<Music[]>([]);
 const currentIndex = ref(-1);
@@ -43,12 +43,12 @@ const isPlaying = ref(false);
 const play = () => {
   if (!current.value) return;
   isPlaying.value = true;
-  element.play();
+  element.value?.play();
 };
 
 const pause = () => {
   isPlaying.value = false;
-  element.pause();
+  element.value?.pause();
 };
 
 const togglePlay = () => {
@@ -62,35 +62,43 @@ const togglePlay = () => {
 
 watch(current, () => {
   if (!current.value) return;
-  element.src = current.value.src;
+  if (!element.value) return;
+  element.value.src = current.value.src;
   play();
 });
 
-element.addEventListener('pause', () => {
-  isPlaying.value = false;
-});
+watch(element, () => {
+  if (!element.value) return;
+  element.value.addEventListener('pause', () => {
+    isPlaying.value = false;
+  });
 
-element.addEventListener('onended', () => {
-  playNext();
+  element.value.addEventListener('onended', () => {
+    playNext();
+  });
 });
 
 const currentDuration = ref(0);
 const currentTime = ref(0);
 const currentTimePercentage = ref(0);
 
-element.addEventListener('loadedmetadata', () => {
-  currentDuration.value = element.duration;
-});
+watch(element, () => {
+  if (!element.value) return;
+  element.value.addEventListener('loadedmetadata', () => {
+    currentDuration.value = element.value?.duration ?? Number.NaN;
+  });
 
-element.addEventListener('timeupdate', () => {
-  currentTime.value = element.currentTime;
-  currentTimePercentage.value = Number.isNaN(currentDuration.value)
-    ? 0
-    : element.currentTime / currentDuration.value;
+  element.value.addEventListener('timeupdate', () => {
+    currentTime.value = element.value?.currentTime ?? 0;
+    currentTimePercentage.value = Number.isNaN(currentDuration.value)
+      ? 0
+      : currentTime.value / currentDuration.value;
+  });
 });
 
 const setTime = (seconds: number) => {
-  element.currentTime = seconds;
+  if (!element.value) return;
+  element.value.currentTime = seconds;
 };
 
 const setTimePercentage = (percentage: number) => {
@@ -102,24 +110,31 @@ const setTimePercentage = (percentage: number) => {
   }
 };
 
-export const player = reactive({
-  playlist,
-  currentIndex,
-  current,
-  previous,
-  next,
-  playIndex,
-  playPrevious,
-  playNext,
-  queue,
-  queueNext,
-  isPlaying,
-  play,
-  pause,
-  togglePlay,
-  currentDuration,
-  currentTime,
-  currentTimePercentage,
-  setTime,
-  setTimePercentage,
-});
+export const usePlayer = () => {
+  onMounted(() => {
+    if (element.value) return;
+    element.value = document.createElement('audio');
+  });
+
+  return reactive({
+    playlist,
+    currentIndex,
+    current,
+    previous,
+    next,
+    playIndex,
+    playPrevious,
+    playNext,
+    queue,
+    queueNext,
+    isPlaying,
+    play,
+    pause,
+    togglePlay,
+    currentDuration,
+    currentTime,
+    currentTimePercentage,
+    setTime,
+    setTimePercentage,
+  });
+};
