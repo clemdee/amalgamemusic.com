@@ -38,7 +38,7 @@ const musics = computed<Music[]>(() => [
 .musics {
   display: flex;
   flex-flow: row wrap;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
   gap: 2rem;
   width: 100%;

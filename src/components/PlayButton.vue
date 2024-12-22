@@ -31,6 +31,7 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .play-button {
+  flex-shrink: 0;
   --size_default: 4rem;
   width: var(--size, var(--size_default));
   height: var(--size, var(--size_default));

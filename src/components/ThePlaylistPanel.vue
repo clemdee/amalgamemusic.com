@@ -63,6 +63,7 @@ export const usePlaylistPanel = () => {
   right: 0rem;
   z-index: 1000;
   width: 30rem;
+  max-width: 100dvw;
 
   padding: 2rem;
   border-left: 0.1rem solid #111d;

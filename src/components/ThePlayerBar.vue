@@ -124,18 +124,13 @@ const setTime = (event: MouseEvent) => {
   left: 0rem;
   right: 0rem;
   z-index: 1000;
-  height: 4rem;
+
+  display: flex;
 
   border-top: 0.1rem solid #fff2;
   backdrop-filter: blur(0.2rem);
   background-color: #fff2;
   box-shadow: 0 0.3rem 2rem #0002;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
 
   iconify-icon {
     font-size: 1.5rem;
@@ -149,19 +144,6 @@ const setTime = (event: MouseEvent) => {
     justify-content: center;
     align-items: center;
     gap: 1rem;
-  }
-
-  .left {
-    justify-content: flex-start;
-  }
-
-  .middle {
-    flex-grow: 1;
-  }
-
-  .right {
-    justify-content: flex-end;
-    padding-right: 2rem;
   }
 
   .play-button {
@@ -180,7 +162,6 @@ const setTime = (event: MouseEvent) => {
   .time {
     --percentage: v-bind('currentTimePercentage');
     flex-grow: 1;
-    max-width: 60rem;
     display: inline-grid;
     place-items: center;
     height: 2rem;
@@ -245,5 +226,81 @@ const setTime = (event: MouseEvent) => {
     }
   }
 
+  @media (width > 50rem) {
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    height: 4rem;
+
+    .left {
+      flex-shrink: 1;
+      justify-content: flex-start;
+      margin-right: auto;
+      min-width: 0;
+      max-width: 15rem;
+    }
+
+    .middle {
+      flex-grow: 1;
+      min-width: 15rem;
+      max-width: 50rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .right {
+      justify-content: flex-end;
+      margin-left: auto;
+      padding-right: 2rem;
+    }
+  }
+
+  @media (30rem <= width <= 50rem) {
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 1rem;
+
+    padding: 1rem;
+
+    .left {
+      flex-shrink: 1;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    .middle {
+      flex-grow: 1;
+      min-width: 15rem;
+    }
+
+    .right {
+      justify-content: flex-end;
+    }
+
+  }
+
+  @media (width < 30rem) {
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 1rem;
+
+    padding: 1rem;
+
+    .left {
+      flex-shrink: 1;
+      justify-content: flex-start;
+    }
+
+    .middle {
+      flex-grow: 1;
+    }
+
+    .right {
+      justify-content: flex-end;
+    }
+  }
 }
 </style>
