@@ -57,6 +57,22 @@ const togglePlay = () => {
   }
 };
 
+const hasRepeat = ref(false);
+
+const toggleRepeat = (state?: boolean) => {
+  state ??= !hasRepeat.value;
+  hasRepeat.value = state;
+};
+
+const onEnded = () => {
+  if (!hasRepeat.value) {
+    playNext();
+  }
+  else {
+    play();
+  }
+};
+
 watch(current, () => {
   if (!current.value) return;
   if (!element.value) return;
@@ -71,7 +87,7 @@ watch(element, () => {
   });
 
   element.value.addEventListener('ended', () => {
-    playNext();
+    onEnded();
   });
 });
 
@@ -128,6 +144,8 @@ export const usePlayer = () => {
     play,
     pause,
     togglePlay,
+    hasRepeat,
+    toggleRepeat,
     currentDuration,
     currentTime,
     currentTimePercentage,

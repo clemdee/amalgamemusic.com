@@ -54,7 +54,12 @@
     </div>
 
     <div class="right">
-      <button>
+      <button
+        :class="{
+          off: !player.hasRepeat,
+        }"
+        @click="player.toggleRepeat()"
+      >
         <iconify-icon
           icon="mdi:repeat"
           title="repeat"
