@@ -32,6 +32,10 @@
         />
       </button>
 
+      <div class="current-time">
+        {{ player.formattedCurrentTime }}
+      </div>
+
       <div
         class="time"
         @click="setTime"
@@ -40,6 +44,10 @@
           <div class="current" />
           <div class="handle" />
         </div>
+      </div>
+
+      <div class="current-duration">
+        {{ player.formattedCurrentDuration }}
       </div>
 
       <button

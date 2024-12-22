@@ -1,6 +1,13 @@
 import type { Music } from './music';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
+const useFormattedSeconds = (seconds: number) => computed(() => {
+  seconds = Math.floor(seconds);
+  const s = seconds % 60;
+  const m = (seconds - s) / 60;
+  return `${m}:${`${s}`.padStart(2, '0')}`;
+});
+
 const element = ref<HTMLAudioElement>();
 
 const playlist = ref<Music[]>([]);
@@ -98,9 +105,21 @@ watch(element, () => {
   });
 });
 
-const currentDuration = ref(0);
+const currentDuration = ref(Number.NaN);
 const currentTime = ref(0);
-const currentTimePercentage = ref(0);
+
+const currentTimePercentage = computed(() => {
+  return Number.isNaN(currentDuration.value)
+    ? 0
+    : currentTime.value / currentDuration.value;
+});
+
+watch(current, () => {
+  if (!current.value) {
+    currentDuration.value = Number.NaN;
+    currentTime.value = 0;
+  }
+});
 
 watch(element, () => {
   if (!element.value) return;
@@ -110,9 +129,6 @@ watch(element, () => {
 
   element.value.addEventListener('timeupdate', () => {
     currentTime.value = element.value?.currentTime ?? 0;
-    currentTimePercentage.value = Number.isNaN(currentDuration.value)
-      ? 0
-      : currentTime.value / currentDuration.value;
   });
 });
 
@@ -129,6 +145,20 @@ const setTimePercentage = (percentage: number) => {
     setTime(percentage * currentDuration.value);
   }
 };
+
+const formattedCurrentDuration = computed(() => {
+  if (Number.isNaN(currentDuration.value)) {
+    return '-';
+  }
+  return useFormattedSeconds(currentDuration.value).value;
+});
+
+const formattedCurrentTime = computed(() => {
+  if (Number.isNaN(currentDuration.value)) {
+    return '-';
+  }
+  return useFormattedSeconds(currentTime.value).value;
+});
 
 export const usePlayer = () => {
   onMounted(() => {
@@ -159,5 +189,7 @@ export const usePlayer = () => {
     currentTimePercentage,
     setTime,
     setTimePercentage,
+    formattedCurrentDuration,
+    formattedCurrentTime,
   });
 };
