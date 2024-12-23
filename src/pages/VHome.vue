@@ -29,9 +29,6 @@ const musics = computed<Music[]>(() => [
     src: '/data/130_7.mp3',
   },
 ]);
-
-// player.queue(musics.value[0]);
-// player.queue(musics.value[1]);
 </script>
 
 <style lang="scss" scoped>
