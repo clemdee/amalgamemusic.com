@@ -10,44 +10,25 @@ const useFormattedSeconds = (seconds: number) => computed(() => {
 
 const element = ref<HTMLAudioElement>();
 
-const playlist = ref<Music[]>([]);
-const currentIndex = ref(-1);
+// Group playlist and current index data so that we can batch update them
+const playlistData = ref({
+  list: [] as Music[],
+  index: -1,
+});
 
-const current = computed<Music | undefined>(() => playlist.value[currentIndex.value]);
+const playlist = computed(() => playlistData.value.list);
+const currentIndex = computed(() => playlistData.value.index);
+
+const current = computed<Music | undefined>(() => {
+  return playlist.value[currentIndex.value];
+});
+
 const previous = computed<Music | undefined>(() => playlist.value[currentIndex.value - 1]);
 const next = computed<Music | undefined>(() => playlist.value[currentIndex.value + 1]);
 
-const playIndex = (index: number) => {
-  if (index < 0 || index >= playlist.value.length) return;
-  currentIndex.value = index;
-};
-
-const playPrevious = () => {
-  playIndex(currentIndex.value - 1);
-};
-
-const playNext = () => {
-  playIndex(currentIndex.value + 1);
-};
-
-const _queueAtIndex = (music: Music, index: number) => {
-  playlist.value.splice(index, 0, music);
-};
-
-const queue = (music: Music) => {
-  _queueAtIndex(music, playlist.value.length);
-};
-
-const queueNext = (music: Music) => {
-  _queueAtIndex(music, currentIndex.value + 1);
-};
-
-const unqueueAtIndex = (index: number) => {
-  playlist.value.splice(index, 1);
-  if (currentIndex.value >= index) {
-    currentIndex.value--;
-  }
-};
+const currentSrc = computed<string | undefined>(() => {
+  return current.value?.src;
+});
 
 const isPlaying = ref(false);
 
@@ -62,11 +43,58 @@ const pause = () => {
   element.value?.pause();
 };
 
-const togglePlay = () => {
-  if (isPlaying.value) {
+const togglePlay = (state?: boolean) => {
+  state ??= !isPlaying.value;
+  if (!state) {
     pause();
   }
   else {
+    play();
+  }
+};
+
+const playIndex = (index: number) => {
+  if (index < 0 || index >= playlist.value.length) return;
+  playlistData.value.index = index;
+};
+
+const playPrevious = () => {
+  playIndex(currentIndex.value - 1);
+  play();
+};
+
+const playNext = () => {
+  playIndex(currentIndex.value + 1);
+  play();
+};
+
+const _queueAtIndex = (music: Music, index: number) => {
+  playlistData.value.list.splice(index, 0, music);
+};
+
+const queue = (music: Music) => {
+  _queueAtIndex(music, playlist.value.length);
+};
+
+const queueNext = (music: Music) => {
+  _queueAtIndex(music, currentIndex.value + 1);
+};
+
+const unqueueAtIndex = (index: number) => {
+  const isBefore = index < currentIndex.value;
+  const isCurrent = index === currentIndex.value;
+  const isLast = index === playlist.value.length - 1;
+  const newIndexOffset = isBefore || (isCurrent && isLast) ? -1 : 0;
+  const wasPlaying = isPlaying.value;
+  if (isCurrent && wasPlaying) {
+    // Needed so that audio element does not stop
+    pause();
+  }
+  playlistData.value = {
+    list: playlistData.value.list.toSpliced(index, 1),
+    index: playlistData.value.index + (newIndexOffset),
+  };
+  if (isCurrent && wasPlaying) {
     play();
   }
 };
@@ -79,6 +107,7 @@ const toggleRepeat = (state?: boolean) => {
 };
 
 const onEnded = () => {
+  isPlaying.value = false;
   if (!hasRepeat.value) {
     playNext();
   }
@@ -87,12 +116,10 @@ const onEnded = () => {
   }
 };
 
-watch(current, () => {
-  if (!current.value) return;
+watch(currentSrc, () => {
   if (!element.value) return;
-  element.value.src = current.value.src;
-  play();
-});
+  element.value.src = currentSrc.value ?? '';
+}, { flush: 'sync' });
 
 watch(element, () => {
   if (!element.value) return;
@@ -119,7 +146,7 @@ watch(current, () => {
     currentDuration.value = Number.NaN;
     currentTime.value = 0;
   }
-});
+}, { flush: 'sync' });
 
 watch(element, () => {
   if (!element.value) return;
@@ -172,16 +199,16 @@ export const usePlayer = () => {
     current,
     previous,
     next,
+    isPlaying,
+    play,
+    pause,
+    togglePlay,
     playIndex,
     playPrevious,
     playNext,
     queue,
     queueNext,
     unqueueAtIndex,
-    isPlaying,
-    play,
-    pause,
-    togglePlay,
     hasRepeat,
     toggleRepeat,
     currentDuration,

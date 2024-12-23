@@ -69,6 +69,7 @@ const isPlaying = computed(() => isCurrent.value && player.isPlaying);
 const play = () => {
   if (!isCurrent.value) {
     player.playIndex(props.index);
+    player.play();
   }
   else {
     player.togglePlay();
