@@ -23,7 +23,7 @@ export const createApp = ViteSSG(
       tsParticles.load('tsparticles', {
         preset: 'stars',
         background: {
-          color: '#000000',
+          color: '#00001b',
         },
       });
     }
