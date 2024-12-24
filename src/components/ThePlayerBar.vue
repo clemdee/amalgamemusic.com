@@ -74,19 +74,30 @@
         />
       </button>
 
-      <button>
-        <iconify-icon
+      <button
+        class="download"
+        :class="{
+          off: !downloadPopoverOpened,
+        }"
+        :disabled="!player.current"
+        @click="downloadPopoverOpened = !downloadPopoverOpened"
+      >
+        <!-- <iconify-icon
           icon="mdi:copyright"
           title="copyright"
-        />
-      </button>
-
-      <button>
+        /> -->
         <iconify-icon
           icon="mdi:download"
           title="download"
         />
       </button>
+
+      <PlayerBarPopover
+        v-if="player.current"
+        v-model="downloadPopoverOpened"
+      >
+        <DownloadPopoverContent :music="player.current" />
+      </PlayerBarPopover>
 
       <button
         :class="{
@@ -104,9 +115,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { usePlayer } from '~/composables/player';
+import DownloadPopoverContent from './DownloadPopoverContent.vue';
 import MusicItemPlayButton from './PlayButton.vue';
+import PlayerBarPopover from './PlayerBarPopover.vue';
 import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 
 const player = usePlayer();
@@ -123,6 +136,8 @@ const setTime = (event: MouseEvent) => {
   const percentage = (x - start) / (end - start);
   player.setTimePercentage(percentage);
 };
+
+const downloadPopoverOpened = ref(false);
 </script>
 
 <style lang="scss" scoped>

@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@emeraldpay/hashicon": "^0.5.2",
+    "@vueuse/components": "^12.2.0",
+    "@vueuse/core": "^12.2.0",
     "iconify-icon": "^2.1.0",
     "vue": "^3.4.29",
     "vue-router": "^4.4.5"

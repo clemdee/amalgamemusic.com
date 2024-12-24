@@ -9,3 +9,10 @@ export const useCoverUrl = (hash: string) => computed(() => {
   const canvas = hashicon(hash);
   return canvas.toDataURL();
 });
+
+export const downloadFile = (url: string, filename?: string) => {
+  const link = document.createElement('a');
+  link.download = filename ?? 'file';
+  link.href = url;
+  link.click();
+};

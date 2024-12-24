@@ -1,11 +1,11 @@
 <template>
   <p xmlns:cc="http://creativecommons.org/ns#">
-    This work by
+    This music <!-- by
     <a
       rel="cc:attributionURL dct:creator"
       property="cc:attributionName"
       href="http://amalgamemusic.com"
-    >Amalgame</a>
+    >Amalgame</a> -->
     is licensed under
     <a
       href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1"
