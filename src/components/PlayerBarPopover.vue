@@ -1,36 +1,61 @@
 <template>
-  <div
-    v-if="opened"
-    v-on-click-outside="() => opened = false"
-    class="player-bar-popover"
-    :class="{
-      opened,
-    }"
-  >
-    <slot />
-  </div>
+  <Teleport to="#content">
+    <div
+      v-if="opened"
+      class="popover-wrapper"
+      :class="{
+        opened,
+      }"
+    >
+      <div
+        v-on-click-outside="clickOutsideHandler"
+        class="popover"
+      >
+        <slot />
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>
 import { vOnClickOutside } from '@vueuse/components';
+import { wait } from '~/composables/utils';
 
 const opened = defineModel<boolean>();
+
+const clickOutsideHandler = async () => {
+  // Needed to prevent immediate reopening when clicking on open button
+  await wait(10);
+  opened.value = false;
+};
 </script>
 
 <style lang="scss" scoped>
-.player-bar-popover {
-  position: fixed;
-  bottom: 5rem;
-  right: 1rem;
-  z-index: 100000;
+.popover-wrapper {
+  position: absolute;
+  inset: 0rem;
+  z-index: var(--z-popover);
+  padding: 1rem;
 
   display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 
-  padding: 2rem;
-  border: 0.1rem solid #fff2;
-  border-radius: 1rem;
-  backdrop-filter: blur(0.2rem);
-  background-color: #fff2;
-  box-shadow: 0 0.3rem 2rem #0002;
+  @media (width < 40rem) {
+    backdrop-filter: blur(1rem);
+    justify-content: center;
+    align-items: center
+  }
+
+  .popover {
+    display: flex;
+
+    padding: 2rem;
+    border: 0.1rem solid #fff2;
+    border-radius: 1rem;
+    backdrop-filter: blur(0.2rem);
+    background-color: #2b3340dd;
+    box-shadow: 0 0.3rem 2rem #0002;
+  }
 }
 </style>

@@ -1,7 +1,9 @@
 <template>
-  <RouterView />
+  <div id="content">
+    <RouterView />
+    <ThePlaylistPanel />
+  </div>
   <ThePlayerBar />
-  <ThePlaylistPanel />
 </template>
 
 <script setup lang="ts">
@@ -9,5 +11,19 @@ import ThePlayerBar from './components/ThePlayerBar.vue';
 import ThePlaylistPanel from './components/ThePlaylistPanel.vue';
 </script>
 
-<style scoped>
+<style lang="scss">
+#app {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+}
+</style>
+
+<style lang="scss" scoped>
+#content {
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 </style>

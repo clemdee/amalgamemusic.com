@@ -57,11 +57,11 @@ export const usePlaylistPanel = () => {
 
 <style lang="scss" scoped>
 .playlist-panel {
-  position: fixed;
+  position: absolute;
   top: 0rem;
-  bottom: 4rem;
+  bottom: 0rem;
   right: 0rem;
-  z-index: 1000;
+  z-index: var(--z-playlist-panel);
   width: 30rem;
   max-width: 100dvw;
 

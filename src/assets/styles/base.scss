@@ -6,6 +6,11 @@
   --loading-background: 0% 0% / 100rem linear-gradient(135deg, transparent 0rem 50rem, #fff3 60rem, transparent 80rem);
 }
 
+:root {
+  --z-playlist-panel: 1000;
+  --z-popover: 10000;
+}
+
 @font-face {
   font-family: neucha;
   src: url('~/assets/fonts/Neucha-Regular.ttf');
@@ -48,13 +53,8 @@ body {
 }
 
 #app {
-  width: 100%;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  background-color: var(--background-color);
+  width: 100dvw;
+  height: 100dvh;
   font-family: neucha;
   // font-size: 1.4rem;
   // line-height: 1.2em;
@@ -62,6 +62,13 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#tsparticles {
+  position: fixed;
+  inset: 0rem;
+  z-index: -1;
+  background-color: var(--background-color);
 }
 
 section {
@@ -73,7 +80,6 @@ section {
   align-items: center;
   gap: 5rem;
   min-width: 100%;
-  z-index: 10;
   padding: 3rem max(2rem, min(5rem, 10%));
 }
 

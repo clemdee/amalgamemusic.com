@@ -92,12 +92,11 @@
         />
       </button>
 
-      <PlayerBarPopover
+      <DownloadPopover
         v-if="player.current"
         v-model="downloadPopoverOpened"
-      >
-        <DownloadPopoverContent :music="player.current" />
-      </PlayerBarPopover>
+        :music="player.current"
+      />
 
       <button
         :class="{
@@ -117,9 +116,8 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { usePlayer } from '~/composables/player';
-import DownloadPopoverContent from './DownloadPopoverContent.vue';
+import DownloadPopover from './DownloadPopover.vue';
 import MusicItemPlayButton from './PlayButton.vue';
-import PlayerBarPopover from './PlayerBarPopover.vue';
 import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 
 const player = usePlayer();
@@ -142,13 +140,8 @@ const downloadPopoverOpened = ref(false);
 
 <style lang="scss" scoped>
 .player-bar {
-  position: fixed;
-  bottom: 0rem;
-  left: 0rem;
-  right: 0rem;
-  z-index: 1000;
-
   display: flex;
+  width: 100dvw;
 
   border-top: 0.1rem solid #fff2;
   backdrop-filter: blur(0.2rem);

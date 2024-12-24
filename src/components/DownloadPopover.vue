@@ -1,22 +1,26 @@
 <template>
-  <div class="download-popover">
-    <h2>Download</h2>
-    <CC />
-    <button
-      class="download"
-      :disabled="loading"
-      @click="download"
-    >
-      <iconify-icon
-        v-if="loading"
-        icon="svg-spinners:ring-resize"
-        title="download"
-      />
-      <span v-else>
-        Download
-      </span>
-    </button>
-  </div>
+  <PlayerBarPopover
+    v-model="opened"
+  >
+    <div class="download-popover">
+      <h2>Download</h2>
+      <CC />
+      <button
+        class="download"
+        :disabled="loading"
+        @click="download"
+      >
+        <iconify-icon
+          v-if="loading"
+          icon="svg-spinners:ring-resize"
+          title="download"
+        />
+        <span v-else>
+          Download
+        </span>
+      </button>
+    </div>
+  </PlayerBarPopover>
 </template>
 
 <script lang="ts" setup>
@@ -24,10 +28,13 @@ import { ref } from 'vue';
 import type { Music } from '~/composables/music';
 import { downloadFile, wait } from '~/composables/utils';
 import CC from './CC.vue';
+import PlayerBarPopover from './PlayerBarPopover.vue';
 
 const props = defineProps<{
   music: Music
 }>();
+
+const opened = defineModel<boolean>();
 
 const loading = ref(false);
 
