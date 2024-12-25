@@ -1,5 +1,6 @@
 import type { Music } from './music';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { createAutoWeakMap } from './utils';
 
 const useFormattedSeconds = (seconds: number) => computed(() => {
   seconds = Math.floor(seconds);
@@ -34,14 +35,8 @@ const _updatePlaylist = (newPlaylist: Music[], newCurrentIndex?: number) => {
 };
 
 // Needed to have playlist work with reordering
-const _playlistUIDs = new WeakMap();
 let __playlistNextUID = 0;
-const getUID = (music: Music) => {
-  if (!_playlistUIDs.has(music)) {
-    _playlistUIDs.set(music, __playlistNextUID++);
-  }
-  return _playlistUIDs.get(music);
-};
+const { get: getUID } = createAutoWeakMap<Music, number>(() => __playlistNextUID++);
 
 const previous = computed<Music | undefined>(() => playlist.value[currentIndex.value - 1]);
 const next = computed<Music | undefined>(() => playlist.value[currentIndex.value + 1]);
