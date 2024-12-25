@@ -11,17 +11,37 @@ const useFormattedSeconds = (seconds: number) => computed(() => {
 const element = ref<HTMLAudioElement>();
 
 // Group playlist and current index data so that we can batch update them
-const playlistData = ref({
+const _playlistData = ref({
   list: [] as Music[],
   index: -1,
 });
 
-const playlist = computed(() => playlistData.value.list);
-const currentIndex = computed(() => playlistData.value.index);
+const playlist = computed(() => _playlistData.value.list);
+const currentIndex = computed(() => _playlistData.value.index);
 
 const current = computed<Music | undefined>(() => {
   return playlist.value[currentIndex.value];
 });
+
+const _updatePlaylist = (newPlaylist: Music[], newCurrentIndex?: number) => {
+  if (!newCurrentIndex) {
+    newCurrentIndex = newPlaylist.indexOf(current.value!);
+  }
+  _playlistData.value = {
+    list: newPlaylist,
+    index: newCurrentIndex,
+  };
+};
+
+// Needed to have playlist work with reordering
+const _playlistUIDs = new WeakMap();
+let __playlistNextUID = 0;
+const getUID = (music: Music) => {
+  if (!_playlistUIDs.has(music)) {
+    _playlistUIDs.set(music, __playlistNextUID++);
+  }
+  return _playlistUIDs.get(music);
+};
 
 const previous = computed<Music | undefined>(() => playlist.value[currentIndex.value - 1]);
 const next = computed<Music | undefined>(() => playlist.value[currentIndex.value + 1]);
@@ -53,23 +73,23 @@ const togglePlay = (state?: boolean) => {
   }
 };
 
-const playIndex = (index: number) => {
+const playAtIndex = (index: number) => {
   if (index < 0 || index >= playlist.value.length) return;
-  playlistData.value.index = index;
+  _playlistData.value.index = index;
 };
 
 const playPrevious = () => {
-  playIndex(currentIndex.value - 1);
+  playAtIndex(currentIndex.value - 1);
   play();
 };
 
 const playNext = () => {
-  playIndex(currentIndex.value + 1);
+  playAtIndex(currentIndex.value + 1);
   play();
 };
 
 const _queueAtIndex = (music: Music, index: number) => {
-  playlistData.value.list.splice(index, 0, music);
+  _playlistData.value.list.splice(index, 0, music);
 };
 
 const queue = (music: Music) => {
@@ -85,18 +105,25 @@ const unqueueAtIndex = (index: number) => {
   const isCurrent = index === currentIndex.value;
   const isLast = index === playlist.value.length - 1;
   const newIndexOffset = isBefore || (isCurrent && isLast) ? -1 : 0;
+  const newIndex = _playlistData.value.index + (newIndexOffset);
+  const newList = _playlistData.value.list.toSpliced(index, 1);
   const wasPlaying = isPlaying.value;
   if (isCurrent && wasPlaying) {
     // Needed so that audio element does not stop
     pause();
   }
-  playlistData.value = {
-    list: playlistData.value.list.toSpliced(index, 1),
-    index: playlistData.value.index + (newIndexOffset),
-  };
+  _updatePlaylist(newList, newIndex);
   if (isCurrent && wasPlaying) {
     play();
   }
+};
+
+const move = (oldIndex: number, newIndex: number) => {
+  const musicAtIndex = _playlistData.value.list[oldIndex];
+  const newList = _playlistData.value.list
+    .toSpliced(oldIndex, 1)
+    .toSpliced(newIndex, 0, musicAtIndex);
+  _updatePlaylist(newList);
 };
 
 const hasRepeat = ref(false);
@@ -197,18 +224,20 @@ export const usePlayer = () => {
     playlist,
     currentIndex,
     current,
+    getUID,
     previous,
     next,
     isPlaying,
     play,
     pause,
     togglePlay,
-    playIndex,
+    playAtIndex,
     playPrevious,
     playNext,
     queue,
     queueNext,
     unqueueAtIndex,
+    move,
     hasRepeat,
     toggleRepeat,
     currentDuration,

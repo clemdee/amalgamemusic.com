@@ -8,7 +8,7 @@
     <template v-if="player.playlist.length > 0">
       <PlaylistMusicItem
         v-for="(music, index) in player.playlist"
-        :key="music.id"
+        :key="player.getUID(music)"
         :music
         :index
       />
