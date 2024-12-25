@@ -51,7 +51,6 @@ import { computed } from 'vue';
 import { DragHandle } from 'vue-slicksort';
 import type { Music } from '~/composables/music';
 import { usePlayer } from '~/composables/player';
-import { useCoverUrl } from '~/composables/utils';
 import MusicItemPlayButton from './PlayButton.vue';
 
 const props = defineProps<{
@@ -61,8 +60,7 @@ const props = defineProps<{
 
 const player = usePlayer();
 
-const url = useCoverUrl(props.music.id);
-const cssUrl = computed(() => `url(${url.value})`);
+const cssUrl = computed(() => `url(${props.music.coverUrl})`);
 
 const isCurrent = computed(() => {
   const isCurrentId = player.current?.id === props.music.id;
