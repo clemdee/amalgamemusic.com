@@ -7,6 +7,10 @@
     }"
   >
     <div class="left-part">
+      <DragHandle>
+        <div class="handle" />
+      </DragHandle>
+
       <div class="cover" />
 
       <div class="controls-container">
@@ -44,6 +48,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { DragHandle } from 'vue-slicksort';
 import type { Music } from '~/composables/music';
 import { usePlayer } from '~/composables/player';
 import { useCoverUrl } from '~/composables/utils';
@@ -175,11 +180,29 @@ const play = () => {
     }
   }
 
+  .handle {
+    opacity: 0;
+    padding: 0.5rem;
+    margin-left: -1rem;
+    cursor: grab;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 0.4rem;
+      height: 1.7rem;
+      border-inline: 0.08rem solid #fffd;
+    }
+  }
+
   &:hover {
+    .handle {
+      opacity: 1;
+    }
+
     .right-part {
       display: flex;
     }
   }
-
 }
 </style>
