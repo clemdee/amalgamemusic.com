@@ -65,7 +65,6 @@ const play = () => {
 
 <style lang="scss" scoped>
 .music-item {
-  width: 16rem;
   border: 0.1rem solid #fff2;
   border-radius: 1rem;
   backdrop-filter: blur(0.2rem);

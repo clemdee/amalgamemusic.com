@@ -21,8 +21,8 @@ const discography = useDiscography();
 
 <style lang="scss" scoped>
 .musics {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   justify-content: center;
   align-items: flex-start;
   gap: 2rem;
