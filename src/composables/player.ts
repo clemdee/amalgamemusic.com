@@ -71,16 +71,15 @@ const togglePlay = (state?: boolean) => {
 const playAtIndex = (index: number) => {
   if (index < 0 || index >= playlist.value.length) return;
   _playlistData.value.index = index;
+  play();
 };
 
 const playPrevious = () => {
   playAtIndex(currentIndex.value - 1);
-  play();
 };
 
 const playNext = () => {
   playAtIndex(currentIndex.value + 1);
-  play();
 };
 
 const _queueAtIndex = (music: Music, index: number) => {

@@ -49,7 +49,11 @@ const isCurrent = computed(() => player.current?.id === props.music.id);
 const isPlaying = computed(() => isCurrent.value && player.isPlaying);
 
 const play = () => {
-  if (!isCurrent.value) {
+  if (!player.current) {
+    player.queue(props.music);
+    player.playAtIndex(player.playlist.length - 1);
+  }
+  else if (!isCurrent.value) {
     player.queueNext(props.music);
     player.playNext();
   }
