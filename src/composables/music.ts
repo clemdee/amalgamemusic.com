@@ -22,7 +22,9 @@ export interface Music {
 };
 
 const { use: useCoverUrl } = createAutoMap((id: MusicId) => {
-  const canvas = hashicon(id);
+  const canvas = hashicon(`amalgame${id}`, {
+    shift: { min: 30, max: 60 },
+  });
   return canvas.toDataURL();
 });
 
