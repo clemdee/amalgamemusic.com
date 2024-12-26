@@ -42,7 +42,7 @@ const previous = computed<Music | undefined>(() => playlist.value[currentIndex.v
 const next = computed<Music | undefined>(() => playlist.value[currentIndex.value + 1]);
 
 const currentSrc = computed<string | undefined>(() => {
-  return current.value?.src;
+  return current.value?.file.src;
 });
 
 const isPlaying = ref(false);

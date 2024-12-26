@@ -3,7 +3,16 @@
     v-model="opened"
   >
     <div class="download-popover">
-      <h2>Download</h2>
+      <h2>
+        Download
+        <span
+          class="title"
+          :title="props.music.title"
+        >
+          {{ props.music.title }}
+        </span>
+        <span class="extension">.{{ props.music.file.extension }}</span>
+      </h2>
       <CC />
       <button
         class="download"
@@ -24,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import type { Music } from '~/composables/music';
 import { downloadFile, wait } from '~/composables/utils';
 import CC from './CC.vue';
@@ -38,9 +47,13 @@ const opened = defineModel<boolean>();
 
 const loading = ref(false);
 
+const downloadName = computed(() => {
+  return `${props.music.title}.${props.music.file.extension}`;
+});
+
 const download = async () => {
   loading.value = true;
-  downloadFile(props.music.src, props.music.title);
+  downloadFile(props.music.file.src, downloadName.value);
   await wait(1000);
   loading.value = false;
 };
@@ -55,7 +68,32 @@ const download = async () => {
   gap: 1.5rem;
 
   h2 {
+    display: flex;
+    align-items: center;
+    column-gap: 1ch;
+
     font-size: 1.2rem;
+
+    .title {
+      display: -webkit-box;
+      line-clamp: 1;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+
+      max-width: 20rem;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+
+      font-size: 1rem;
+      font-style: italic;
+      background-color: #111;
+    }
+
+    .extension {
+      font-size: 1rem;
+      font-style: italic;
+    }
   }
   button.download {
     align-self: stretch;

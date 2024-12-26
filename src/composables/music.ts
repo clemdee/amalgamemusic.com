@@ -13,7 +13,10 @@ export interface CreateMusicParameter {
 export interface Music {
   id: MusicId
   title: string
-  src: string
+  file: {
+    src: string
+    extension: string
+  }
   coverUrl: string
 };
 
@@ -29,10 +32,15 @@ export const createMusicId = (id: string) => {
 export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
   const coverUrl = useCoverUrl(id);
+  const extension = data.src.match('[^.]+$')?.[0] ?? '';
+
   return readonly(reactive({
     id,
     title: data.title,
-    src: data.src,
+    file: {
+      src: data.src,
+      extension,
+    },
     coverUrl,
   }));
 };
