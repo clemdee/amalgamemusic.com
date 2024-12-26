@@ -19,16 +19,7 @@
           {{ props.music.title }}
         </span>
 
-        <div class="tags">
-          <span
-            v-for="tag in props.music.tags"
-            :key="tag"
-            class="tag"
-            :title="tag"
-          >
-            {{ tag }}
-          </span>
-        </div>
+        <MusicTags :tags="props.music.tags" />
       </div>
 
       <div class="controls-container">
@@ -46,6 +37,7 @@
 import { computed } from 'vue';
 import type { Music } from '~/composables/music';
 import { usePlayer } from '~/composables/player';
+import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
 
 const props = defineProps<{
@@ -127,30 +119,6 @@ const play = () => {
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-      }
-
-      .tags {
-        display: flex;
-        flex-flow: row nowrap;
-
-        display: -webkit-box;
-        line-clamp: 1;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-
-        .tag {
-          display: inline-block;
-          padding: 0.5rem 1rem;
-          border-radius: 10rem;
-          font-size: 1rem;
-          background-color: #111;
-
-          &::before {
-            content: '#';
-            display: inline-block;
-          }
-        }
       }
     }
 

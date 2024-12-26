@@ -3,6 +3,7 @@ import { reactive, readonly } from 'vue';
 import { createAutoMap } from './utils';
 
 export type MusicId = string & { _: '__MusicId__' };
+export type MusicTags = readonly string[];
 
 export interface CreateMusicParameter {
   id: string
@@ -18,7 +19,7 @@ export interface Music {
     src: string
     extension: string
   }
-  tags: readonly string[]
+  tags: MusicTags
   coverUrl: string
   clone: () => Music
 };

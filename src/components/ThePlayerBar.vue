@@ -13,11 +13,17 @@
         :disabled="!player.current"
         @click="player.togglePlay()"
       />
-      <div
-        class="title"
-        :title="title"
-      >
-        <span>{{ title }}</span>
+      <div class="info-container">
+        <div
+          class="title"
+          :title="title"
+        >
+          <span>{{ title }}</span>
+        </div>
+        <MusicTags
+          :tags="tags"
+          size="small"
+        />
       </div>
     </div>
 
@@ -117,6 +123,7 @@
 import { computed, ref } from 'vue';
 import { usePlayer } from '~/composables/player';
 import DownloadPopover from './DownloadPopover.vue';
+import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
 import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 
@@ -124,6 +131,7 @@ const player = usePlayer();
 const playlistPanel = usePlaylistPanel();
 
 const title = computed(() => player.current?.title);
+const tags = computed(() => player.current?.tags ?? []);
 const currentTimePercentage = computed(() => player.currentTimePercentage);
 
 const setTime = (event: MouseEvent) => {
@@ -171,12 +179,21 @@ const downloadPopoverOpened = ref(false);
     border-radius: 0.3rem;
   }
 
-  .title {
-    display: -webkit-box;
-    line-clamp: 1;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.2rem;
+    padding-top: 0.3rem;
+
+    .title {
+      display: -webkit-box;
+      line-clamp: 1;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 
   .time {
