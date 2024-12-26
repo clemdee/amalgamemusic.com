@@ -83,7 +83,7 @@ const playNext = () => {
 };
 
 const _queueAtIndex = (music: Music, index: number) => {
-  _playlistData.value.list.splice(index, 0, music);
+  _playlistData.value.list.splice(index, 0, music.clone());
 };
 
 const queue = (music: Music) => {

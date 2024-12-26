@@ -18,6 +18,7 @@ export interface Music {
     extension: string
   }
   coverUrl: string
+  clone: () => Music
 };
 
 const { use: useCoverUrl } = createAutoMap((id: MusicId) => {
@@ -33,6 +34,7 @@ export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
   const coverUrl = useCoverUrl(id);
   const extension = data.src.match('[^.]+$')?.[0] ?? '';
+  const clone = () => createMusic(data);
 
   return readonly(reactive({
     id,
@@ -42,5 +44,6 @@ export const createMusic = (data: CreateMusicParameter): Music => {
       extension,
     },
     coverUrl,
+    clone,
   }));
 };
