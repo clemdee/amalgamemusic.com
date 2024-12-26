@@ -172,12 +172,10 @@ const downloadPopoverOpened = ref(false);
   }
 
   .title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-
-    span {
-      white-space: nowrap;
-    }
   }
 
   .time {
@@ -255,11 +253,10 @@ const downloadPopoverOpened = ref(false);
     height: 4rem;
 
     .left {
-      flex-shrink: 1;
       justify-content: flex-start;
       margin-right: auto;
-      min-width: 0;
-      max-width: 15rem;
+      max-width: 25rem;
+      flex: 0.2 1 5rem;
     }
 
     .middle {
