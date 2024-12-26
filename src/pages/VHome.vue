@@ -3,7 +3,7 @@
     <ClientOnly>
       <div class="musics">
         <MusicItem
-          v-for="music in musics"
+          v-for="music in discography"
           :key="music.id"
           :music
         />
@@ -13,40 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import MusicItem from '~/components/MusicItem.vue';
-import { createMusic, type Music } from '~/composables/music';
-import { usePlayer } from '~/composables/player';
+import { useDiscography } from '~/stores/discography';
 
-const musics = computed<Music[]>(() => [
-  createMusic({
-    id: '94',
-    title: '94 stuff',
-    src: '/data/94_10.mp3',
-  }),
-  createMusic({
-    id: '130',
-    title: '130 and actually this is an even longerer title because yes I like to test my limits',
-    src: '/data/130_7.mp3',
-  }),
-]);
-
-const player = usePlayer();
-player.queue(createMusic({
-  id: '130',
-  title: '130 and actually this is an even longerer title because yes I like to test my limits',
-  src: '/data/130_7.mp3',
-}));
-player.queue(createMusic({
-  id: '94',
-  title: '94 stuff',
-  src: '/data/94_10.mp3',
-}));
-player.queue(createMusic({
-  id: '130',
-  title: '130 and actually this is an even longerer title because yes I like to test my limits',
-  src: '/data/130_7.mp3',
-}));
+const discography = useDiscography();
 </script>
 
 <style lang="scss" scoped>
