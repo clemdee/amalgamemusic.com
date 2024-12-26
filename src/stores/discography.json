@@ -2,11 +2,13 @@
   {
     "id": "94",
     "title": "94 stuff",
+    "tags": ["funk", "fusion"],
     "src": "/data/94_10.mp3"
   },
   {
     "id": "130",
     "title": "130 and actually this is an even longerer title because yes I like to test my limits",
+    "tags": ["electro", "funk", "another tag which wraps"],
     "src": "/data/130_7.mp3"
   }
 ]

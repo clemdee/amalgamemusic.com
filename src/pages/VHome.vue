@@ -24,7 +24,7 @@ const discography = useDiscography();
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   justify-content: center;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 2rem;
   width: 100%;
 }

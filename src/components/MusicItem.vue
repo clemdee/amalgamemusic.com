@@ -18,6 +18,17 @@
         >
           {{ props.music.title }}
         </span>
+
+        <div class="tags">
+          <span
+            v-for="tag in props.music.tags"
+            :key="tag"
+            class="tag"
+            :title="tag"
+          >
+            {{ tag }}
+          </span>
+        </div>
       </div>
 
       <div class="controls-container">
@@ -65,6 +76,10 @@ const play = () => {
 
 <style lang="scss" scoped>
 .music-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
   border: 0.1rem solid #fff2;
   border-radius: 1rem;
   backdrop-filter: blur(0.2rem);
@@ -94,21 +109,55 @@ const play = () => {
   }
 
   .bottom-part {
+    flex-grow: 1;
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 1rem;
     padding: 1rem;
 
     .info-container {
-      display: -webkit-box;
-      line-clamp: 2;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+
+      .title {
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .tags {
+        display: flex;
+        flex-flow: row nowrap;
+
+        display: -webkit-box;
+        line-clamp: 1;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+
+        .tag {
+          display: inline-block;
+          padding: 0.5rem 1rem;
+          border-radius: 10rem;
+          font-size: 1rem;
+          background-color: #111;
+
+          &::before {
+            content: '#';
+            display: inline-block;
+          }
+        }
+      }
     }
 
     .controls-container {
       display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
       margin-top: -1rem;
       overflow: hidden;
       width: 0rem;
