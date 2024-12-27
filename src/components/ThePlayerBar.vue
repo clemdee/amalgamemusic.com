@@ -14,12 +14,7 @@
         @click="player.togglePlay()"
       />
       <div class="info-container">
-        <div
-          class="title"
-          :title="title"
-        >
-          <span>{{ title }}</span>
-        </div>
+        <AutoScrollingText :text="title" />
         <MusicTags
           :tags="tags"
           size="small"
@@ -122,6 +117,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { usePlayer } from '~/composables/player';
+import AutoScrollingText from './AutoScrollingText.vue';
 import DownloadPopover from './DownloadPopover.vue';
 import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
@@ -130,7 +126,7 @@ import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 const player = usePlayer();
 const playlistPanel = usePlaylistPanel();
 
-const title = computed(() => player.current?.title);
+const title = computed(() => player.current?.title ?? '');
 const tags = computed(() => player.current?.tags ?? []);
 const currentTimePercentage = computed(() => player.currentTimePercentage);
 
@@ -185,15 +181,8 @@ const downloadPopoverOpened = ref(false);
     justify-content: center;
     align-items: flex-start;
     gap: 0.2rem;
+    min-width: 0;
     padding-top: 0.3rem;
-
-    .title {
-      display: -webkit-box;
-      line-clamp: 1;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
   }
 
   .time {
@@ -273,8 +262,7 @@ const downloadPopoverOpened = ref(false);
     .left {
       justify-content: flex-start;
       margin-right: auto;
-      max-width: 25rem;
-      flex: 0.2 1 5rem;
+      max-width: min(25rem, 30%);
     }
 
     .middle {
