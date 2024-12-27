@@ -1,5 +1,5 @@
 <template>
-  <section class="main">
+  <section>
     <ClientOnly>
       <div class="musics">
         <MusicItem

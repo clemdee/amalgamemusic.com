@@ -1,6 +1,8 @@
 <template>
   <div id="content">
-    <RouterView />
+    <div id="main">
+      <RouterView />
+    </div>
     <ThePlaylistPanel />
   </div>
   <ThePlayerBar />
@@ -14,7 +16,7 @@ import ThePlaylistPanel from './components/ThePlaylistPanel.vue';
 <style lang="scss">
 #app {
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   overflow: hidden;
 }
 </style>
@@ -23,7 +25,11 @@ import ThePlaylistPanel from './components/ThePlaylistPanel.vue';
 #content {
   width: 100%;
   position: relative;
-  overflow-x: hidden;
-  overflow-y: auto;
+
+  #main {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 }
 </style>
