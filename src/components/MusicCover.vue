@@ -1,6 +1,8 @@
+<!-- eslint-disable vue/no-unused-refs -->
 <template>
   <div class="music-cover">
     <div
+      ref="image"
       class="image"
       :class="{ shadow }"
     />
@@ -8,7 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { useElementSize } from '@vueuse/core';
+import { computed, useTemplateRef } from 'vue';
 
 const props = defineProps<{
   url: string
@@ -17,6 +20,9 @@ const props = defineProps<{
 
 const url = computed(() => `url(${props.url})`);
 const shadow = computed(() => props.shadow);
+
+const imageElement = useTemplateRef('image');
+const { height } = useElementSize(() => imageElement.value);
 </script>
 
 <style lang="scss" scoped>
@@ -35,7 +41,14 @@ const shadow = computed(() => props.shadow);
     background-repeat: no-repeat;
 
     &.shadow {
-      filter: drop-shadow(0.05rem 1rem 0.4rem #fff4);
+      --height: v-bind('height');
+
+      filter: drop-shadow(
+        calc(var(--height) * 0.015px)
+        calc(var(--height) * 0.2px)
+        calc(var(--height) * 0.08px)
+        #fff4
+      );
     }
   }
 }
