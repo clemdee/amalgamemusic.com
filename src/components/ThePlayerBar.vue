@@ -7,11 +7,10 @@
     }"
   >
     <div class="left">
-      <MusicItemPlayButton
-        class="play-button"
-        :playing="player.isPlaying"
-        :disabled="!player.current"
-        @click="player.togglePlay()"
+      <MusicCover
+        class="cover"
+        :url="coverUrl"
+        :shadow="true"
       />
       <div class="info-container">
         <AutoScrollingText :text="title" />
@@ -32,6 +31,13 @@
           title="previous"
         />
       </button>
+
+      <MusicItemPlayButton
+        class="play-button"
+        :playing="player.isPlaying"
+        :disabled="!player.current"
+        @click="player.togglePlay()"
+      />
 
       <div class="current-time">
         {{ player.formattedCurrentTime }}
@@ -119,6 +125,7 @@ import { computed, ref } from 'vue';
 import { usePlayer } from '~/composables/player';
 import AutoScrollingText from './AutoScrollingText.vue';
 import DownloadPopover from './DownloadPopover.vue';
+import MusicCover from './MusicCover.vue';
 import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
 import { usePlaylistPanel } from './ThePlaylistPanel.vue';
@@ -126,6 +133,7 @@ import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 const player = usePlayer();
 const playlistPanel = usePlaylistPanel();
 
+const coverUrl = computed(() => player.current?.coverUrl ?? '');
 const title = computed(() => player.current?.title ?? '');
 const tags = computed(() => player.current?.tags ?? []);
 const currentTimePercentage = computed(() => player.currentTimePercentage);
@@ -157,6 +165,8 @@ const downloadPopoverOpened = ref(false);
   }
 
   button {
+    display: grid;
+    place-items: center;
     border-radius: 0.1rem;
     outline-offset: 0.2rem;
   }
@@ -171,8 +181,20 @@ const downloadPopoverOpened = ref(false);
     gap: 1rem;
   }
 
+  .cover {
+    width: 3rem;
+    padding: 0.4rem;
+  }
+
   .play-button {
-    border-radius: 0.3rem;
+    --size: 3rem;
+    background-color: transparent;
+  }
+
+  .current-time,
+  .current-duration {
+    // Account for font baseline misalignment
+    padding-top: 0.3rem;
   }
 
   .info-container {
@@ -262,6 +284,7 @@ const downloadPopoverOpened = ref(false);
     .left {
       justify-content: flex-start;
       margin-right: auto;
+      padding-left: 0.8rem;
       max-width: min(25rem, 30%);
     }
 
