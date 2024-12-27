@@ -30,6 +30,7 @@ const { height } = useElementSize(() => imageElement.value);
   display: grid;
   place-items: center;
   aspect-ratio: 1;
+  width: 100%;
 
   .image {
     width: 100%;
