@@ -11,7 +11,11 @@
         <div class="handle" />
       </DragHandle>
 
-      <div class="cover" />
+      <MusicCover
+        class="cover"
+        :url="props.music.coverUrl"
+        :shadow="true"
+      />
 
       <div class="controls-container">
         <MusicItemPlayButton
@@ -51,6 +55,7 @@ import { computed } from 'vue';
 import { DragHandle } from 'vue-slicksort';
 import type { Music } from '~/composables/music';
 import { usePlayer } from '~/composables/player';
+import MusicCover from './MusicCover.vue';
 import MusicItemPlayButton from './PlayButton.vue';
 
 const props = defineProps<{
@@ -59,8 +64,6 @@ const props = defineProps<{
 }>();
 
 const player = usePlayer();
-
-const cssUrl = computed(() => `url(${props.music.coverUrl})`);
 
 const isCurrent = computed(() => {
   const isCurrentId = player.current?.id === props.music.id;
@@ -101,17 +104,7 @@ const play = () => {
 
     .cover {
       width: 3rem;
-      aspect-ratio: 1;
-      background-image: v-bind('cssUrl');
-      background-size: 80%;
-      background-position: center;
-      background-repeat: no-repeat;
-      max-height: 5rem;
-      filter: drop-shadow(0.05rem 0.5rem 0.2rem #fff4);
-
-      img {
-        width: 100%;
-      }
+      padding: 0.25rem;
     }
 
     .controls-container {

@@ -7,7 +7,11 @@
     }"
   >
     <div class="top-part">
-      <div class="cover" />
+      <MusicCover
+        class="cover"
+        :url="props.music.coverUrl"
+        :shadow="true"
+      />
     </div>
 
     <div class="bottom-part">
@@ -37,6 +41,7 @@
 import { computed } from 'vue';
 import type { Music } from '~/composables/music';
 import { usePlayer } from '~/composables/player';
+import MusicCover from './MusicCover.vue';
 import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
 
@@ -45,8 +50,6 @@ const props = defineProps<{
 }>();
 
 const player = usePlayer();
-
-const cssUrl = computed(() => `url(${props.music.coverUrl})`);
 
 const isCurrent = computed(() => player.current?.id === props.music.id);
 const isPlaying = computed(() => isCurrent.value && player.isPlaying);
@@ -85,18 +88,7 @@ const play = () => {
     padding: 2rem;
 
     .cover {
-      width: 8rem;
-      aspect-ratio: 1;
-      background-image: v-bind('cssUrl');
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      max-height: 5rem;
-      filter: drop-shadow(0.05rem 1rem 0.4rem #fff4);
-
-      img {
-        width: 100%;
-      }
+      width: 5rem;
     }
   }
 
