@@ -319,6 +319,13 @@ const downloadPopoverOpened = ref(false);
       flex-shrink: 1;
       justify-content: flex-start;
       width: 100%;
+      padding-right: 0.5rem;
+    }
+
+    &.disabled {
+      .left {
+        display: none;
+      }
     }
 
     .middle {
@@ -329,7 +336,6 @@ const downloadPopoverOpened = ref(false);
     .right {
       justify-content: flex-end;
     }
-
   }
 
   @media (width < 30rem) {
@@ -343,6 +349,13 @@ const downloadPopoverOpened = ref(false);
     .left {
       flex-shrink: 1;
       justify-content: flex-start;
+      padding-right: 0.5rem;
+    }
+
+    &.disabled {
+      .left {
+        display: none;
+      }
     }
 
     .middle {
