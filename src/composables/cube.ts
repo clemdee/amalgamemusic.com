@@ -1,6 +1,8 @@
-// This whole cube idea was inspired and adapted from @emeraldpay/hashicon
-// https://github.com/emeraldpay/hashicon
-// It reuse parts of the logic, but generates a 3d rotating cube instead of a canvas image
+// This file contains code licensed under the Apache 2.0 License
+// Copyright https://github.com/emeraldpay/hashicon
+// See https://www.apache.org/licenses/LICENSE-2.0 for more details
+
+// Generates a 3d rotating cube instead of a canvas image
 
 import { BLAKE2s } from '@stablelib/blake2s';
 import Color from 'colorjs.io';

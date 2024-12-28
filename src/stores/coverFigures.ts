@@ -1,3 +1,9 @@
+// This file contains code licensed under the Apache 2.0 License
+// Copyright https://github.com/emeraldpay/hashicon
+// See https://www.apache.org/licenses/LICENSE-2.0 for more details
+
+// Figures were rewritten so that they shape faces of a cube (top, front, right)
+
 type Face = [number, number, number, number, number, number, number, number];
 type Figure = [ Face, Face, Face ];
 

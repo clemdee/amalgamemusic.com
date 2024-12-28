@@ -15,7 +15,6 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
-    "@emeraldpay/hashicon": "^0.5.2",
     "@stablelib/blake2s": "^2.0.0",
     "@vueuse/components": "^12.2.0",
     "@vueuse/core": "^12.2.0",
