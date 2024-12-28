@@ -11,18 +11,21 @@
         <div class="handle" />
       </DragHandle>
 
-      <MusicCover
-        class="cover"
-        :music="props.music"
-        :shadow="true"
-      />
-
-      <div class="controls-container">
-        <MusicItemPlayButton
-          class="play"
-          :playing="isPlaying"
-          @click="play"
+      <div class="cover-container">
+        <MusicCover
+          class="cover"
+          :music="props.music"
+          :rotate="isCurrent"
+          :shadow="true"
         />
+
+        <div class="controls-container">
+          <MusicItemPlayButton
+            class="play"
+            :playing="isPlaying"
+            @click="play"
+          />
+        </div>
       </div>
     </div>
 
@@ -102,27 +105,39 @@ const play = () => {
     place-items: center;
     padding: 1rem;
 
-    .cover {
-      width: 3rem;
-      padding: 0.25rem;
-    }
+    .cover-container {
+      position: relative;
 
-    .controls-container {
-      overflow: hidden;
-      width: 0rem;
-      opacity: 0;
-      transition: opacity 200ms ease-out;
-      --size: 3rem;
+      .cover {
+        width: 3rem;
+        padding: 0.25rem;
+      }
+
+      .controls-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        width: 0rem;
+        opacity: 0;
+        transition: opacity 200ms ease-out;
+        --size: 3rem;
+
+        .play {
+          background-color: transparent;
+          box-shadow: none;
+        }
+      }
     }
   }
 
   &:hover,
-  &.current,
   &:has(.play:focus-visible) {
     .cover {
-      display: none;
+      filter: brightness(0.5);
     }
-    .controls-container {
+
+    .cover-container .controls-container {
       width: auto;
       overflow: visible;
       opacity: 1;
