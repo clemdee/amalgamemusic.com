@@ -13,7 +13,7 @@
 
       <MusicCover
         class="cover"
-        :url="props.music.coverUrl"
+        :music="props.music"
         :shadow="true"
       />
 

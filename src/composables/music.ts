@@ -1,6 +1,4 @@
-import { hashicon } from '@emeraldpay/hashicon';
 import { reactive, readonly } from 'vue';
-import { createAutoMap } from './utils';
 
 export type MusicId = string & { _: '__MusicId__' };
 export type MusicTags = readonly string[];
@@ -20,16 +18,8 @@ export interface Music {
     extension: string
   }
   tags: MusicTags
-  coverUrl: string
   clone: () => Music
 };
-
-const { use: useCoverUrl } = createAutoMap((id: MusicId) => {
-  const canvas = hashicon(`amalgame${id}`, {
-    shift: { min: 30, max: 60 },
-  });
-  return canvas.toDataURL();
-});
 
 export const createMusicId = (id: string) => {
   return id as MusicId;
@@ -37,7 +27,6 @@ export const createMusicId = (id: string) => {
 
 export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
-  const coverUrl = useCoverUrl(id);
   const extension = data.src.match('[^.]+$')?.[0] ?? '';
   const tags = Object.freeze(data.tags?.slice() ?? []);
   const clone = () => createMusic(data);
@@ -50,7 +39,6 @@ export const createMusic = (data: CreateMusicParameter): Music => {
       extension,
     },
     tags,
-    coverUrl,
     clone,
   }));
 };

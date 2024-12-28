@@ -11,12 +11,18 @@ importers:
       '@emeraldpay/hashicon':
         specifier: ^0.5.2
         version: 0.5.2
+      '@stablelib/blake2s':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@vueuse/components':
         specifier: ^12.2.0
         version: 12.2.0(typescript@5.7.2)
       '@vueuse/core':
         specifier: ^12.2.0
         version: 12.2.0(typescript@5.7.2)
+      colorjs.io:
+        specifier: ^0.5.2
+        version: 0.5.2
       iconify-icon:
         specifier: ^2.1.0
         version: 2.1.0
@@ -657,17 +663,32 @@ packages:
   '@stablelib/binary@1.0.1':
     resolution: {integrity: sha512-ClJWvmL6UBM/wjkvv/7m5VP3GMr9t0osr4yVgLZsLCOz4hGN9gIAFEqnJ0TsSMAN+n840nf2cHZnA5/KFqHC7Q==}
 
+  '@stablelib/binary@2.0.0':
+    resolution: {integrity: sha512-dHejKHMtq5OtNwDSMcFx+djhixVAnZ76Rqga3WOOKe6KV3NlnE7JBXlmdLIn04G4FxqhRSEx+zkoO4Izdw10ZA==}
+
   '@stablelib/blake2s@1.0.1':
     resolution: {integrity: sha512-Nnp7ULL65b4zEOkf3IdfL74xHhZXMCg7HBjBYO666a0o+DIY6GDEhUCqH6dws8nsSZgZO+V5+s2VyYKKGdFMZw==}
+
+  '@stablelib/blake2s@2.0.0':
+    resolution: {integrity: sha512-6TVSmhIfmAymgsWaGA7XBMg2pR1DCNzmp1h4RhbZBCxNSx96BbTS0X1VIMSrYUS9UEawzeEMy0HTUohLMX9tGQ==}
 
   '@stablelib/hash@1.0.1':
     resolution: {integrity: sha512-eTPJc/stDkdtOcrNMZ6mcMK1e6yBbqRBaNW55XA1jU8w/7QdnCF0CmMmOD1m7VSkBR44PWrMHU2l6r8YEQHMgg==}
 
+  '@stablelib/hash@2.0.0':
+    resolution: {integrity: sha512-u3WPSqGido8lwJuMcrBgM5K54LrPGhkWAdtsyccf7dGsLixAZUds77zOAbu7bvKPwQlmoByH0txBi5rTmEKuHg==}
+
   '@stablelib/int@1.0.1':
     resolution: {integrity: sha512-byr69X/sDtDiIjIV6m4roLVWnNNlRGzsvxw+agj8CIEazqWGOQp2dTYgQhtyVXV9wpO6WyXRQUzLV/JRNumT2w==}
 
+  '@stablelib/int@2.0.0':
+    resolution: {integrity: sha512-EiSYDisTYKk1wuCqoh7wuBySmE0A1isq7TQbsijQ6XFi6nIAozchgAT7Zv2PCl2iY8BTe0URScC4PdYHOe3Yow==}
+
   '@stablelib/wipe@1.0.1':
     resolution: {integrity: sha512-WfqfX/eXGiAd3RJe4VU2snh/ZPwtSjLG4ynQ/vYzvghTh7dHFcI1wl+nrkWG6lGhukOxOsUHfv8dUXr58D0ayg==}
+
+  '@stablelib/wipe@2.0.0':
+    resolution: {integrity: sha512-VBMpCJx8py9j9F5DxV5dGmSSO+vkYDnXHXG4alkfpaD08UTfNTqsQoRlUh5obeqBNHiO+3Iv40GxKpM0gfd5xA==}
 
   '@stylistic/eslint-plugin@2.9.0':
     resolution: {integrity: sha512-OrDyFAYjBT61122MIY1a3SfEgy3YCMgt2vL4eoPmvTwDBwyQhAXurxNQznlRD/jESNfYWfID8Ej+31LljvF7Xg==}
@@ -1183,6 +1204,9 @@ packages:
 
   colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
+
+  colorjs.io@0.5.2:
+    resolution: {integrity: sha512-twmVoizEW7ylZSN32OgKdXRmo1qg+wT5/6C3xu5b9QsWzSFAhHLn2xd8ro0diCsKfCj1RdaTP/nrcW+vAoQPIw==}
 
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -2933,7 +2957,7 @@ snapshots:
       '@eslint-community/eslint-plugin-eslint-comments': 4.4.0(eslint@9.17.0)
       '@eslint/markdown': 6.2.0
       '@stylistic/eslint-plugin': 2.9.0(eslint@9.17.0)(typescript@5.7.2)
-      '@typescript-eslint/eslint-plugin': 8.8.0(@typescript-eslint/parser@8.18.1(eslint@9.17.0)(typescript@5.7.2))(eslint@9.17.0)(typescript@5.7.2)
+      '@typescript-eslint/eslint-plugin': 8.8.0(@typescript-eslint/parser@8.8.0(eslint@9.17.0)(typescript@5.7.2))(eslint@9.17.0)(typescript@5.7.2)
       '@typescript-eslint/parser': 8.8.0(eslint@9.17.0)(typescript@5.7.2)
       '@vitest/eslint-plugin': 1.1.6(@typescript-eslint/utils@8.18.1(eslint@9.17.0)(typescript@5.7.2))(eslint@9.17.0)(typescript@5.7.2)(vitest@2.1.2(@types/node@20.16.10)(jsdom@24.1.3)(sass@1.79.4)(terser@5.34.1))
       eslint: 9.17.0
@@ -3452,17 +3476,33 @@ snapshots:
     dependencies:
       '@stablelib/int': 1.0.1
 
+  '@stablelib/binary@2.0.0':
+    dependencies:
+      '@stablelib/int': 2.0.0
+
   '@stablelib/blake2s@1.0.1':
     dependencies:
       '@stablelib/binary': 1.0.1
       '@stablelib/hash': 1.0.1
       '@stablelib/wipe': 1.0.1
 
+  '@stablelib/blake2s@2.0.0':
+    dependencies:
+      '@stablelib/binary': 2.0.0
+      '@stablelib/hash': 2.0.0
+      '@stablelib/wipe': 2.0.0
+
   '@stablelib/hash@1.0.1': {}
+
+  '@stablelib/hash@2.0.0': {}
 
   '@stablelib/int@1.0.1': {}
 
+  '@stablelib/int@2.0.0': {}
+
   '@stablelib/wipe@1.0.1': {}
+
+  '@stablelib/wipe@2.0.0': {}
 
   '@stylistic/eslint-plugin@2.9.0(eslint@9.17.0)(typescript@5.7.2)':
     dependencies:
@@ -3519,10 +3559,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@8.8.0(@typescript-eslint/parser@8.18.1(eslint@9.17.0)(typescript@5.7.2))(eslint@9.17.0)(typescript@5.7.2)':
+  '@typescript-eslint/eslint-plugin@8.8.0(@typescript-eslint/parser@8.8.0(eslint@9.17.0)(typescript@5.7.2))(eslint@9.17.0)(typescript@5.7.2)':
     dependencies:
       '@eslint-community/regexpp': 4.11.1
-      '@typescript-eslint/parser': 8.18.1(eslint@9.17.0)(typescript@5.7.2)
+      '@typescript-eslint/parser': 8.8.0(eslint@9.17.0)(typescript@5.7.2)
       '@typescript-eslint/scope-manager': 8.8.0
       '@typescript-eslint/type-utils': 8.8.0(eslint@9.17.0)(typescript@5.7.2)
       '@typescript-eslint/utils': 8.8.0(eslint@9.17.0)(typescript@5.7.2)
@@ -4139,6 +4179,8 @@ snapshots:
 
   colorette@2.0.20: {}
 
+  colorjs.io@0.5.2: {}
+
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
@@ -4458,7 +4500,7 @@ snapshots:
     dependencies:
       eslint: 9.17.0
     optionalDependencies:
-      '@typescript-eslint/eslint-plugin': 8.8.0(@typescript-eslint/parser@8.18.1(eslint@9.17.0)(typescript@5.7.2))(eslint@9.17.0)(typescript@5.7.2)
+      '@typescript-eslint/eslint-plugin': 8.8.0(@typescript-eslint/parser@8.8.0(eslint@9.17.0)(typescript@5.7.2))(eslint@9.17.0)(typescript@5.7.2)
 
   eslint-plugin-vue@9.28.0(eslint@9.17.0):
     dependencies:

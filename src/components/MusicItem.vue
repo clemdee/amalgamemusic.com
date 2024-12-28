@@ -9,8 +9,10 @@
     <div class="top-part">
       <MusicCover
         class="cover"
-        :url="props.music.coverUrl"
+        :music="props.music"
         :shadow="true"
+        :rotate="isCurrent"
+        :float="isPlaying"
       />
     </div>
 

@@ -9,8 +9,9 @@
     <div class="left">
       <MusicCover
         class="cover"
-        :url="coverUrl"
+        :music="player.current"
         :shadow="true"
+        :rotate="true"
       />
       <div class="info-container">
         <AutoScrollingText :text="title" />
@@ -133,7 +134,6 @@ import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 const player = usePlayer();
 const playlistPanel = usePlaylistPanel();
 
-const coverUrl = computed(() => player.current?.coverUrl ?? '');
 const title = computed(() => player.current?.title ?? '');
 const tags = computed(() => player.current?.tags ?? []);
 const currentTimePercentage = computed(() => player.currentTimePercentage);

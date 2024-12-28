@@ -16,8 +16,10 @@
   },
   "dependencies": {
     "@emeraldpay/hashicon": "^0.5.2",
+    "@stablelib/blake2s": "^2.0.0",
     "@vueuse/components": "^12.2.0",
     "@vueuse/core": "^12.2.0",
+    "colorjs.io": "^0.5.2",
     "iconify-icon": "^2.1.0",
     "vue": "^3.4.29",
     "vue-router": "^4.4.5",
