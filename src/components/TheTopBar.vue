@@ -92,6 +92,11 @@ const { height } = useElementSize(() => fullscreenElement.value);
       gap: 1rem;
       cursor: default;
 
+      &:hover {
+        color: var(--accent-color);
+        transition: color 100ms linear;
+      }
+
       img {
         width: 3rem;
         aspect-ratio: 1;

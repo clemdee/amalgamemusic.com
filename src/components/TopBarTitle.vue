@@ -44,5 +44,7 @@ h1 {
 
 svg {
   position: absolute;
+  width: 0;
+  height: 0;
 }
 </style>
