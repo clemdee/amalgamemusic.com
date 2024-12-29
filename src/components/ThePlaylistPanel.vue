@@ -99,6 +99,8 @@ export const usePlaylistPanel = () => {
   z-index: var(--z-playlist-panel);
   width: 30rem;
   max-width: 100dvw;
+  max-height: 100%;
+  overflow: auto;
 
   padding: 2rem;
   border-left: 0.1rem solid #111d;
