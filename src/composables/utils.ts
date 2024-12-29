@@ -3,6 +3,7 @@ import { computed } from 'vue';
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min);
+export const randomFloat = (min: number, max: number) => Math.random() * (max - min) + min;
 
 export const downloadFile = (url: string, filename?: string) => {
   const link = document.createElement('a');

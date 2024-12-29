@@ -1,6 +1,7 @@
 <template>
   <div id="content">
     <div id="main">
+      <TheTopBar />
       <RouterView />
     </div>
     <ThePlaylistPanel />
@@ -9,6 +10,7 @@
 </template>
 
 <script setup lang="ts">
+import TheTopBar from '~/components/TheTopBar.vue';
 import ThePlayerBar from './components/ThePlayerBar.vue';
 import ThePlaylistPanel from './components/ThePlaylistPanel.vue';
 </script>

@@ -7,6 +7,7 @@
 }
 
 :root {
+  --z-top-bar: 100;
   --z-playlist-panel: 1000;
   --z-popover: 10000;
 }
@@ -14,6 +15,12 @@
 @font-face {
   font-family: neucha;
   src: url('~/assets/fonts/Neucha-Regular.ttf');
+}
+
+@font-face {
+  font-family: California;
+  src: url('~/assets/fonts/California.otf');
+  size-adjust: 85%;
 }
 
 @keyframes loading {
