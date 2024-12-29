@@ -14,3 +14,8 @@ button {
   color: inherit;
   cursor: pointer;
 }
+
+a {
+  color: var(--font-color);
+  text-decoration: none;
+}

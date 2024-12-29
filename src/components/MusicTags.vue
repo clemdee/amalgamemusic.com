@@ -41,7 +41,7 @@ const size = computed(() => props.size ?? 'normal');
     display: inline-block;
     padding: 0.5rem 1rem;
     border-radius: 10rem;
-    font-size: 1rem;
+    font-size: 0.9rem;
     background-color: #111;
 
     &.size-small {

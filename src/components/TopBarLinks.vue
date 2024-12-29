@@ -37,6 +37,7 @@ const emit = defineEmits<{
 
   :deep(a) {
     padding: 0.5rem;
+    border-radius: 0.2rem;
     text-decoration: none;
   }
 }
