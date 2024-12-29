@@ -78,6 +78,11 @@ const { width } = useElementSize(() => rootElement.value);
   from { transform: translateY(30%); }
   to { transform: translateY(-30%); }
 }
+@keyframes float-shadow {
+  from { filter: blur(calc(0.4 * var(--width) * 0.2px)); }
+  50% { filter: blur(calc( var(--width) * 0.2px)); }
+  to { filter: blur(calc(1.5 * var(--width) * 0.2px)); }
+}
 
 .music-cover {
   --width: v-bind('width');
@@ -178,6 +183,10 @@ const { width } = useElementSize(() => rootElement.value);
     &.float {
       .float-wrapper {
         animation: float 4s -2s infinite ease-in-out alternate-reverse;
+      }
+
+      .shadow::before {
+        animation: float-shadow 4s -2s infinite ease-in-out alternate-reverse;
       }
     }
   }
