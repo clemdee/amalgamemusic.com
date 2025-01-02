@@ -1,5 +1,5 @@
 import type { Music } from './music';
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, readonly, ref, watch } from 'vue';
 import { createAutoWeakMap } from './utils';
 
 const useFormattedSeconds = (seconds: number) => computed(() => {
@@ -153,7 +153,23 @@ watch(element, () => {
   });
 });
 
-const currentDuration = ref(Number.NaN);
+const useDuration = () => {
+  const duration = ref(Number.NaN);
+  const metadataElement = document.createElement('audio');
+  metadataElement.preload = 'metadata';
+  metadataElement.addEventListener('durationchange', () => {
+    duration.value = metadataElement.duration ?? Number.NaN;
+  });
+
+  watch(current, () => {
+    duration.value = Number.NaN;
+    metadataElement.src = current.value?.file.src ?? '';
+  }, { flush: 'sync' });
+
+  return readonly(duration);
+};
+
+const currentDuration = useDuration();
 const currentTime = ref(0);
 
 const currentTimePercentage = computed(() => {
@@ -164,17 +180,12 @@ const currentTimePercentage = computed(() => {
 
 watch(current, () => {
   if (!current.value) {
-    currentDuration.value = Number.NaN;
     currentTime.value = 0;
   }
 }, { flush: 'sync' });
 
 watch(element, () => {
   if (!element.value) return;
-  element.value.addEventListener('loadedmetadata', () => {
-    currentDuration.value = element.value?.duration ?? Number.NaN;
-  });
-
   element.value.addEventListener('timeupdate', () => {
     currentTime.value = element.value?.currentTime ?? 0;
   });
