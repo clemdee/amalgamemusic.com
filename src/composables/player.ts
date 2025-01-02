@@ -129,11 +129,11 @@ const toggleRepeat = (state?: boolean) => {
 
 const onEnded = () => {
   isPlaying.value = false;
-  if (!hasRepeat.value) {
-    playNext();
+  if (hasRepeat.value) {
+    play();
   }
   else {
-    play();
+    playNext();
   }
 };
 
