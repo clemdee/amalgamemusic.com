@@ -5,6 +5,7 @@
       opened,
       moving: isMoving,
     }"
+    :inert="!opened"
   >
     <template v-if="player.playlist.length > 0">
       <ClientOnly>
