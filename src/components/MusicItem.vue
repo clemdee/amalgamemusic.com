@@ -31,6 +31,7 @@
       <div class="controls-container">
         <MusicItemPlayButton
           class="play"
+          :loading="isLoading"
           :playing="isPlaying"
           @click="play"
         />
@@ -54,6 +55,7 @@ const props = defineProps<{
 const player = usePlayer();
 
 const isCurrent = computed(() => player.current?.id === props.music.id);
+const isLoading = computed(() => isCurrent.value && player.isLoading);
 const isPlaying = computed(() => isCurrent.value && player.isPlaying);
 
 const play = () => {

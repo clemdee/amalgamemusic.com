@@ -2,6 +2,7 @@
   <div
     class="player-bar"
     :class="{
+      loading: player.isLoading,
       playing: player.isPlaying,
       disabled: !player.current,
     }"
@@ -35,6 +36,7 @@
 
       <MusicItemPlayButton
         class="play-button"
+        :loading="player.isLoading"
         :playing="player.isPlaying"
         :disabled="!player.current"
         @click="player.togglePlay()"
@@ -51,6 +53,14 @@
         <div class="track">
           <div class="current" />
           <div class="handle" />
+        </div>
+
+        <div
+          v-show="player.hasRepeat"
+          class="loop-markers"
+        >
+          <div class="loop-marker start" />
+          <div class="loop-marker end" />
         </div>
       </div>
 
@@ -137,6 +147,8 @@ const playlistPanel = usePlaylistPanel();
 const title = computed(() => player.current?.title ?? '');
 const tags = computed(() => player.current?.tags ?? []);
 const currentTimePercentage = computed(() => player.currentTimePercentage);
+const currentLoopStartPercentage = computed(() => player.currentLoopStartPercentage);
+const currentLoopEndPercentage = computed(() => player.currentLoopEndPercentage);
 
 const setTime = (event: MouseEvent) => {
   const target = event.currentTarget as HTMLElement;
@@ -210,6 +222,7 @@ const downloadPopoverOpened = ref(false);
   .time {
     --percentage: v-bind('currentTimePercentage');
     flex-grow: 1;
+    position: relative;
     display: inline-grid;
     place-items: center;
     height: 2rem;
@@ -247,12 +260,43 @@ const downloadPopoverOpened = ref(false);
         transition: all linear 50ms;
       }
     }
+
+    .loop-markers {
+      --loop-start-percentage: v-bind('currentLoopStartPercentage');
+      --loop-end-percentage: v-bind('currentLoopEndPercentage');
+      width: 100%;
+      position: absolute;
+      inset-block-start: 0rem;
+
+      .loop-marker {
+        position: absolute;
+        inset-block-start: 0%;
+        height: 0.4rem;
+        width: 0.23rem;
+        border-radius: 0rem 0rem 0.23rem 0.23rem;
+        background-color: var(--accent-color);
+        translate: -50%;
+
+        &.start {
+          inset-inline-start: calc(100% * var(--loop-start-percentage));
+        }
+
+        &.end {
+          inset-inline-start: calc(100% * var(--loop-end-percentage));
+        }
+      }
+    }
   }
 
   &.disabled {
     .time {
       cursor: default;
+
       .handle {
+        display: none;
+      }
+
+      .loop-markers {
         display: none;
       }
     }

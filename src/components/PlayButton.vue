@@ -1,6 +1,6 @@
 <template>
   <button
-    :disabled="props.disabled"
+    :disabled="disabled"
     class="play-button"
   >
     <iconify-icon
@@ -22,11 +22,15 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
+
 const props = defineProps<{
   playing: boolean
   loading?: boolean
   disabled?: boolean
 }>();
+
+const disabled = computed(() => props.disabled || props.loading);
 </script>
 
 <style lang="scss" scoped>

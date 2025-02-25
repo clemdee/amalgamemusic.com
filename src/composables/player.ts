@@ -1,5 +1,6 @@
 import type { Music } from './music';
-import { computed, onMounted, reactive, readonly, ref, watch } from 'vue';
+import { computed, reactive, ref } from 'vue';
+import { usePlayerCurrent } from './player-current';
 import { createAutoWeakMap } from './utils';
 
 const useFormattedSeconds = (seconds: number) => computed(() => {
@@ -8,8 +9,6 @@ const useFormattedSeconds = (seconds: number) => computed(() => {
   const m = (seconds - s) / 60;
   return `${m}:${`${s}`.padStart(2, '0')}`;
 });
-
-const element = ref<HTMLAudioElement>();
 
 // Group playlist and current index data so that we can batch update them
 const _playlistData = ref({
@@ -24,6 +23,27 @@ const current = computed<Music | undefined>(() => {
   return playlist.value[currentIndex.value];
 });
 
+const {
+  isLoading,
+  isPlaying,
+  pause,
+  play,
+  togglePlay,
+  currentDuration,
+  currentTime,
+  setTime,
+  hasRepeat,
+  toggleRepeat,
+  // toggleSeamlessRepeat,
+  // hasSeamlessRepeat,
+} = usePlayerCurrent({
+  current,
+  onEnd: () => {
+    // eslint-disable-next-line ts/no-use-before-define
+    playNext();
+  },
+});
+
 const _updatePlaylist = (newPlaylist: Music[], newCurrentIndex?: number) => {
   if (!newCurrentIndex) {
     newCurrentIndex = newPlaylist.indexOf(current.value!);
@@ -35,38 +55,11 @@ const _updatePlaylist = (newPlaylist: Music[], newCurrentIndex?: number) => {
 };
 
 // Needed to have playlist work with reordering
-let __playlistNextUID = 0;
-const { get: getUID } = createAutoWeakMap<Music, number>(() => __playlistNextUID++);
+let _playlistNextUID = 0;
+const { get: getUID } = createAutoWeakMap<Music, number>(() => _playlistNextUID++);
 
 const previous = computed<Music | undefined>(() => playlist.value[currentIndex.value - 1]);
 const next = computed<Music | undefined>(() => playlist.value[currentIndex.value + 1]);
-
-const currentSrc = computed<string | undefined>(() => {
-  return current.value?.file.src;
-});
-
-const isPlaying = ref(false);
-
-const play = () => {
-  if (!current.value) return;
-  isPlaying.value = true;
-  element.value?.play();
-};
-
-const pause = () => {
-  isPlaying.value = false;
-  element.value?.pause();
-};
-
-const togglePlay = (state?: boolean) => {
-  state ??= !isPlaying.value;
-  if (!state) {
-    pause();
-  }
-  else {
-    play();
-  }
-};
 
 const playAtIndex = (index: number) => {
   if (index < 0 || index >= playlist.value.length) return;
@@ -120,81 +113,11 @@ const move = (oldIndex: number, newIndex: number) => {
   _updatePlaylist(newList);
 };
 
-const hasRepeat = ref(false);
-
-const toggleRepeat = (state?: boolean) => {
-  state ??= !hasRepeat.value;
-  hasRepeat.value = state;
-};
-
-const onEnded = () => {
-  isPlaying.value = false;
-  if (hasRepeat.value) {
-    play();
-  }
-  else {
-    playNext();
-  }
-};
-
-watch(currentSrc, () => {
-  if (!element.value) return;
-  element.value.src = currentSrc.value ?? '';
-}, { flush: 'sync' });
-
-watch(element, () => {
-  if (!element.value) return;
-  element.value.addEventListener('pause', () => {
-    isPlaying.value = false;
-  });
-
-  element.value.addEventListener('ended', () => {
-    onEnded();
-  });
-});
-
-const useDuration = () => {
-  const duration = ref(Number.NaN);
-  const metadataElement = document.createElement('audio');
-  metadataElement.preload = 'metadata';
-  metadataElement.addEventListener('durationchange', () => {
-    duration.value = metadataElement.duration ?? Number.NaN;
-  });
-
-  watch(current, () => {
-    duration.value = Number.NaN;
-    metadataElement.src = current.value?.file.src ?? '';
-  }, { flush: 'sync' });
-
-  return readonly(duration);
-};
-
-const currentDuration = useDuration();
-const currentTime = ref(0);
-
 const currentTimePercentage = computed(() => {
   return Number.isNaN(currentDuration.value)
     ? 0
     : currentTime.value / currentDuration.value;
 });
-
-watch(current, () => {
-  if (!current.value) {
-    currentTime.value = 0;
-  }
-}, { flush: 'sync' });
-
-watch(element, () => {
-  if (!element.value) return;
-  element.value.addEventListener('timeupdate', () => {
-    currentTime.value = element.value?.currentTime ?? 0;
-  });
-});
-
-const setTime = (seconds: number) => {
-  if (!element.value) return;
-  element.value.currentTime = seconds;
-};
 
 const setTimePercentage = (percentage: number) => {
   if (Number.isNaN(currentDuration.value)) {
@@ -219,12 +142,21 @@ const formattedCurrentTime = computed(() => {
   return useFormattedSeconds(currentTime.value).value;
 });
 
-export const usePlayer = () => {
-  onMounted(() => {
-    if (element.value) return;
-    element.value = document.createElement('audio');
-  });
+const currentLoopStart = computed(() => current.value?.time.loopStart ?? 0);
+const currentLoopStartPercentage = computed(() => {
+  return Number.isNaN(currentDuration.value)
+    ? 0
+    : currentLoopStart.value / currentDuration.value;
+});
 
+const currentLoopEnd = computed(() => current.value?.time.loopEnd ?? 0);
+const currentLoopEndPercentage = computed(() => {
+  return Number.isNaN(currentDuration.value)
+    ? 0
+    : currentLoopEnd.value / currentDuration.value;
+});
+
+export const usePlayer = () => {
   return reactive({
     playlist,
     currentIndex,
@@ -232,6 +164,7 @@ export const usePlayer = () => {
     getUID,
     previous,
     next,
+    isLoading,
     isPlaying,
     play,
     pause,
@@ -248,6 +181,10 @@ export const usePlayer = () => {
     currentDuration,
     currentTime,
     currentTimePercentage,
+    currentLoopStart,
+    currentLoopStartPercentage,
+    currentLoopEnd,
+    currentLoopEndPercentage,
     setTime,
     setTimePercentage,
     formattedCurrentDuration,

@@ -3,10 +3,29 @@ import { reactive, readonly } from 'vue';
 export type MusicId = string & { _: '__MusicId__' };
 export type MusicTags = readonly string[];
 
+export interface MusicPart {
+  src: string
+  offset?: number
+  duration: number
+}
+
+export interface ResolvedMusicPart {
+  src: string
+  offset: number
+  duration: number
+  buffer: AudioBuffer
+}
+
 export interface CreateMusicParameter {
   id: string
   title: string
   src: string
+  time: {
+    duration: number
+    loopStart?: number
+    loopEnd?: number
+  }
+  parts: MusicPart[]
   tags?: string[]
 };
 
@@ -17,6 +36,12 @@ export interface Music {
     src: string
     extension: string
   }
+  time: {
+    duration: number
+    loopStart: number
+    loopEnd: number
+  }
+  parts: MusicPart[]
   tags: MusicTags
   clone: () => Music
 };
@@ -38,6 +63,12 @@ export const createMusic = (data: CreateMusicParameter): Music => {
       src: data.src,
       extension,
     },
+    time: {
+      duration: data.time.duration,
+      loopStart: data.time.loopStart ?? 0,
+      loopEnd: data.time.loopEnd ?? data.time.duration,
+    },
+    parts: data.parts,
     tags,
     clone,
   }));
