@@ -207,6 +207,8 @@ const downloadPopoverOpened = ref(false);
   .current-duration {
     // Account for font baseline misalignment
     padding-top: 0.3rem;
+    // Ensure width does not change based on characters width
+    min-width: 1.6rem;
   }
 
   .info-container {
