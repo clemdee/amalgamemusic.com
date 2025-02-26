@@ -56,7 +56,9 @@ export const usePlayerCurrent = (parameters: {
   const play = async () => {
     if (!current.value) return;
     if (isLoading.value) return;
+    isLoading.value = true;
     await plannedParts.play();
+    isLoading.value = false;
     timer.resume();
   };
 
@@ -86,9 +88,7 @@ export const usePlayerCurrent = (parameters: {
 
   watchImmediate(current, () => {
     currentTime.value = 0;
-    if (isLoading.value) return;
-    if (!isLoading.value) return;
-    play();
+    pause();
   });
 
   return {
