@@ -1,6 +1,6 @@
 import type { Music } from './music';
 import { computed, reactive, ref } from 'vue';
-import { usePlayerCurrent } from './player-current';
+import { usePlayerCurrent } from './playerCurrent';
 import { createAutoWeakMap } from './utils';
 
 const useFormattedSeconds = (seconds: number) => computed(() => {

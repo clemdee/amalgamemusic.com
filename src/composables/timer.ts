@@ -16,9 +16,14 @@ export const useTimer = (parameters: {
   const loopEnd = toRef(parameters.loopEnd ?? duration);
 
   let lastTime = 0;
-  let intervalId: ReturnType<typeof setInterval>;
+  let intervalId: ReturnType<typeof setInterval> | undefined;
   const time = ref(0);
   const running = ref(false);
+
+  const _clearInterval = () => {
+    clearInterval(intervalId);
+    intervalId = undefined;
+  };
 
   const _updateTimer = () => {
     const now = performance.now() / 1000;
@@ -33,11 +38,16 @@ export const useTimer = (parameters: {
 
     // End of timer
     if (!loop.value && time.value > duration.value) {
-      clearInterval(intervalId);
+      _clearInterval();
       time.value = duration.value;
       running.value = false;
       parameters.onEnd?.();
     }
+  };
+
+  const _setInterval = () => {
+    _clearInterval();
+    intervalId = setInterval(_updateTimer, timeout.value);
   };
 
   const resume = () => {
@@ -45,12 +55,11 @@ export const useTimer = (parameters: {
     _updateTimer();
     running.value = true;
 
-    clearInterval(intervalId);
-    intervalId = setInterval(_updateTimer, timeout.value);
+    _setInterval();
   };
 
   const pause = () => {
-    clearInterval(intervalId);
+    _clearInterval();
     _updateTimer();
     running.value = false;
   };
@@ -59,8 +68,9 @@ export const useTimer = (parameters: {
     lastTime = performance.now() / 1000;
     time.value = value;
 
-    clearInterval(intervalId);
-    intervalId = setInterval(_updateTimer, timeout.value);
+    if (running.value) {
+      _setInterval();
+    }
   };
 
   return reactive({

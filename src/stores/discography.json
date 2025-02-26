@@ -5,7 +5,8 @@
     "tags": ["funk", "fusion"],
     "src": "/data/94_10.mp3",
     "time": {
-      "duration": 263.157541
+      "duration": 263.157541,
+      "loopEnd": 241.8048
     },
     "parts": [
       {

@@ -5,12 +5,6 @@ export type MusicTags = readonly string[];
 
 export interface MusicPart {
   src: string
-  offset?: number
-  duration: number
-}
-
-export interface ResolvedMusicPart {
-  src: string
   offset: number
   duration: number
   buffer: AudioBuffer
@@ -25,7 +19,7 @@ export interface CreateMusicParameter {
     loopStart?: number
     loopEnd?: number
   }
-  parts: MusicPart[]
+  parts: Partial<MusicPart[]>
   tags?: string[]
 };
 
