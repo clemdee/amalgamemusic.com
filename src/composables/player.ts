@@ -34,8 +34,6 @@ const {
   setTime,
   hasRepeat,
   toggleRepeat,
-  // toggleSeamlessRepeat,
-  // hasSeamlessRepeat,
 } = usePlayerCurrent({
   current,
   onEnd: () => {
@@ -101,6 +99,7 @@ const unqueueAtIndex = (index: number) => {
   }
   _updatePlaylist(newList, newIndex);
   if (isCurrent && wasPlaying) {
+    // Needed so that audio element does not stop
     play();
   }
 };
