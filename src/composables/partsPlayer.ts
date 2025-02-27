@@ -1,49 +1,9 @@
-import type { Music, MusicPart } from './music';
+import type { Music } from './music';
 
 import { computed, type MaybeRef, reactive, toRef, toValue } from 'vue';
+import { createAudioBufferNode, type MusicPart, preloadMusicParts, useAudioContext } from './musicParts';
 
-const audioContext = new AudioContext();
-
-const createAudioBufferNode = (buffer: AudioBuffer) => {
-  const audioNode = audioContext.createBufferSource();
-  audioNode.buffer = buffer;
-  audioNode.connect(audioContext.destination);
-  return audioNode;
-};
-
-const musicParts: Record<string, MusicPart> = {};
-
-const fetchMusicPart = async (music: Music, partIndex: number): Promise<MusicPart> => {
-  const musicPart = music.parts[partIndex];
-  const musicPartId = `${music.id}-${partIndex}`;
-  if (!musicParts[musicPartId]) {
-    // If part has not already been loaded
-    // Fetch, create and cache buffer
-    const response = await fetch(musicPart.src);
-    const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    const loadedMusicPart = {
-      src: musicPart.src,
-      offset: musicPart.offset ?? 0,
-      duration: musicPart.duration,
-      buffer: audioBuffer,
-    };
-    musicParts[musicPartId] = loadedMusicPart;
-  }
-  return musicParts[musicPartId];
-};
-
-const fetchMusicParts = async (music: Music) => {
-  return await Promise.all(
-    music.parts.map((_part, partIndex) => fetchMusicPart(music, partIndex)),
-  );
-};
-
-export const preloadMusicParts = async (music: MaybeRef<Music>) => {
-  fetchMusicParts(toValue(music));
-};
-
-// ---
+const audioContext = useAudioContext();
 
 interface PlannedPart {
   part: MusicPart
@@ -139,7 +99,7 @@ export const usePartsPlayer = (parameters: {
       musicParts = [];
     }
     else {
-      musicParts = await fetchMusicParts(current.value);
+      musicParts = await preloadMusicParts(current.value);
     }
   };
 

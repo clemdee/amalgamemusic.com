@@ -3,14 +3,7 @@ import { reactive, readonly } from 'vue';
 export type MusicId = string & { _: '__MusicId__' };
 export type MusicTags = readonly string[];
 
-export interface MusicPart {
-  src: string
-  offset: number
-  duration: number
-  buffer: AudioBuffer
-}
-
-export interface CreateMusicParameter {
+interface CreateMusicParameter {
   id: string
   title: string
   src: string
@@ -19,7 +12,11 @@ export interface CreateMusicParameter {
     loopStart?: number
     loopEnd?: number
   }
-  parts: Partial<MusicPart[]>
+  parts: {
+    src: string
+    offset?: number
+    duration: number
+  }[]
   tags?: string[]
 };
 
@@ -35,7 +32,11 @@ export interface Music {
     loopStart: number
     loopEnd: number
   }
-  parts: MusicPart[]
+  parts: readonly {
+    src: string
+    offset: number
+    duration: number
+  }[]
   tags: MusicTags
   clone: () => Music
 };
@@ -62,7 +63,11 @@ export const createMusic = (data: CreateMusicParameter): Music => {
       loopStart: data.time.loopStart ?? 0,
       loopEnd: data.time.loopEnd ?? data.time.duration,
     },
-    parts: data.parts,
+    parts: data.parts.map(part => ({
+      src: part.src,
+      offset: part.offset ?? 0,
+      duration: part.duration,
+    })),
     tags,
     clone,
   }));
