@@ -15,18 +15,24 @@ interface PlannedPart {
 const usePlanner = (parameters: {
   musicParts: MaybeRef<MusicPart[]>
   currentTime: MaybeRef<number>
+  hasRepeat: MaybeRef<boolean>
   loopStart: MaybeRef<number>
   loopEnd: MaybeRef<number>
 }) => {
   const musicParts = toRef(parameters.musicParts ?? []);
   const currentTime = toRef(parameters.currentTime ?? 0);
+  const hasRepeat = toRef(parameters.hasRepeat ?? false);
   const loopStart = toRef(parameters.loopStart ?? 0);
   const loopEnd = toRef(parameters.loopEnd ?? 0);
 
   const current = () => {
     const plannedParts: PlannedPart[] = [];
     plannedParts.push(...musicParts.value
-      .filter(part => part.offset + part.duration >= currentTime.value)
+      .filter((part) => {
+        if (part.offset + part.duration < currentTime.value) return false;
+        if (hasRepeat.value && part.offset >= loopEnd.value) return false;
+        return true;
+      })
       .map((part) => {
         const when = audioContext.currentTime + Math.max(0, part.offset - currentTime.value);
         const offset = Math.max(0, currentTime.value - part.offset);
@@ -40,8 +46,13 @@ const usePlanner = (parameters: {
   const nextLoop = () => {
     const plannedParts: PlannedPart[] = [];
     plannedParts.push(...musicParts.value
+      .filter((part: MusicPart) => {
+        if (part.offset + part.duration <= loopStart.value) return false;
+        if (part.offset >= loopEnd.value) return false;
+        return true;
+      })
       .map((part) => {
-        const when = audioContext.currentTime + Math.max(0, part.offset + loopEnd.value - currentTime.value);
+        const when = audioContext.currentTime + (loopEnd.value - currentTime.value) + Math.max(0, (part.offset - loopStart.value));
         const offset = Math.max(0, loopStart.value - part.offset);
         return {
           part,
@@ -93,6 +104,7 @@ export const usePartsPlayer = (parameters: {
   const getPlannedParts = usePlanner({
     musicParts,
     currentTime,
+    hasRepeat,
     loopEnd,
     loopStart,
   });
