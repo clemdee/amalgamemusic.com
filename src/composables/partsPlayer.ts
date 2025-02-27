@@ -1,6 +1,6 @@
 import type { Music } from './music';
 
-import { computed, type MaybeRef, reactive, toRef, toValue } from 'vue';
+import { computed, type MaybeRef, reactive, ref, toRef } from 'vue';
 import { createAudioBufferNode, type MusicPart, preloadMusicParts, useAudioContext } from './musicParts';
 
 const audioContext = useAudioContext();
@@ -12,55 +12,51 @@ interface PlannedPart {
   audioNode?: AudioBufferSourceNode
 };
 
-const getPlannedPartsCurrent = (parameters: {
-  musicParts: MusicPart[]
-  currentTime: MaybeRef<number>
-}): PlannedPart[] => {
-  const musicParts = toValue(parameters.musicParts ?? []);
-  const currentTime = toValue(parameters.currentTime ?? 0);
-
-  const plannedParts: PlannedPart[] = [];
-  plannedParts.push(...musicParts
-    .filter(part => part.offset + part.duration >= currentTime)
-    .map((part) => {
-      const when = audioContext.currentTime + Math.max(0, part.offset - currentTime);
-      const offset = Math.max(0, currentTime - part.offset);
-      const audioNode = createAudioBufferNode(part.buffer);
-      return {
-        part,
-        when,
-        offset,
-        audioNode,
-      };
-    }),
-  );
-  return plannedParts;
-};
-
-const getPlannedPartsNextLoop = (parameters: {
-  musicParts: MusicPart[]
+const usePlanner = (parameters: {
+  musicParts: MaybeRef<MusicPart[]>
   currentTime: MaybeRef<number>
   loopStart: MaybeRef<number>
   loopEnd: MaybeRef<number>
-}): PlannedPart[] => {
-  const musicParts = toValue(parameters.musicParts ?? []);
-  const currentTime = toValue(parameters.currentTime ?? 0);
-  const loopStart = toValue(parameters.loopStart ?? 0);
-  const loopEnd = toValue(parameters.loopEnd ?? 0);
+}) => {
+  const musicParts = toRef(parameters.musicParts ?? []);
+  const currentTime = toRef(parameters.currentTime ?? 0);
+  const loopStart = toRef(parameters.loopStart ?? 0);
+  const loopEnd = toRef(parameters.loopEnd ?? 0);
 
-  const plannedParts: PlannedPart[] = [];
-  plannedParts.push(...musicParts
-    .map((part) => {
-      const when = audioContext.currentTime + Math.max(0, part.offset + loopEnd - currentTime);
-      const offset = Math.max(0, loopStart - part.offset);
-      return {
-        part,
-        when,
-        offset,
-      };
-    }),
-  );
-  return plannedParts;
+  const current = () => {
+    const plannedParts: PlannedPart[] = [];
+    plannedParts.push(...musicParts.value
+      .filter(part => part.offset + part.duration >= currentTime.value)
+      .map((part) => {
+        const when = audioContext.currentTime + Math.max(0, part.offset - currentTime.value);
+        const offset = Math.max(0, currentTime.value - part.offset);
+        const audioNode = createAudioBufferNode(part.buffer);
+        return { part, when, offset, audioNode };
+      }),
+    );
+    return plannedParts;
+  };
+
+  const nextLoop = () => {
+    const plannedParts: PlannedPart[] = [];
+    plannedParts.push(...musicParts.value
+      .map((part) => {
+        const when = audioContext.currentTime + Math.max(0, part.offset + loopEnd.value - currentTime.value);
+        const offset = Math.max(0, loopStart.value - part.offset);
+        return {
+          part,
+          when,
+          offset,
+        };
+      }),
+    );
+    return plannedParts;
+  };
+
+  return {
+    current,
+    nextLoop,
+  };
 };
 
 const stopPlannedPart = (plannedPart: PlannedPart) => {
@@ -91,15 +87,22 @@ export const usePartsPlayer = (parameters: {
   const loopStart = computed(() => current.value?.time.loopStart ?? 0);
   const loopEnd = computed(() => current.value?.time.loopEnd ?? 0);
 
-  let musicParts: MusicPart[] = [];
+  const musicParts = ref<MusicPart[]>([]);
   const plannedParts: PlannedPart[] = [];
+
+  const getPlannedParts = usePlanner({
+    musicParts,
+    currentTime,
+    loopEnd,
+    loopStart,
+  });
 
   const loadMusicParts = async () => {
     if (!current.value) {
-      musicParts = [];
+      musicParts.value = [];
     }
     else {
-      musicParts = await preloadMusicParts(current.value);
+      musicParts.value = await preloadMusicParts(current.value);
     }
   };
 
@@ -118,27 +121,14 @@ export const usePartsPlayer = (parameters: {
 
   const planParts = () => {
     clearPlannedParts();
-    plannedParts.push(...getPlannedPartsCurrent({
-      musicParts,
-      currentTime,
-    }));
+    plannedParts.push(...getPlannedParts.current());
     if (hasRepeat.value) {
-      plannedParts.push(...getPlannedPartsNextLoop({
-        musicParts,
-        currentTime,
-        loopStart,
-        loopEnd,
-      }));
+      plannedParts.push(...getPlannedParts.nextLoop());
     }
   };
 
   const planExtraLoop = () => {
-    const plannedPartsNextLoop = getPlannedPartsNextLoop({
-      musicParts,
-      currentTime,
-      loopStart,
-      loopEnd,
-    });
+    const plannedPartsNextLoop = getPlannedParts.nextLoop();
     plannedPartsNextLoop.forEach(startPlannedPart);
     plannedParts.push(...plannedPartsNextLoop);
   };
