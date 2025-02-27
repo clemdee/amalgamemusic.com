@@ -119,7 +119,7 @@ const startPlannedPart = (plannedPart: PlannedPart) => {
 
 // ---
 
-export const usePlannedParts = (parameters: {
+export const usePartsPlayer = (parameters: {
   current?: MaybeRef<Music | undefined>
   currentTime?: MaybeRef<number>
   hasRepeat?: MaybeRef<boolean>

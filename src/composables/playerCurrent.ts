@@ -1,7 +1,7 @@
 import type { Music } from './music';
 import { watchImmediate } from '@vueuse/core';
 import { computed, type MaybeRef, readonly, ref, toRef } from 'vue';
-import { usePlannedParts } from './parts';
+import { usePartsPlayer } from './partsPlayer';
 import { useTimer } from './timer';
 
 export const usePlayerCurrent = (parameters: {
@@ -29,7 +29,7 @@ export const usePlayerCurrent = (parameters: {
     loopEnd,
     onLoop: () => {
       // eslint-disable-next-line ts/no-use-before-define
-      plannedParts.planExtraLoop();
+      partsPlayer.planExtraLoop();
     },
     onEnd: () => parameters.onEnd(),
   });
@@ -39,7 +39,7 @@ export const usePlayerCurrent = (parameters: {
     set: value => void timer.update(value),
   });
 
-  const plannedParts = usePlannedParts({
+  const partsPlayer = usePartsPlayer({
     current,
     currentTime,
     hasRepeat,
@@ -49,7 +49,7 @@ export const usePlayerCurrent = (parameters: {
   const isPlaying = computed(() => timer.running);
 
   const pause = () => {
-    plannedParts.pause();
+    partsPlayer.pause();
     timer.pause();
   };
 
@@ -57,7 +57,7 @@ export const usePlayerCurrent = (parameters: {
     if (!current.value) return;
     if (isLoading.value) return;
     isLoading.value = true;
-    await plannedParts.play();
+    await partsPlayer.play();
     isLoading.value = false;
     timer.resume();
   };
