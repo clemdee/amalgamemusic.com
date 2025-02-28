@@ -1,5 +1,32 @@
 [
   {
+    "id": "CDE",
+    "title": "CDE",
+    "tags": ["test"],
+    "src": "/data/CDE.wav",
+    "time": {
+      "duration": 3,
+      "loopStart": 1,
+      "loopEnd": 2
+    },
+    "parts": [
+      {
+        "src": "/data/C1s.wav",
+        "duration": 1
+      },
+      {
+        "src": "/data/D1s.wav",
+        "offset": 1,
+        "duration": 1
+      },
+      {
+        "src": "/data/E1s.wav",
+        "offset": 2,
+        "duration": 1
+      }
+    ]
+  },
+  {
     "id": "94",
     "title": "94 stuff",
     "tags": ["funk", "fusion"],
@@ -22,6 +49,7 @@
     "src": "/data/130_7.mp3",
     "time": {
       "duration": 104.333042,
+      "loopStart": 16.65,
       "loopEnd": 100.17
     },
     "parts": [
