@@ -30,14 +30,14 @@ export const useTimer = (parameters: {
     time.value += now - lastTime;
     lastTime = now;
 
-    if (loop.value && time.value > loopEnd.value) {
+    if (loop.value && time.value >= loopEnd.value) {
       const offset = time.value - loopEnd.value;
       time.value = loopStart.value + offset;
       parameters.onLoop?.();
     }
 
     // End of timer
-    if (!loop.value && time.value > duration.value) {
+    if (!loop.value && time.value >= duration.value) {
       _clearInterval();
       time.value = duration.value;
       running.value = false;
@@ -59,6 +59,7 @@ export const useTimer = (parameters: {
   };
 
   const pause = () => {
+    if (!running.value) return;
     _clearInterval();
     _updateTimer();
     running.value = false;

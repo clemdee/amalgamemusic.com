@@ -2,7 +2,6 @@ import type { Music } from './music';
 import { watchImmediate } from '@vueuse/core';
 import { computed, type MaybeRef, readonly, ref, toRef } from 'vue';
 import { usePartsPlayer } from './partsPlayer';
-import { useTimer } from './timer';
 
 export const usePlayerCurrent = (parameters: {
   current: MaybeRef<Music | undefined>
@@ -17,40 +16,19 @@ export const usePlayerCurrent = (parameters: {
     hasRepeat.value = state;
   };
 
-  const loopStart = computed(() => current.value?.time.loopStart ?? 0);
-  const loopEnd = computed(() => current.value?.time.loopEnd ?? 0);
   const duration = computed(() => current.value?.time?.duration ?? Number.NaN);
-
-  const timer = useTimer({
-    timeout: 200,
-    duration,
-    loop: hasRepeat,
-    loopStart,
-    loopEnd,
-    onLoop: () => {
-      // eslint-disable-next-line ts/no-use-before-define
-      partsPlayer.planExtraLoop();
-    },
-    onEnd: () => parameters.onEnd(),
-  });
-
-  const currentTime = computed({
-    get: () => timer.time,
-    set: value => void timer.update(value),
-  });
 
   const partsPlayer = usePartsPlayer({
     current,
-    currentTime,
     hasRepeat,
   });
 
   const isLoading = ref(false);
-  const isPlaying = computed(() => timer.running);
+  const isPlaying = ref(false);
 
   const pause = () => {
     partsPlayer.pause();
-    timer.pause();
+    isPlaying.value = false;
   };
 
   const play = async () => {
@@ -59,7 +37,7 @@ export const usePlayerCurrent = (parameters: {
     isLoading.value = true;
     await partsPlayer.play();
     isLoading.value = false;
-    timer.resume();
+    isPlaying.value = true;
   };
 
   const togglePlay = (state?: boolean) => {
@@ -75,7 +53,7 @@ export const usePlayerCurrent = (parameters: {
   const setTime = (seconds: number) => {
     if (!current.value) return;
     if (isLoading.value) return;
-    currentTime.value = seconds;
+    partsPlayer.currentTime = seconds;
     if (isPlaying.value) {
       play();
     }
@@ -87,14 +65,22 @@ export const usePlayerCurrent = (parameters: {
   });
 
   watchImmediate(current, () => {
-    currentTime.value = 0;
+    partsPlayer.currentTime = 0;
     pause();
+  });
+
+  watchImmediate(() => partsPlayer.currentTime, (currentTime) => {
+    if (currentTime >= duration.value) {
+      pause();
+      partsPlayer.currentTime = 0;
+      parameters.onEnd();
+    }
   });
 
   return {
     isLoading: readonly(isLoading),
     isPlaying: readonly(isPlaying),
-    currentTime: readonly(currentTime),
+    currentTime: readonly(toRef(() => partsPlayer.currentTime)),
     currentDuration: readonly(duration),
     setTime,
     play,

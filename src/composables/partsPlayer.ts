@@ -2,6 +2,7 @@ import type { Music } from './music';
 
 import { computed, type MaybeRef, reactive, ref, toRef } from 'vue';
 import { createAudioBufferNode, type MusicPart, preloadMusicParts, useAudioContext } from './musicParts';
+import { useTimer } from './timer';
 
 const audioContext = useAudioContext();
 
@@ -88,15 +89,35 @@ const startPlannedPart = (plannedPart: PlannedPart) => {
 
 export const usePartsPlayer = (parameters: {
   current?: MaybeRef<Music | undefined>
-  currentTime?: MaybeRef<number>
   hasRepeat?: MaybeRef<boolean>
 } = {}) => {
   const current = toRef(parameters.current);
-  const currentTime = toRef(parameters.currentTime ?? 0);
   const hasRepeat = toRef(parameters.hasRepeat ?? false);
 
+  const duration = computed(() => current.value?.time?.duration ?? Number.NaN);
   const loopStart = computed(() => current.value?.time.loopStart ?? 0);
   const loopEnd = computed(() => current.value?.time.loopEnd ?? 0);
+
+  const timer = useTimer({
+    timeout: 200,
+    duration,
+    loop: hasRepeat,
+    loopStart,
+    loopEnd,
+    onLoop: () => {
+      // eslint-disable-next-line ts/no-use-before-define
+      planExtraLoop();
+    },
+    onEnd: () => {
+      // eslint-disable-next-line ts/no-use-before-define
+      pause();
+    },
+  });
+
+  const currentTime = computed({
+    get: () => timer.time,
+    set: value => void timer.update(value),
+  });
 
   const musicParts = ref<MusicPart[]>([]);
   const plannedParts: PlannedPart[] = [];
@@ -150,15 +171,17 @@ export const usePartsPlayer = (parameters: {
     await loadMusicParts();
     planParts();
     startPlannedParts();
+    timer.resume();
   };
 
   const pause = () => {
     stopPlannedParts();
+    timer.pause();
   };
 
   return reactive({
+    currentTime,
     play,
     pause,
-    planExtraLoop,
   });
 };
