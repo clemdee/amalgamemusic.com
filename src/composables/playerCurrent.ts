@@ -24,11 +24,10 @@ export const usePlayerCurrent = (parameters: {
   });
 
   const isLoading = ref(false);
-  const isPlaying = ref(false);
+  const isPlaying = computed(() => partsPlayer.isPlaying);
 
   const pause = () => {
     partsPlayer.pause();
-    isPlaying.value = false;
   };
 
   const play = async () => {
@@ -37,7 +36,6 @@ export const usePlayerCurrent = (parameters: {
     isLoading.value = true;
     await partsPlayer.play();
     isLoading.value = false;
-    isPlaying.value = true;
   };
 
   const togglePlay = (state?: boolean) => {

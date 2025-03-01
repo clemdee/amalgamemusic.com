@@ -181,6 +181,7 @@ export const usePartsPlayer = (parameters: {
 
   return reactive({
     currentTime,
+    isPlaying: computed(() => timer.running),
     play,
     pause,
   });
