@@ -133,10 +133,10 @@ const { width } = useElementSize(() => rootElement.value);
           transform: rotateX(90deg) translateY(50%) rotateX(-90deg) rotateZ(-90deg);
         }
         .back {
-          transform: rotateY(90deg)  translateX(50%) rotateY(90deg) rotateZ(-90deg);
+          transform: scaleY(-1) rotateY(90deg)  translateX(50%) rotateY(90deg) rotateZ(-90deg);
         }
         .left {
-          transform: translateX(-50%) rotateY(-90deg) rotateZ(180deg);
+          transform: scaleZ(-1) translateX(-50%) rotateY(-90deg) rotateZ(180deg);
         }
         .right {
           transform: translateX(50%) rotateY(90deg) ;
@@ -145,7 +145,7 @@ const { width } = useElementSize(() => rootElement.value);
           transform: translateY(-50%) rotateX(90deg);
         }
         .bottom {
-          transform: translateY(50%) rotateX(-90deg);
+          transform: scaleX(-1) translateY(50%) rotateX(-90deg) ;
         }
       }
 
