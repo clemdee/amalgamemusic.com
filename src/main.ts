@@ -18,6 +18,11 @@ export const createApp = ViteSSG(
         background: {
           color: '#00001b',
         },
+        particles: {
+          size: {
+            value: { min: 0.5, max: 1.5 },
+          },
+        },
       });
     }
   },
