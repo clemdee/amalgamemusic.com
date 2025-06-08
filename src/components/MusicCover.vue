@@ -99,10 +99,9 @@ const { width } = useElementSize(() => rootElement.value);
     .wrap {
       // 10^6 seems the max before visual glitches
       --_flatness: pow(10, 6);
+      --x-rotation: -24deg;
 
       perspective: calc(10px * var(--_flatness));
-      transform: rotateX(45deg);
-      perspective-origin: 0% calc((-900% / var(--width)) * var(--_flatness));
 
       .cube {
         position: relative;
@@ -112,6 +111,7 @@ const { width } = useElementSize(() => rootElement.value);
         transform: rotateY(-45deg);
         transform-origin: center;
         pointer-events: none;
+        rotate: x var(--x-rotation);
 
         .float-wrapper {
           position: absolute;
@@ -158,6 +158,7 @@ const { width } = useElementSize(() => rootElement.value);
         transform-origin: center;
         pointer-events: none;
         z-index: -1;
+        rotate: x var(--x-rotation);
 
         &::before {
           content: '';
