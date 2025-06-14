@@ -280,6 +280,7 @@ const downloadPopoverOpened = ref(false);
   }
 
   .volume {
+    --percentage: calc(100% * v-bind('player.volume'));
     position: relative;
     width: 1.5rem;
     aspect-ratio: 1;
@@ -318,6 +319,7 @@ const downloadPopoverOpened = ref(false);
           -webkit-appearance: none;
           width: 0.4rem;
           background-color: var(--accent-color);
+          background: linear-gradient(to top, var(--accent-color) 0% var(--percentage), #446 var(--percentage) 100%);
           border-radius: 1rem;
         }
 
