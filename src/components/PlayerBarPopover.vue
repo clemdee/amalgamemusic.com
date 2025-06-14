@@ -54,7 +54,7 @@ const clickOutsideHandler = async () => {
     border: 0.1rem solid #fff2;
     border-radius: 1rem;
     backdrop-filter: blur(0.2rem);
-    background-color: #2b3340dd;
+    background-color: #2b2b40dd;
     box-shadow: 0 0.3rem 2rem #0002;
   }
 }
