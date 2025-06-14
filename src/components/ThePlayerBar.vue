@@ -70,6 +70,36 @@
     </div>
 
     <div class="right">
+      <div class="volume">
+        <div class="wrapper">
+          <button
+            :class="{
+              off: player.muted,
+            }"
+            @click="player.muted = !player.muted"
+          >
+            <iconify-icon
+              :icon="player.muted
+                ? 'mdi:volume-off'
+                : 'mdi:volume-high'
+              "
+              title="mute"
+            />
+          </button>
+          <div class="volume-slider">
+            <input
+              v-model="player.volume"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              orient="vertical"
+              :title="`${player.volume}`"
+            />
+          </div>
+        </div>
+      </div>
+
       <button
         :class="{
           off: !player.hasRepeat,
@@ -245,6 +275,76 @@ const downloadPopoverOpened = ref(false);
         border-radius: 100%;
         background-color: var(--accent-color);
         transition: all linear 50ms;
+      }
+    }
+  }
+
+  .volume {
+    position: relative;
+    width: 1.5rem;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    margin-left: 0.2rem;
+    margin-bottom: -0.2rem;
+
+    .wrapper {
+      position: absolute;
+      bottom: 0rem;
+
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 0.3rem;
+
+      padding: 0.4rem;
+      margin: -0.4rem;
+      border: 0.1rem solid transparent;
+      border-radius: 1rem;
+    }
+
+    .volume-slider {
+      input[type=range] {
+        -webkit-appearance: none;
+        height: 6rem;
+        margin-top: 0.4rem;
+        accent-color: var(--accent-color);
+        background-color: transparent;
+        cursor: pointer;
+
+        &::-webkit-slider-runnable-track,
+        &::-moz-range-track {
+          -webkit-appearance: none;
+          width: 0.4rem;
+          background-color: var(--accent-color);
+          border-radius: 1rem;
+        }
+
+        &::-webkit-slider-thumb,
+        &::-moz-range-thumb {
+          -webkit-appearance: none;
+          width: 0.8rem;
+          aspect-ratio: 1;
+        }
+      }
+    }
+
+    &:hover {
+      .wrapper {
+        border-color: #fff2;
+        // background-color: #8882;
+        // box-shadow: 0 0.3rem 2rem #0002;
+      backdrop-filter: blur(0.05rem);
+      background-color: #2b2b40aa;
+      }
+    }
+
+    &:not(:hover) {
+      color: gray;
+
+      .volume-slider {
+        display: none;
       }
     }
   }

@@ -153,6 +153,19 @@ watch(element, () => {
   });
 });
 
+const volume = ref(1);
+const muted = ref(false);
+
+watch(volume, (newVolume) => {
+  if (!element.value) return;
+  element.value.volume = newVolume;
+});
+
+watch(muted, (isMuted) => {
+  if (!element.value) return;
+  element.value.muted = isMuted;
+});
+
 const currentDuration = ref(Number.NaN);
 const currentTime = ref(0);
 
@@ -234,6 +247,8 @@ export const usePlayer = () => {
     move,
     hasRepeat,
     toggleRepeat,
+    volume,
+    muted,
     currentDuration,
     currentTime,
     currentTimePercentage,
