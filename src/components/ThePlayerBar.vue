@@ -83,7 +83,10 @@
                 ? 'mdi:volume-off'
                 : 'mdi:volume-high'
               "
-              title="mute"
+              :title="player.muted
+                ? 'unmute'
+                : 'mute'
+              "
             />
           </button>
           <div class="volume-slider">
