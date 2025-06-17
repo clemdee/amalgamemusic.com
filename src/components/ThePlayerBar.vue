@@ -91,7 +91,7 @@
           </button>
           <div class="volume-slider">
             <input
-              v-model="player.volume"
+              v-model="volume"
               type="range"
               min="0"
               max="1"
@@ -179,6 +179,16 @@ const setTime = (event: MouseEvent) => {
   const percentage = (x - start) / (end - start);
   player.setTimePercentage(percentage);
 };
+
+const VOLUME_EXPONENT = 2.5;
+const volume = computed({
+  get () {
+    return player.volume ** (1 / VOLUME_EXPONENT);
+  },
+  set (sliderVolume: number) {
+    player.volume = sliderVolume ** VOLUME_EXPONENT; ;
+  },
+});
 
 const downloadPopoverOpened = ref(false);
 </script>
@@ -283,7 +293,7 @@ const downloadPopoverOpened = ref(false);
   }
 
   .volume {
-    --percentage: calc(100% * v-bind('player.volume'));
+    --percentage: calc(100% * v-bind('volume'));
     position: relative;
     width: 1.5rem;
     aspect-ratio: 1;
