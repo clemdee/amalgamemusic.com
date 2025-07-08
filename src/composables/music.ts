@@ -8,6 +8,10 @@ export interface CreateMusicParameter {
   title: string
   src: string
   tags?: string[]
+  loop?: {
+    start?: number
+    end?: number
+  }
 };
 
 export interface Music {
@@ -18,6 +22,10 @@ export interface Music {
     extension: string
   }
   tags: MusicTags
+  loop?: {
+    start?: number
+    end?: number
+  }
   clone: () => Music
 };
 
@@ -38,6 +46,7 @@ export const createMusic = (data: CreateMusicParameter): Music => {
       src: data.src,
       extension,
     },
+    loop: data.loop,
     tags,
     clone,
   }));

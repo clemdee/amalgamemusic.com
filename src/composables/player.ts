@@ -221,6 +221,20 @@ const formattedCurrentTime = computed(() => {
   return useFormattedSeconds(currentTime.value).value;
 });
 
+const currentLoopStart = computed(() => current.value?.loop?.start ?? 0);
+const currentLoopStartPercentage = computed(() => {
+  return Number.isNaN(currentDuration.value)
+    ? 0
+    : currentLoopStart.value / currentDuration.value;
+});
+
+const currentLoopEnd = computed(() => current.value?.loop?.end ?? currentDuration.value);
+const currentLoopEndPercentage = computed(() => {
+  return Number.isNaN(currentDuration.value)
+    ? 1
+    : currentLoopEnd.value / currentDuration.value;
+});
+
 export const usePlayer = () => {
   onMounted(() => {
     if (element.value) return;
@@ -254,6 +268,10 @@ export const usePlayer = () => {
     currentTimePercentage,
     setTime,
     setTimePercentage,
+    currentLoopStart,
+    currentLoopStartPercentage,
+    currentLoopEnd,
+    currentLoopEndPercentage,
     formattedCurrentDuration,
     formattedCurrentTime,
   });
