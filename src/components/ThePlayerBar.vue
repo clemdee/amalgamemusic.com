@@ -357,6 +357,7 @@ const downloadPopoverOpened = ref(false);
 
     .volume-slider {
       input[type=range] {
+        appearance: none;
         -webkit-appearance: none;
         height: 6rem;
         margin-top: 0.4rem;
