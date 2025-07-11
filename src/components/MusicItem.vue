@@ -43,6 +43,7 @@
 import { computed } from 'vue';
 import type { Music } from '~/composables/music';
 import { usePlayer } from '~/composables/player';
+import { usePlaylist } from '~/composables/playlist';
 import MusicCover from './MusicCover.vue';
 import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
@@ -52,18 +53,19 @@ const props = defineProps<{
 }>();
 
 const player = usePlayer();
+const playlist = usePlaylist();
 
 const isCurrent = computed(() => player.current?.id === props.music.id);
 const isPlaying = computed(() => isCurrent.value && player.isPlaying);
 
 const play = () => {
   if (!player.current) {
-    player.queue(props.music);
-    player.playAtIndex(player.playlist.length - 1);
+    playlist.queue(props.music);
+    playlist.playAtIndex(playlist.playlist.length - 1);
   }
   else if (!isCurrent.value) {
-    player.queueNext(props.music);
-    player.playNext();
+    playlist.queueNext(props.music);
+    playlist.playNext();
   }
   else {
     player.togglePlay();

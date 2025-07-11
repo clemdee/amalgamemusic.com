@@ -9,11 +9,11 @@
   >
     <h2>Play queue</h2>
 
-    <template v-if="player.playlist.length > 0">
+    <template v-if="playlist.playlist.length > 0">
       <ClientOnly>
         <SlickList
           class="list"
-          :list="player.playlist"
+          :list="playlist.playlist"
           axis="y"
           lock-axis="y"
           append-to="#app"
@@ -23,8 +23,8 @@
           @sort-end="onSortEnd"
         >
           <SlickItem
-            v-for="(music, index) in player.playlist"
-            :key="player.getUID(music)"
+            v-for="(music, index) in playlist.playlist"
+            :key="playlist.getUID(music)"
             :index
           >
             <PlaylistMusicItem
@@ -47,11 +47,11 @@
 <script lang="ts" setup>
 import { reactive, readonly, ref } from 'vue';
 import { SlickItem, SlickList } from 'vue-slicksort';
-import { usePlayer } from '~/composables/player';
+import { usePlaylist } from '~/composables/playlist';
 import { wait } from '~/composables/utils';
 import PlaylistMusicItem from './PlaylistMusicItem.vue';
 
-const player = usePlayer();
+const playlist = usePlaylist();
 
 const isMoving = ref(false);
 
@@ -65,7 +65,7 @@ const onSortEnd = ({ event, oldIndex, newIndex }: {
   newIndex: number
 }) => {
   isMoving.value = false;
-  player.move(oldIndex, newIndex);
+  playlist.move(oldIndex, newIndex);
 };
 </script>
 

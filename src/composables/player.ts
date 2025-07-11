@@ -1,6 +1,7 @@
 import type { Music } from './music';
-import { computed, onMounted, reactive, ref, watch } from 'vue';
-import { createAutoWeakMap } from './utils';
+import { tryOnMounted } from '@vueuse/core';
+import { computed, reactive, ref, watch } from 'vue';
+import { useOn } from './event';
 
 const useFormattedSeconds = (seconds: number) => computed(() => {
   seconds = Math.floor(seconds);
@@ -11,35 +12,7 @@ const useFormattedSeconds = (seconds: number) => computed(() => {
 
 const element = ref<HTMLAudioElement>();
 
-// Group playlist and current index data so that we can batch update them
-const _playlistData = ref({
-  list: [] as Music[],
-  index: -1,
-});
-
-const playlist = computed(() => _playlistData.value.list);
-const currentIndex = computed(() => _playlistData.value.index);
-
-const current = computed<Music | undefined>(() => {
-  return playlist.value[currentIndex.value];
-});
-
-const _updatePlaylist = (newPlaylist: Music[], newCurrentIndex?: number) => {
-  if (!newCurrentIndex) {
-    newCurrentIndex = newPlaylist.indexOf(current.value!);
-  }
-  _playlistData.value = {
-    list: newPlaylist,
-    index: newCurrentIndex,
-  };
-};
-
-// Needed to have playlist work with reordering
-let __playlistNextUID = 0;
-const { get: getUID } = createAutoWeakMap<Music, number>(() => __playlistNextUID++);
-
-const previous = computed<Music | undefined>(() => playlist.value[currentIndex.value - 1]);
-const next = computed<Music | undefined>(() => playlist.value[currentIndex.value + 1]);
+const current = ref<Music | undefined>(undefined);
 
 const currentSrc = computed<string | undefined>(() => {
   return current.value?.file.src;
@@ -68,58 +41,6 @@ const togglePlay = (state?: boolean) => {
   }
 };
 
-const playAtIndex = (index: number) => {
-  if (index < 0 || index >= playlist.value.length) return;
-  _playlistData.value.index = index;
-  play();
-};
-
-const playPrevious = () => {
-  playAtIndex(currentIndex.value - 1);
-};
-
-const playNext = () => {
-  playAtIndex(currentIndex.value + 1);
-};
-
-const _queueAtIndex = (music: Music, index: number) => {
-  _playlistData.value.list.splice(index, 0, music.clone());
-};
-
-const queue = (music: Music) => {
-  _queueAtIndex(music, playlist.value.length);
-};
-
-const queueNext = (music: Music) => {
-  _queueAtIndex(music, currentIndex.value + 1);
-};
-
-const unqueueAtIndex = (index: number) => {
-  const isBefore = index < currentIndex.value;
-  const isCurrent = index === currentIndex.value;
-  const isLast = index === playlist.value.length - 1;
-  const newIndexOffset = isBefore || (isCurrent && isLast) ? -1 : 0;
-  const newIndex = _playlistData.value.index + (newIndexOffset);
-  const newList = _playlistData.value.list.toSpliced(index, 1);
-  const wasPlaying = isPlaying.value;
-  if (isCurrent && wasPlaying) {
-    // Needed so that audio element does not stop
-    pause();
-  }
-  _updatePlaylist(newList, newIndex);
-  if (isCurrent && wasPlaying) {
-    play();
-  }
-};
-
-const move = (oldIndex: number, newIndex: number) => {
-  const musicAtIndex = _playlistData.value.list[oldIndex];
-  const newList = _playlistData.value.list
-    .toSpliced(oldIndex, 1)
-    .toSpliced(newIndex, 0, musicAtIndex);
-  _updatePlaylist(newList);
-};
-
 const hasRepeat = ref(false);
 
 const toggleRepeat = (state?: boolean) => {
@@ -127,14 +48,14 @@ const toggleRepeat = (state?: boolean) => {
   hasRepeat.value = state;
 };
 
+const { on, dispatch } = useOn(['end']);
+
 const onEnded = () => {
   isPlaying.value = false;
   if (hasRepeat.value) {
     play();
   }
-  else {
-    playNext();
-  }
+  dispatch('end');
 };
 
 watch(currentSrc, () => {
@@ -236,29 +157,17 @@ const currentLoopEndPercentage = computed(() => {
 });
 
 export const usePlayer = () => {
-  onMounted(() => {
+  tryOnMounted(() => {
     if (element.value) return;
     element.value = document.createElement('audio');
   });
 
   return reactive({
-    playlist,
-    currentIndex,
     current,
-    getUID,
-    previous,
-    next,
     isPlaying,
     play,
     pause,
     togglePlay,
-    playAtIndex,
-    playPrevious,
-    playNext,
-    queue,
-    queueNext,
-    unqueueAtIndex,
-    move,
     hasRepeat,
     toggleRepeat,
     volume,
@@ -274,5 +183,6 @@ export const usePlayer = () => {
     currentLoopEndPercentage,
     formattedCurrentDuration,
     formattedCurrentTime,
+    on,
   });
 };

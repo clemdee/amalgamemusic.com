@@ -24,8 +24,8 @@
 
     <div class="middle">
       <button
-        :disabled="!player.previous"
-        @click="player.playPrevious()"
+        :disabled="!playlist.previous"
+        @click="playlist.playPrevious()"
       >
         <iconify-icon
           icon="mdi:skip-previous"
@@ -67,8 +67,8 @@
       </div>
 
       <button
-        :disabled="!player.next"
-        @click="player.playNext()"
+        :disabled="!playlist.next"
+        @click="playlist.playNext()"
       >
         <iconify-icon
           icon="mdi:skip-next"
@@ -165,6 +165,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { usePlayer } from '~/composables/player';
+import { usePlaylist } from '~/composables/playlist';
 import AutoScrollingText from './AutoScrollingText.vue';
 import DownloadPopover from './DownloadPopover.vue';
 import MusicCover from './MusicCover.vue';
@@ -173,6 +174,7 @@ import MusicItemPlayButton from './PlayButton.vue';
 import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 
 const player = usePlayer();
+const playlist = usePlaylist();
 const playlistPanel = usePlaylistPanel();
 
 const title = computed(() => player.current?.title ?? '');
