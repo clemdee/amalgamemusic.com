@@ -1,6 +1,6 @@
 import type { Music } from './music';
-import { tryOnMounted, useStorage, watchImmediate } from '@vueuse/core';
-import { computed, reactive, ref, watch } from 'vue';
+import { useStorage, watchImmediate } from '@vueuse/core';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useOn } from './event';
 
 const useFormattedSeconds = (seconds: number) => computed(() => {
@@ -158,7 +158,7 @@ const loopEndPercentage = computed(() => {
 });
 
 export const usePlayer = () => {
-  tryOnMounted(() => {
+  onMounted(() => {
     if (element.value) return;
     element.value = document.createElement('audio');
   });
