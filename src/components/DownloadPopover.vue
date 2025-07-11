@@ -33,8 +33,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
 import type { Music } from '~/composables/music';
+import { computed, ref } from 'vue';
 import { downloadFile, wait } from '~/composables/utils';
 import CC from './CC.vue';
 import PlayerBarPopover from './PlayerBarPopover.vue';

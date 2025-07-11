@@ -40,8 +40,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import type { Music } from '~/composables/music';
+import { computed } from 'vue';
 import { usePlayer } from '~/composables/player';
 import { usePlaylist } from '~/composables/playlist';
 import MusicCover from './MusicCover.vue';

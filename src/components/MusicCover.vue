@@ -56,10 +56,10 @@
 </template>
 
 <script lang="ts" setup>
+import type { Music } from '~/composables/music';
 import { useElementSize } from '@vueuse/core';
 import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import { defaultCubeParams, getFaces } from '~/composables/cube';
-import type { Music } from '~/composables/music';
 import { clamp } from '~/composables/utils';
 
 const props = defineProps<{

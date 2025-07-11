@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import type { MusicTags } from '~/composables/music';
+import { computed } from 'vue';
 
 const props = defineProps<{
   tags: MusicTags
