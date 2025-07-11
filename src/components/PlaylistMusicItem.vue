@@ -71,7 +71,7 @@ const player = usePlayer();
 const playlist = usePlaylist();
 
 const isCurrent = computed(() => {
-  const isCurrentId = playlist.current?.id === props.music.id;
+  const isCurrentId = playlist.currentItem?.music.id === props.music.id;
   const isCurrentIndex = playlist.currentIndex === props.index;
   return isCurrentId && isCurrentIndex;
 });

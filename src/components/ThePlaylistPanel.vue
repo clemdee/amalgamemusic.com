@@ -9,11 +9,11 @@
   >
     <h2>Play queue</h2>
 
-    <template v-if="playlist.playlist.length > 0">
+    <template v-if="playlist.items.length > 0">
       <ClientOnly>
         <SlickList
           class="list"
-          :list="playlist.playlist"
+          :list="playlist.items"
           axis="y"
           lock-axis="y"
           append-to="#app"
@@ -23,12 +23,12 @@
           @sort-end="onSortEnd"
         >
           <SlickItem
-            v-for="(music, index) in playlist.playlist"
-            :key="playlist.getUID(music)"
+            v-for="(item, index) in playlist.items"
+            :key="item.id"
             :index
           >
             <PlaylistMusicItem
-              :music
+              :music="item.music"
               :index
             />
           </SlickItem>
@@ -59,7 +59,7 @@ const onSortStart = () => {
   isMoving.value = true;
 };
 
-const onSortEnd = ({ event, oldIndex, newIndex }: {
+const onSortEnd = ({ oldIndex, newIndex }: {
   event: Event
   oldIndex: number
   newIndex: number

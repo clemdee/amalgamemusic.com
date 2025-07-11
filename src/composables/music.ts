@@ -26,7 +26,6 @@ export interface Music {
     start?: number
     end?: number
   }
-  clone: () => Music
 };
 
 export const createMusicId = (id: string) => {
@@ -37,7 +36,6 @@ export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
   const extension = data.src.match('[^.]+$')?.[0] ?? '';
   const tags = Object.freeze(data.tags?.slice() ?? []);
-  const clone = () => createMusic(data);
 
   return readonly(reactive({
     id,
@@ -48,6 +46,5 @@ export const createMusic = (data: CreateMusicParameter): Music => {
     },
     loop: data.loop,
     tags,
-    clone,
   }));
 };
