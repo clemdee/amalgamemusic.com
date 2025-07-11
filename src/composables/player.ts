@@ -1,5 +1,5 @@
 import type { Music } from './music';
-import { tryOnMounted, useStorage } from '@vueuse/core';
+import { tryOnMounted, useStorage, watchImmediate } from '@vueuse/core';
 import { computed, reactive, ref, watch } from 'vue';
 import { useOn } from './event';
 
@@ -77,12 +77,12 @@ watch(element, () => {
 const volume = useStorage('volume', 1);
 const isMuted = useStorage('isMuted', false);
 
-watch(volume, (newVolume) => {
+watchImmediate(volume, (newVolume) => {
   if (!element.value) return;
   element.value.volume = newVolume;
 });
 
-watch(isMuted, (isMuted) => {
+watchImmediate(isMuted, (isMuted) => {
   if (!element.value) return;
   element.value.muted = isMuted;
 });
