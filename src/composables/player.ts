@@ -14,7 +14,7 @@ const element = ref<HTMLAudioElement>();
 
 const current = ref<Music | undefined>(undefined);
 
-const currentSrc = computed<string | undefined>(() => {
+const src = computed<string | undefined>(() => {
   return current.value?.file.src;
 });
 
@@ -41,26 +41,26 @@ const togglePlay = (state?: boolean) => {
   }
 };
 
-const hasRepeat = useStorage('hasRepeat', false);
+const isRepeat = useStorage('isRepeat', false);
 
 const toggleRepeat = (state?: boolean) => {
-  state ??= !hasRepeat.value;
-  hasRepeat.value = state;
+  state ??= !isRepeat.value;
+  isRepeat.value = state;
 };
 
 const { on, dispatch } = useOn(['end']);
 
 const onEnded = () => {
   isPlaying.value = false;
-  if (hasRepeat.value) {
+  if (isRepeat.value) {
     play();
   }
   dispatch('end');
 };
 
-watch(currentSrc, () => {
+watch(src, () => {
   if (!element.value) return;
-  element.value.src = currentSrc.value ?? '';
+  element.value.src = src.value ?? '';
 }, { flush: 'sync' });
 
 watch(element, () => {
@@ -75,43 +75,40 @@ watch(element, () => {
 });
 
 const volume = useStorage('volume', 1);
-const muted = useStorage('muted', false);
+const isMuted = useStorage('isMuted', false);
 
 watch(volume, (newVolume) => {
   if (!element.value) return;
   element.value.volume = newVolume;
 });
 
-watch(muted, (isMuted) => {
+watch(isMuted, (isMuted) => {
   if (!element.value) return;
   element.value.muted = isMuted;
 });
 
-const currentDuration = ref(Number.NaN);
+const duration = ref(Number.NaN);
+
+const durationFormatted = computed(() => {
+  if (Number.isNaN(duration.value)) {
+    return '-';
+  }
+  return useFormattedSeconds(duration.value).value;
+});
+
 const currentTime = ref(0);
 
 const currentTimePercentage = computed(() => {
-  return Number.isNaN(currentDuration.value)
+  return Number.isNaN(duration.value)
     ? 0
-    : currentTime.value / currentDuration.value;
+    : currentTime.value / duration.value;
 });
 
-watch(current, () => {
-  if (!current.value) {
-    currentDuration.value = Number.NaN;
-    currentTime.value = 0;
+const currentTimeFormatted = computed(() => {
+  if (Number.isNaN(duration.value)) {
+    return '-';
   }
-}, { flush: 'sync' });
-
-watch(element, () => {
-  if (!element.value) return;
-  element.value.addEventListener('loadedmetadata', () => {
-    currentDuration.value = element.value?.duration ?? Number.NaN;
-  });
-
-  element.value.addEventListener('timeupdate', () => {
-    currentTime.value = element.value?.currentTime ?? 0;
-  });
+  return useFormattedSeconds(currentTime.value).value;
 });
 
 const setTime = (seconds: number) => {
@@ -120,40 +117,44 @@ const setTime = (seconds: number) => {
 };
 
 const setTimePercentage = (percentage: number) => {
-  if (Number.isNaN(currentDuration.value)) {
+  if (Number.isNaN(duration.value)) {
     setTime(0);
   }
   else {
-    setTime(percentage * currentDuration.value);
+    setTime(percentage * duration.value);
   }
 };
 
-const formattedCurrentDuration = computed(() => {
-  if (Number.isNaN(currentDuration.value)) {
-    return '-';
+watch(current, () => {
+  if (!current.value) {
+    duration.value = Number.NaN;
+    currentTime.value = 0;
   }
-  return useFormattedSeconds(currentDuration.value).value;
+}, { flush: 'sync' });
+
+watch(element, () => {
+  if (!element.value) return;
+  element.value.addEventListener('loadedmetadata', () => {
+    duration.value = element.value?.duration ?? Number.NaN;
+  });
+
+  element.value.addEventListener('timeupdate', () => {
+    currentTime.value = element.value?.currentTime ?? 0;
+  });
 });
 
-const formattedCurrentTime = computed(() => {
-  if (Number.isNaN(currentDuration.value)) {
-    return '-';
-  }
-  return useFormattedSeconds(currentTime.value).value;
-});
-
-const currentLoopStart = computed(() => current.value?.loop?.start ?? 0);
-const currentLoopStartPercentage = computed(() => {
-  return Number.isNaN(currentDuration.value)
+const loopStart = computed(() => current.value?.loop?.start ?? 0);
+const loopStartPercentage = computed(() => {
+  return Number.isNaN(duration.value)
     ? 0
-    : currentLoopStart.value / currentDuration.value;
+    : loopStart.value / duration.value;
 });
 
-const currentLoopEnd = computed(() => current.value?.loop?.end ?? currentDuration.value);
-const currentLoopEndPercentage = computed(() => {
-  return Number.isNaN(currentDuration.value)
+const loopEnd = computed(() => current.value?.loop?.end ?? duration.value);
+const loopEndPercentage = computed(() => {
+  return Number.isNaN(duration.value)
     ? 1
-    : currentLoopEnd.value / currentDuration.value;
+    : loopEnd.value / duration.value;
 });
 
 export const usePlayer = () => {
@@ -168,21 +169,21 @@ export const usePlayer = () => {
     play,
     pause,
     togglePlay,
-    hasRepeat,
+    isRepeat,
     toggleRepeat,
     volume,
-    muted,
-    currentDuration,
+    isMuted,
+    duration,
+    durationFormatted,
     currentTime,
     currentTimePercentage,
+    currentTimeFormatted,
     setTime,
     setTimePercentage,
-    currentLoopStart,
-    currentLoopStartPercentage,
-    currentLoopEnd,
-    currentLoopEndPercentage,
-    formattedCurrentDuration,
-    formattedCurrentTime,
+    loopStart,
+    loopStartPercentage,
+    loopEnd,
+    loopEndPercentage,
     on,
   });
 };

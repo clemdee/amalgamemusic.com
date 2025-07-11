@@ -3,7 +3,6 @@ import { computed, reactive, ref, watch } from 'vue';
 import { usePlayer } from './player';
 import { createAutoWeakMap } from './utils';
 
-// Wrap inside computed to avoid ReferenceError from cyclic import
 const player = usePlayer();
 
 // Group playlist and current index data so that we can batch update them

@@ -41,7 +41,7 @@
       />
 
       <div class="current-time">
-        {{ player.formattedCurrentTime }}
+        {{ player.currentTimeFormatted }}
       </div>
 
       <div
@@ -54,7 +54,7 @@
         </div>
 
         <div
-          v-show="player.hasRepeat"
+          v-show="player.isRepeat"
           class="loop-markers"
         >
           <!-- <div class="loop-marker start" /> -->
@@ -63,7 +63,7 @@
       </div>
 
       <div class="current-duration">
-        {{ player.formattedCurrentDuration }}
+        {{ player.durationFormatted }}
       </div>
 
       <button
@@ -82,16 +82,16 @@
         <div class="wrapper">
           <button
             :class="{
-              off: player.muted,
+              off: player.isMuted,
             }"
-            @click="player.muted = !player.muted"
+            @click="player.isMuted = !player.isMuted"
           >
             <iconify-icon
-              :icon="player.muted
+              :icon="player.isMuted
                 ? 'mdi:volume-off'
                 : 'mdi:volume-high'
               "
-              :title="player.muted
+              :title="player.isMuted
                 ? 'unmute'
                 : 'mute'
               "
@@ -113,7 +113,7 @@
 
       <button
         :class="{
-          off: !player.hasRepeat,
+          off: !player.isRepeat,
         }"
         @click="player.toggleRepeat()"
       >
@@ -303,8 +303,8 @@ const downloadPopoverOpened = ref(false);
     }
 
     .loop-markers {
-      --loop-start-percentage: v-bind('player.currentLoopStartPercentage');
-      --loop-end-percentage: v-bind('player.currentLoopEndPercentage');
+      --loop-start-percentage: v-bind('player.loopStartPercentage');
+      --loop-end-percentage: v-bind('player.loopEndPercentage');
       width: 100%;
       position: absolute;
       inset-block-start: 0rem;
