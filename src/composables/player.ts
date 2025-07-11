@@ -1,5 +1,5 @@
 import type { Music } from './music';
-import { tryOnMounted } from '@vueuse/core';
+import { tryOnMounted, useStorage } from '@vueuse/core';
 import { computed, reactive, ref, watch } from 'vue';
 import { useOn } from './event';
 
@@ -41,7 +41,7 @@ const togglePlay = (state?: boolean) => {
   }
 };
 
-const hasRepeat = ref(false);
+const hasRepeat = useStorage('hasRepeat', false);
 
 const toggleRepeat = (state?: boolean) => {
   state ??= !hasRepeat.value;
@@ -74,8 +74,8 @@ watch(element, () => {
   });
 });
 
-const volume = ref(1);
-const muted = ref(false);
+const volume = useStorage('volume', 1);
+const muted = useStorage('muted', false);
 
 watch(volume, (newVolume) => {
   if (!element.value) return;
