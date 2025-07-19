@@ -1,6 +1,7 @@
 import type { MaybeRef } from 'vue';
 import type { Music } from './music';
 import type { MusicPart } from './musicParts';
+import { syncRefs } from '@vueuse/core';
 import { computed, reactive, ref, toRef } from 'vue';
 import { preloadMusicParts } from './musicParts';
 import { usePartsPlanner } from './partsPlanner';
@@ -12,6 +13,10 @@ export const usePartsPlayer = (parameters: {
 } = {}) => {
   const current = toRef(parameters.current);
   const isRepeat = toRef(parameters.isRepeat ?? false);
+  // Sometimes, music should not repeat even if the option is on
+  // e.g. when manually setting time after loopEnd
+  const shouldRepeat = ref(isRepeat.value);
+  syncRefs(isRepeat, shouldRepeat);
 
   const duration = computed(() => current.value?.time?.duration ?? Number.NaN);
   const loopStart = computed(() => current.value?.time.loopStart ?? 0);
@@ -20,14 +25,19 @@ export const usePartsPlayer = (parameters: {
   const timer = useTimer({
     timeout: 200,
     duration,
-    loop: isRepeat,
+    loop: shouldRepeat,
     loopStart,
     loopEnd,
   });
 
   const currentTime = computed({
     get: () => timer.time,
-    set: value => void timer.update(value),
+    set: (value) => {
+      shouldRepeat.value = value >= loopEnd.value
+        ? false
+        : isRepeat.value;
+      timer.update(value);
+    },
   });
 
   const musicParts = ref<MusicPart[]>([]);
@@ -35,7 +45,7 @@ export const usePartsPlayer = (parameters: {
   const partsPlanner = usePartsPlanner({
     musicParts,
     currentTime,
-    isRepeat,
+    isRepeat: shouldRepeat,
     loopEnd,
     loopStart,
   });
@@ -52,7 +62,7 @@ export const usePartsPlayer = (parameters: {
   const planParts = () => {
     partsPlanner.clearParts();
     partsPlanner.planNow();
-    if (isRepeat.value) {
+    if (shouldRepeat.value) {
       partsPlanner.planNextLoop();
     }
   };
