@@ -21,6 +21,7 @@ export const useTimer = (parameters: {
   let intervalId: ReturnType<typeof setInterval> | undefined;
   const time = ref(0);
   const running = ref(false);
+  const loopCount = ref(0);
 
   const _clearInterval = () => {
     clearInterval(intervalId);
@@ -35,6 +36,7 @@ export const useTimer = (parameters: {
     if (isRepeat.value && time.value >= loopEnd.value) {
       const offset = time.value - loopEnd.value;
       time.value = loopStart.value + offset;
+      loopCount.value++;
       dispatch('loop');
     }
 
@@ -73,6 +75,10 @@ export const useTimer = (parameters: {
     lastTime = performance.now() / 1000;
     time.value = value;
 
+    if (value < loopStart.value) {
+      loopCount.value = 0;
+    }
+
     if (running.value) {
       _setInterval();
     }
@@ -84,6 +90,7 @@ export const useTimer = (parameters: {
     resume,
     update,
     running,
+    loopCount,
     on,
   });
 };
