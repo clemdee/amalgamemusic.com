@@ -3,7 +3,7 @@ import { reactive, readonly } from 'vue';
 export type MusicId = string & { _: '__MusicId__' };
 export type MusicTags = readonly string[];
 
-interface CreateMusicParameter {
+export interface CreateMusicParameter {
   id: string
   title: string
   src: string
