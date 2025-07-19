@@ -1,5 +1,6 @@
 import type { MaybeRef } from 'vue';
 import { reactive, ref, toRef } from 'vue';
+import { useOn } from './event';
 
 export const useTimer = (parameters: {
   timeout?: MaybeRef<number>
@@ -7,14 +8,14 @@ export const useTimer = (parameters: {
   loop?: MaybeRef<boolean>
   loopStart?: MaybeRef<number>
   loopEnd?: MaybeRef<number>
-  onLoop?: () => void
-  onEnd?: () => void
 } = {}) => {
   const timeout = toRef(parameters.timeout ?? 200);
   const duration = toRef(parameters.duration ?? Number.POSITIVE_INFINITY);
   const loop = toRef(parameters.loop ?? false);
   const loopStart = toRef(parameters.loopStart ?? 0);
   const loopEnd = toRef(parameters.loopEnd ?? duration);
+
+  const { on, dispatch } = useOn(['play', 'pause', 'loop', 'end']);
 
   let lastTime = 0;
   let intervalId: ReturnType<typeof setInterval> | undefined;
@@ -34,7 +35,7 @@ export const useTimer = (parameters: {
     if (loop.value && time.value >= loopEnd.value) {
       const offset = time.value - loopEnd.value;
       time.value = loopStart.value + offset;
-      parameters.onLoop?.();
+      dispatch('loop');
     }
 
     // End of timer
@@ -42,7 +43,7 @@ export const useTimer = (parameters: {
       _clearInterval();
       time.value = duration.value;
       running.value = false;
-      parameters.onEnd?.();
+      dispatch('end');
     }
   };
 
@@ -55,6 +56,7 @@ export const useTimer = (parameters: {
     lastTime = performance.now() / 1000;
     _updateTimer();
     running.value = true;
+    dispatch('play');
 
     _setInterval();
   };
@@ -64,6 +66,7 @@ export const useTimer = (parameters: {
     _clearInterval();
     _updateTimer();
     running.value = false;
+    dispatch('pause');
   };
 
   const update = (value: number) => {
@@ -81,5 +84,6 @@ export const useTimer = (parameters: {
     resume,
     update,
     running,
+    on,
   });
 };

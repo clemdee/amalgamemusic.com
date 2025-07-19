@@ -106,14 +106,6 @@ export const usePartsPlayer = (parameters: {
     loop: isRepeat,
     loopStart,
     loopEnd,
-    onLoop: () => {
-      // eslint-disable-next-line ts/no-use-before-define
-      planExtraLoop();
-    },
-    onEnd: () => {
-      // eslint-disable-next-line ts/no-use-before-define
-      pause();
-    },
   });
 
   const currentTime = computed({
@@ -168,6 +160,8 @@ export const usePartsPlayer = (parameters: {
     plannedParts.push(...plannedPartsNextLoop);
   };
 
+  timer.on('loop', planExtraLoop);
+
   const play = async () => {
     stopPlannedParts();
     await loadMusicParts();
@@ -180,6 +174,8 @@ export const usePartsPlayer = (parameters: {
     stopPlannedParts();
     timer.pause();
   };
+
+  timer.on('end', pause);
 
   return reactive({
     currentTime,
