@@ -1,7 +1,10 @@
 import type { Music } from './music';
-import { useStorage } from '@vueuse/core';
+import { useStorage, watchImmediate } from '@vueuse/core';
 import { computed, reactive, ref } from 'vue';
-import { usePlayerCurrent } from './playerCurrent';
+import { useOn } from './event';
+import { usePartsPlayer } from './partsPlayer';
+
+const { on, dispatch } = useOn(['end']);
 
 const useFormattedSeconds = (seconds: number) => computed(() => {
   seconds = Math.floor(seconds);
@@ -12,20 +15,72 @@ const useFormattedSeconds = (seconds: number) => computed(() => {
 
 const current = ref<Music | undefined>(undefined);
 
-const {
-  isLoading,
-  isPlaying,
-  pause,
-  play,
-  togglePlay,
-  duration,
-  currentTime,
-  setTime,
-  isRepeat,
-  toggleRepeat,
-  on,
-} = usePlayerCurrent({
+const isRepeat = ref(true);
+
+const toggleRepeat = (state?: boolean) => {
+  state ??= !isRepeat.value;
+  isRepeat.value = state;
+};
+
+const duration = computed(() => current.value?.time?.duration ?? Number.NaN);
+
+const partsPlayer = usePartsPlayer({
   current,
+  isRepeat,
+});
+
+const isLoading = ref(false);
+const isPlaying = computed(() => partsPlayer.isPlaying);
+
+const pause = () => {
+  partsPlayer.pause();
+};
+
+const play = async () => {
+  if (!current.value) return;
+  if (isLoading.value) return;
+  isLoading.value = true;
+  await partsPlayer.play();
+  isLoading.value = false;
+};
+
+const togglePlay = (state?: boolean) => {
+  state ??= !isPlaying.value;
+  if (!state) {
+    pause();
+  }
+  else {
+    play();
+  }
+};
+
+const currentTime = computed(() => partsPlayer.currentTime);
+
+const setTime = (seconds: number) => {
+  if (!current.value) return;
+  if (isLoading.value) return;
+  partsPlayer.currentTime = seconds;
+  if (isPlaying.value) {
+    play();
+  }
+};
+
+watchImmediate(isRepeat, () => {
+  if (!isPlaying.value) return;
+  play();
+});
+
+watchImmediate(current, () => {
+  partsPlayer.currentTime = 0;
+  pause();
+});
+
+watchImmediate(() => partsPlayer.currentTime, (currentTime) => {
+  if (currentTime >= duration.value) {
+    pause();
+    partsPlayer.currentTime = 0;
+    dispatch('end');
+  }
 });
 
 const volume = useStorage('volume', 1);
