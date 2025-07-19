@@ -15,10 +15,22 @@ export const useAudioContext = () => {
   return audioContext;
 };
 
+const outputNode = new GainNode(audioContext);
+outputNode.connect(audioContext.destination);
+
+let destinationInput: AudioNode = outputNode;
+
+export const connectOutputNode = (to: AudioNode) => {
+  destinationInput.disconnect();
+  destinationInput.connect(to);
+  destinationInput = to;
+  to.connect(audioContext.destination);
+};
+
 export const createAudioBufferNode = (buffer: AudioBuffer) => {
   const audioNode = audioContext.createBufferSource();
   audioNode.buffer = buffer;
-  audioNode.connect(audioContext.destination);
+  audioNode.connect(outputNode);
   return audioNode;
 };
 

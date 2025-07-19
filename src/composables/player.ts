@@ -2,6 +2,7 @@ import type { Music } from './music';
 import { useStorage, watchImmediate } from '@vueuse/core';
 import { computed, reactive, ref } from 'vue';
 import { useOn } from './event';
+import { connectOutputNode, useAudioContext } from './musicParts';
 import { usePartsPlayer } from './partsPlayer';
 
 const { on, dispatch } = useOn(['end']);
@@ -86,15 +87,13 @@ watchImmediate(() => partsPlayer.currentTime, (currentTime) => {
 const volume = useStorage('volume', 1);
 const isMuted = useStorage('isMuted', false);
 
-// watchImmediate(volume, (newVolume) => {
-//   if (!element.value) return;
-//   element.value.volume = newVolume;
-// });
+const audioContext = useAudioContext();
+const volumeNode = new GainNode(audioContext);
+connectOutputNode(volumeNode);
 
-// watchImmediate(isMuted, (isMuted) => {
-//   if (!element.value) return;
-//   element.value.muted = isMuted;
-// });
+watchImmediate([volume, isMuted], () => {
+  volumeNode.gain.value = isMuted.value ? 0 : volume.value;
+});
 
 const durationFormatted = computed(() => {
   if (Number.isNaN(duration.value)) {
