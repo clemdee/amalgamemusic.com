@@ -1,29 +1,23 @@
-import { ViteSSG } from 'vite-ssg';
+import { createApp } from 'vue';
 import App from './App.vue';
-import routes from './router/routes';
+import { router } from './router/routes';
 import './assets/styles/reset.scss';
 import './assets/styles/base.scss';
+
 import 'iconify-icon';
 
-export const createApp = ViteSSG(
-  App,
-  {
-    routes,
-  },
+const app = createApp(App);
+app.use(router);
+app.mount('#app');
 
-  ({ isClient }) => {
-    if (isClient) {
-      tsParticles.load('tsparticles', {
-        preset: 'stars',
-        background: {
-          color: '#00001b',
-        },
-        particles: {
-          size: {
-            value: { min: 0.5, max: 1.5 },
-          },
-        },
-      });
-    }
+tsParticles.load('tsparticles', {
+  preset: 'stars',
+  background: {
+    color: '#00001b',
   },
-);
+  particles: {
+    size: {
+      value: { min: 0.5, max: 1.5 },
+    },
+  },
+});

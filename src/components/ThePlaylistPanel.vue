@@ -10,30 +10,28 @@
     <h2>Play queue</h2>
 
     <template v-if="playlist.items.length > 0">
-      <ClientOnly>
-        <SlickList
-          class="list"
-          :list="playlist.items"
-          axis="y"
-          lock-axis="y"
-          append-to="#app"
-          helper-class="moving-item"
-          use-drag-handle
-          @sort-start="onSortStart"
-          @sort-end="onSortEnd"
+      <SlickList
+        class="list"
+        :list="playlist.items"
+        axis="y"
+        lock-axis="y"
+        append-to="#app"
+        helper-class="moving-item"
+        use-drag-handle
+        @sort-start="onSortStart"
+        @sort-end="onSortEnd"
+      >
+        <SlickItem
+          v-for="(item, index) in playlist.items"
+          :key="item.id"
+          :index
         >
-          <SlickItem
-            v-for="(item, index) in playlist.items"
-            :key="item.id"
+          <PlaylistMusicItem
+            :music="item.music"
             :index
-          >
-            <PlaylistMusicItem
-              :music="item.music"
-              :index
-            />
-          </SlickItem>
-        </SlickList>
-      </ClientOnly>
+          />
+        </SlickItem>
+      </SlickList>
     </template>
 
     <div
