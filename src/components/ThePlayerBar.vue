@@ -107,7 +107,7 @@
               max="1"
               step="0.01"
               orient="vertical"
-              :title="`${player.volume}`"
+              :title="`${Math.round(volume * 100)}%`"
             />
           </div>
         </div>
