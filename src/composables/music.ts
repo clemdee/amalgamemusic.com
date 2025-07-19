@@ -12,12 +12,16 @@ interface CreateMusicParameter {
     loopStart?: number
     loopEnd?: number
   }
-  parts: {
+  parts?: {
     src: string
     offset?: number
     duration: number
   }[]
   tags?: string[]
+  loop?: {
+    start?: number
+    end?: number
+  }
 };
 
 export interface Music {
@@ -38,18 +42,26 @@ export interface Music {
     duration: number
   }[]
   tags: MusicTags
-  clone: () => Music
+  loop?: {
+    start?: number
+    end?: number
+  }
 };
 
 export const createMusicId = (id: string) => {
   return id as MusicId;
 };
 
+const createDefaultParts = (data: CreateMusicParameter): Music['parts'] => [{
+  src: data.src,
+  duration: data.time.duration,
+  offset: 0,
+}];
+
 export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
   const extension = data.src.match('[^.]+$')?.[0] ?? '';
   const tags = Object.freeze(data.tags?.slice() ?? []);
-  const clone = () => createMusic(data);
 
   return readonly(reactive({
     id,
@@ -63,12 +75,11 @@ export const createMusic = (data: CreateMusicParameter): Music => {
       loopStart: data.time.loopStart ?? 0,
       loopEnd: data.time.loopEnd ?? data.time.duration,
     },
-    parts: data.parts.map(part => ({
+    parts: data.parts?.map(part => ({
       src: part.src,
       offset: part.offset ?? 0,
       duration: part.duration,
-    })),
+    })) ?? createDefaultParts(data),
     tags,
-    clone,
   }));
 };

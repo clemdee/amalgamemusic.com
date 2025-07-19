@@ -1,4 +1,5 @@
-import { type MaybeRef, reactive, ref, toRef } from 'vue';
+import type { MaybeRef } from 'vue';
+import { reactive, ref, toRef } from 'vue';
 
 export const useTimer = (parameters: {
   timeout?: MaybeRef<number>

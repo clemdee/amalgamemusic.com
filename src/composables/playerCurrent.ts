@@ -1,26 +1,29 @@
+import type { MaybeRef } from 'vue';
 import type { Music } from './music';
 import { watchImmediate } from '@vueuse/core';
-import { computed, type MaybeRef, readonly, ref, toRef } from 'vue';
+import { computed, readonly, ref, toRef } from 'vue';
+import { useOn } from './event';
 import { usePartsPlayer } from './partsPlayer';
 
 export const usePlayerCurrent = (parameters: {
   current: MaybeRef<Music | undefined>
-  onEnd: () => void
 }) => {
   const current = toRef(parameters.current);
 
-  const hasRepeat = ref(true);
+  const { on, dispatch } = useOn(['end']);
+
+  const isRepeat = ref(true);
 
   const toggleRepeat = (state?: boolean) => {
-    state ??= !hasRepeat.value;
-    hasRepeat.value = state;
+    state ??= !isRepeat.value;
+    isRepeat.value = state;
   };
 
   const duration = computed(() => current.value?.time?.duration ?? Number.NaN);
 
   const partsPlayer = usePartsPlayer({
     current,
-    hasRepeat,
+    isRepeat,
   });
 
   const isLoading = ref(false);
@@ -57,7 +60,7 @@ export const usePlayerCurrent = (parameters: {
     }
   };
 
-  watchImmediate(hasRepeat, () => {
+  watchImmediate(isRepeat, () => {
     if (!isPlaying.value) return;
     play();
   });
@@ -71,7 +74,7 @@ export const usePlayerCurrent = (parameters: {
     if (currentTime >= duration.value) {
       pause();
       partsPlayer.currentTime = 0;
-      parameters.onEnd();
+      dispatch('end');
     }
   });
 
@@ -79,12 +82,13 @@ export const usePlayerCurrent = (parameters: {
     isLoading: readonly(isLoading),
     isPlaying: readonly(isPlaying),
     currentTime: readonly(toRef(() => partsPlayer.currentTime)),
-    currentDuration: readonly(duration),
+    duration: readonly(duration),
     setTime,
     play,
     pause,
     togglePlay,
-    hasRepeat,
+    isRepeat,
     toggleRepeat,
+    on,
   };
 };

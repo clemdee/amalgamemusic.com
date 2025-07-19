@@ -1,5 +1,5 @@
 import { createMusic } from '~/composables/music';
-import discographyJSON from './discography.json';
+import discographyJSON from '../../data/discography.json';
 
 const discography = discographyJSON.map(musicData => createMusic(musicData));
 

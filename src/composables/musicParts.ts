@@ -1,5 +1,6 @@
+import type { MaybeRef } from 'vue';
 import type { Music } from './music';
-import { type MaybeRef, toValue } from 'vue';
+import { toValue } from 'vue';
 
 export interface MusicPart {
   src: string

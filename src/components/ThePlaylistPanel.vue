@@ -7,11 +7,13 @@
     }"
     :inert="!opened"
   >
-    <template v-if="player.playlist.length > 0">
+    <h2>Play queue</h2>
+
+    <template v-if="playlist.items.length > 0">
       <ClientOnly>
         <SlickList
           class="list"
-          :list="player.playlist"
+          :list="playlist.items"
           axis="y"
           lock-axis="y"
           append-to="#app"
@@ -21,12 +23,12 @@
           @sort-end="onSortEnd"
         >
           <SlickItem
-            v-for="(music, index) in player.playlist"
-            :key="player.getUID(music)"
+            v-for="(item, index) in playlist.items"
+            :key="item.id"
             :index
           >
             <PlaylistMusicItem
-              :music
+              :music="item.music"
               :index
             />
           </SlickItem>
@@ -45,10 +47,11 @@
 <script lang="ts" setup>
 import { reactive, readonly, ref } from 'vue';
 import { SlickItem, SlickList } from 'vue-slicksort';
-import { usePlayer } from '~/composables/player';
+import { usePlaylist } from '~/composables/playlist';
+import { wait } from '~/composables/utils';
 import PlaylistMusicItem from './PlaylistMusicItem.vue';
 
-const player = usePlayer();
+const playlist = usePlaylist();
 
 const isMoving = ref(false);
 
@@ -56,21 +59,29 @@ const onSortStart = () => {
   isMoving.value = true;
 };
 
-const onSortEnd = ({ event, oldIndex, newIndex }: {
+const onSortEnd = ({ oldIndex, newIndex }: {
   event: Event
   oldIndex: number
   newIndex: number
 }) => {
   isMoving.value = false;
-  player.move(oldIndex, newIndex);
+  playlist.move(oldIndex, newIndex);
 };
 </script>
 
 <script lang="ts">
 const opened = ref(false);
 
-const open = () => {
+const open = async () => {
   opened.value = true;
+  const current = document.querySelector('.playlist-music-item.current');
+  if (!current) return;
+  // Make sure opening animation is done to prevent scrolling inline
+  await wait(300);
+  current.scrollIntoView({
+    block: 'nearest',
+    behavior: 'smooth',
+  });
 };
 
 const close = () => {
@@ -78,7 +89,12 @@ const close = () => {
 };
 
 const toggle = () => {
-  opened.value = !opened.value;
+  if (opened.value) {
+    close();
+  }
+  else {
+    open();
+  }
 };
 
 export const usePlaylistPanel = () => {
@@ -98,10 +114,16 @@ export const usePlaylistPanel = () => {
   bottom: 0rem;
   right: 0rem;
   z-index: var(--z-playlist-panel);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 2rem;
+
   width: 30rem;
   max-width: 100dvw;
   max-height: 100%;
-  overflow: auto;
 
   padding: 2rem;
   border-left: 0.1rem solid #111d;
@@ -130,6 +152,7 @@ export const usePlaylistPanel = () => {
     justify-content: flex-start;
     align-items: stretch;
     gap: 1rem;
+    overflow: auto;
   }
 }
 </style>

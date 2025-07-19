@@ -1,7 +1,9 @@
-import type { Music } from './music';
+import type { MaybeRef } from 'vue';
 
-import { computed, type MaybeRef, reactive, ref, toRef } from 'vue';
-import { createAudioBufferNode, type MusicPart, preloadMusicParts, useAudioContext } from './musicParts';
+import type { Music } from './music';
+import type { MusicPart } from './musicParts';
+import { computed, reactive, ref, toRef } from 'vue';
+import { createAudioBufferNode, preloadMusicParts, useAudioContext } from './musicParts';
 import { useTimer } from './timer';
 
 const audioContext = useAudioContext();
@@ -16,13 +18,13 @@ interface PlannedPart {
 const usePlanner = (parameters: {
   musicParts: MaybeRef<MusicPart[]>
   currentTime: MaybeRef<number>
-  hasRepeat: MaybeRef<boolean>
+  isRepeat: MaybeRef<boolean>
   loopStart: MaybeRef<number>
   loopEnd: MaybeRef<number>
 }) => {
   const musicParts = toRef(parameters.musicParts ?? []);
   const currentTime = toRef(parameters.currentTime ?? 0);
-  const hasRepeat = toRef(parameters.hasRepeat ?? false);
+  const isRepeat = toRef(parameters.isRepeat ?? false);
   const loopStart = toRef(parameters.loopStart ?? 0);
   const loopEnd = toRef(parameters.loopEnd ?? 0);
 
@@ -31,7 +33,7 @@ const usePlanner = (parameters: {
     plannedParts.push(...musicParts.value
       .filter((part) => {
         if (part.offset + part.duration < currentTime.value) return false;
-        if (hasRepeat.value && part.offset >= loopEnd.value) return false;
+        if (isRepeat.value && part.offset >= loopEnd.value) return false;
         return true;
       })
       .map((part) => {
@@ -89,10 +91,10 @@ const startPlannedPart = (plannedPart: PlannedPart) => {
 
 export const usePartsPlayer = (parameters: {
   current?: MaybeRef<Music | undefined>
-  hasRepeat?: MaybeRef<boolean>
+  isRepeat?: MaybeRef<boolean>
 } = {}) => {
   const current = toRef(parameters.current);
-  const hasRepeat = toRef(parameters.hasRepeat ?? false);
+  const isRepeat = toRef(parameters.isRepeat ?? false);
 
   const duration = computed(() => current.value?.time?.duration ?? Number.NaN);
   const loopStart = computed(() => current.value?.time.loopStart ?? 0);
@@ -101,7 +103,7 @@ export const usePartsPlayer = (parameters: {
   const timer = useTimer({
     timeout: 200,
     duration,
-    loop: hasRepeat,
+    loop: isRepeat,
     loopStart,
     loopEnd,
     onLoop: () => {
@@ -125,7 +127,7 @@ export const usePartsPlayer = (parameters: {
   const getPlannedParts = usePlanner({
     musicParts,
     currentTime,
-    hasRepeat,
+    isRepeat,
     loopEnd,
     loopStart,
   });
@@ -155,7 +157,7 @@ export const usePartsPlayer = (parameters: {
   const planParts = () => {
     clearPlannedParts();
     plannedParts.push(...getPlannedParts.current());
-    if (hasRepeat.value) {
+    if (isRepeat.value) {
       plannedParts.push(...getPlannedParts.nextLoop());
     }
   };

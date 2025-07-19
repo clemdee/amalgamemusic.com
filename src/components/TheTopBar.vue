@@ -38,9 +38,10 @@
 </template>
 
 <script lang="ts" setup>
+import type { Link } from './TopBarLinks.vue';
 import { useElementSize } from '@vueuse/core';
 import { ref, useTemplateRef } from 'vue';
-import TopBarLinks, { type Link } from './TopBarLinks.vue';
+import TopBarLinks from './TopBarLinks.vue';
 import TopBarTitle from './TopBarTitle.vue';
 
 const links = ref<Link[]>([

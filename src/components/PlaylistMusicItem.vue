@@ -42,7 +42,7 @@
 
     <div class="right-part">
       <button
-        @click="player.unqueueAtIndex(props.index)"
+        @click="playlist.unqueueAtIndex(props.index)"
       >
         <iconify-icon
           icon="mdi:close"
@@ -54,10 +54,11 @@
 </template>
 
 <script lang="ts" setup>
+import type { Music } from '~/composables/music';
 import { computed } from 'vue';
 import { DragHandle } from 'vue-slicksort';
-import type { Music } from '~/composables/music';
 import { usePlayer } from '~/composables/player';
+import { usePlaylist } from '~/composables/playlist';
 import MusicCover from './MusicCover.vue';
 import MusicItemPlayButton from './PlayButton.vue';
 
@@ -67,17 +68,18 @@ const props = defineProps<{
 }>();
 
 const player = usePlayer();
+const playlist = usePlaylist();
 
 const isCurrent = computed(() => {
-  const isCurrentId = player.current?.id === props.music.id;
-  const isCurrentIndex = player.currentIndex === props.index;
+  const isCurrentId = playlist.currentItem?.music.id === props.music.id;
+  const isCurrentIndex = playlist.currentIndex === props.index;
   return isCurrentId && isCurrentIndex;
 });
 const isPlaying = computed(() => isCurrent.value && player.isPlaying);
 
 const play = () => {
   if (!isCurrent.value) {
-    player.playAtIndex(props.index);
+    playlist.playAtIndex(props.index);
   }
   else {
     player.togglePlay();

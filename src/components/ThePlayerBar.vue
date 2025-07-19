@@ -25,8 +25,8 @@
 
     <div class="middle">
       <button
-        :disabled="!player.previous"
-        @click="player.playPrevious()"
+        :disabled="!playlist.previous"
+        @click="playlist.playPrevious()"
       >
         <iconify-icon
           icon="mdi:skip-previous"
@@ -43,7 +43,7 @@
       />
 
       <div class="current-time">
-        {{ player.formattedCurrentTime }}
+        {{ player.currentTimeFormatted }}
       </div>
 
       <div
@@ -56,7 +56,7 @@
         </div>
 
         <div
-          v-show="player.hasRepeat"
+          v-show="player.isRepeat"
           class="loop-markers"
         >
           <div class="loop-marker start" />
@@ -65,12 +65,12 @@
       </div>
 
       <div class="current-duration">
-        {{ player.formattedCurrentDuration }}
+        {{ player.durationFormatted }}
       </div>
 
       <button
-        :disabled="!player.next"
-        @click="player.playNext()"
+        :disabled="!playlist.next"
+        @click="playlist.playNext()"
       >
         <iconify-icon
           icon="mdi:skip-next"
@@ -80,9 +80,42 @@
     </div>
 
     <div class="right">
+      <div class="volume">
+        <div class="wrapper">
+          <button
+            :class="{
+              off: player.isMuted,
+            }"
+            @click="player.isMuted = !player.isMuted"
+          >
+            <iconify-icon
+              :icon="player.isMuted
+                ? 'mdi:volume-off'
+                : 'mdi:volume-high'
+              "
+              :title="player.isMuted
+                ? 'unmute'
+                : 'mute'
+              "
+            />
+          </button>
+          <div class="volume-slider">
+            <input
+              v-model="volume"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              orient="vertical"
+              :title="`${player.volume}`"
+            />
+          </div>
+        </div>
+      </div>
+
       <button
         :class="{
-          off: !player.hasRepeat,
+          off: !player.isRepeat,
         }"
         @click="player.toggleRepeat()"
       >
@@ -134,6 +167,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { usePlayer } from '~/composables/player';
+import { usePlaylist } from '~/composables/playlist';
 import AutoScrollingText from './AutoScrollingText.vue';
 import DownloadPopover from './DownloadPopover.vue';
 import MusicCover from './MusicCover.vue';
@@ -142,13 +176,12 @@ import MusicItemPlayButton from './PlayButton.vue';
 import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 
 const player = usePlayer();
+const playlist = usePlaylist();
 const playlistPanel = usePlaylistPanel();
 
 const title = computed(() => player.current?.title ?? '');
 const tags = computed(() => player.current?.tags ?? []);
 const currentTimePercentage = computed(() => player.currentTimePercentage);
-const currentLoopStartPercentage = computed(() => player.currentLoopStartPercentage);
-const currentLoopEndPercentage = computed(() => player.currentLoopEndPercentage);
 
 const setTime = (event: MouseEvent) => {
   const target = event.currentTarget as HTMLElement;
@@ -158,6 +191,16 @@ const setTime = (event: MouseEvent) => {
   const percentage = (x - start) / (end - start);
   player.setTimePercentage(percentage);
 };
+
+const VOLUME_EXPONENT = 2.5;
+const volume = computed({
+  get () {
+    return player.volume ** (1 / VOLUME_EXPONENT);
+  },
+  set (sliderVolume: number) {
+    player.volume = sliderVolume ** VOLUME_EXPONENT; ;
+  },
+});
 
 const downloadPopoverOpened = ref(false);
 </script>
@@ -264,8 +307,8 @@ const downloadPopoverOpened = ref(false);
     }
 
     .loop-markers {
-      --loop-start-percentage: v-bind('currentLoopStartPercentage');
-      --loop-end-percentage: v-bind('currentLoopEndPercentage');
+      --loop-start-percentage: v-bind('player.loopStartPercentage');
+      --loop-end-percentage: v-bind('player.loopEndPercentage');
       width: 100%;
       position: absolute;
       inset-block-start: 0rem;
@@ -286,6 +329,79 @@ const downloadPopoverOpened = ref(false);
         &.end {
           inset-inline-start: calc(100% * var(--loop-end-percentage));
         }
+      }
+    }
+  }
+
+  .volume {
+    --percentage: calc(100% * v-bind('volume'));
+    position: relative;
+    width: 1.5rem;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    margin-left: 0.2rem;
+    margin-bottom: -0.2rem;
+
+    .wrapper {
+      position: absolute;
+      bottom: 0rem;
+
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 0.3rem;
+
+      padding: 0.4rem;
+      margin: -0.4rem;
+      border: 0.1rem solid transparent;
+      border-radius: 1rem;
+    }
+
+    .volume-slider {
+      input[type=range] {
+        appearance: none;
+        -webkit-appearance: none;
+        height: 6rem;
+        margin-top: 0.4rem;
+        accent-color: var(--accent-color);
+        background-color: transparent;
+        cursor: pointer;
+
+        &::-webkit-slider-runnable-track,
+        &::-moz-range-track {
+          -webkit-appearance: none;
+          width: 0.4rem;
+          background-color: var(--accent-color);
+          background: linear-gradient(to top, var(--accent-color) 0% var(--percentage), #446 var(--percentage) 100%);
+          border-radius: 1rem;
+        }
+
+        &::-webkit-slider-thumb,
+        &::-moz-range-thumb {
+          -webkit-appearance: none;
+          width: 0.8rem;
+          aspect-ratio: 1;
+        }
+      }
+    }
+
+    &:hover {
+      .wrapper {
+        border-color: #fff2;
+        // background-color: #8882;
+        // box-shadow: 0 0.3rem 2rem #0002;
+      backdrop-filter: blur(0.05rem);
+      background-color: #2b2b40aa;
+      }
+    }
+
+    &:not(:hover) {
+      color: gray;
+
+      .volume-slider {
+        display: none;
       }
     }
   }

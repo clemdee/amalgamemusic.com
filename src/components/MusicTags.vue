@@ -9,14 +9,14 @@
       :class="[`size-${size}`]"
       :title="tag"
     >
-      {{ tag }}
+      <span class="hashtag">#</span>{{ tag }}
     </span>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import type { MusicTags } from '~/composables/music';
+import { computed } from 'vue';
 
 const props = defineProps<{
   tags: MusicTags
@@ -39,8 +39,8 @@ const size = computed(() => props.size ?? 'normal');
 
   .tag {
     display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: 10rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 1rem;
     font-size: 0.9rem;
     background-color: #111;
 
@@ -49,9 +49,8 @@ const size = computed(() => props.size ?? 'normal');
       font-size: 0.8rem;
     }
 
-    &::before {
-      content: '#';
-      display: inline-block;
+    .hashtag {
+      color: #aaa;
     }
   }
 }
