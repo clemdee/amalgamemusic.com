@@ -5,13 +5,13 @@ import { useOn } from './event';
 export const useTimer = (parameters: {
   timeout?: MaybeRef<number>
   duration?: MaybeRef<number>
-  loop?: MaybeRef<boolean>
+  isRepeat?: MaybeRef<boolean>
   loopStart?: MaybeRef<number>
   loopEnd?: MaybeRef<number>
 } = {}) => {
   const timeout = toRef(parameters.timeout ?? 200);
   const duration = toRef(parameters.duration ?? Number.POSITIVE_INFINITY);
-  const loop = toRef(parameters.loop ?? false);
+  const isRepeat = toRef(parameters.isRepeat ?? false);
   const loopStart = toRef(parameters.loopStart ?? 0);
   const loopEnd = toRef(parameters.loopEnd ?? duration);
 
@@ -32,14 +32,14 @@ export const useTimer = (parameters: {
     time.value += now - lastTime;
     lastTime = now;
 
-    if (loop.value && time.value >= loopEnd.value) {
+    if (isRepeat.value && time.value >= loopEnd.value) {
       const offset = time.value - loopEnd.value;
       time.value = loopStart.value + offset;
       dispatch('loop');
     }
 
     // End of timer
-    if (!loop.value && time.value >= duration.value) {
+    if (!isRepeat.value && time.value >= duration.value) {
       _clearInterval();
       time.value = duration.value;
       running.value = false;

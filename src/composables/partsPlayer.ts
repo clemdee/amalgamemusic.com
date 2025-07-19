@@ -25,7 +25,7 @@ export const usePartsPlayer = (parameters: {
   const timer = useTimer({
     timeout: 200,
     duration,
-    loop: shouldRepeat,
+    isRepeat: shouldRepeat,
     loopStart,
     loopEnd,
   });
