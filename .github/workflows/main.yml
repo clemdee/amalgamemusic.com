@@ -13,9 +13,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Checkout LFS objects
-        run: git lfs pull
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
@@ -23,13 +20,3 @@ jobs:
         run: |
           pnpm install
           pnpm run build
-
-      - name: Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_URL }}
-          username: ${{ secrets.FTP_NAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: ./www/
-          dry-run: true
