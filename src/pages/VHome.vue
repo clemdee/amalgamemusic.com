@@ -1,5 +1,7 @@
 <template>
   <section>
+    <h2>Browse all music</h2>
+
     <div class="musics">
       <MusicItem
         v-for="music in discography"
