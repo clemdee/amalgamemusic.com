@@ -18,10 +18,6 @@ export interface CreateMusicParameter {
     duration: number
   }[]
   tags?: string[]
-  loop?: {
-    start?: number
-    end?: number
-  }
 };
 
 export interface Music {
@@ -42,10 +38,6 @@ export interface Music {
     duration: number
   }[]
   tags: MusicTags
-  loop?: {
-    start?: number
-    end?: number
-  }
 };
 
 export const createMusicId = (id: string) => {
