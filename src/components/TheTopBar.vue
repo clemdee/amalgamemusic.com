@@ -46,11 +46,11 @@ import TopBarTitle from './TopBarTitle.vue';
 
 const links = ref<Link[]>([
   {
-    title: 'listen',
+    title: 'Listen',
     url: '/',
   },
   {
-    title: 'about',
+    title: 'About',
     url: 'about',
   },
 ]);
