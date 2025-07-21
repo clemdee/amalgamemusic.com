@@ -95,6 +95,10 @@ watchImmediate([volume, isMuted], () => {
   volumeNode.gain.value = isMuted.value ? 0 : volume.value;
 });
 
+const toggleMute = () => {
+  isMuted.value = !isMuted.value;
+};
+
 const durationFormatted = computed(() => {
   if (Number.isNaN(duration.value)) {
     return '-';
@@ -150,6 +154,7 @@ export const usePlayer = () => {
     toggleRepeat,
     volume,
     isMuted,
+    toggleMute,
     duration,
     durationFormatted,
     currentTime,

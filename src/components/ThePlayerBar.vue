@@ -86,7 +86,7 @@
             :class="{
               off: player.isMuted,
             }"
-            @click="player.isMuted = !player.isMuted"
+            @click="player.toggleMute()"
           >
             <iconify-icon
               :icon="player.isMuted
