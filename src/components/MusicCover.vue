@@ -121,13 +121,13 @@ onMounted(() => {
 }
 
 @keyframes float {
-  from { transform: translateY(30%); }
-  to { transform: translateY(-30%); }
+  from { transform: translateY(10%); }
+  to { transform: translateY(-10%); }
 }
 @keyframes float-shadow {
-  from { filter: blur(calc(0.4 * var(--width) * 0.2px)); }
+  from { filter: blur(calc(0.9 * var(--width) * 0.2px)); }
   50% { filter: blur(calc( var(--width) * 0.2px)); }
-  to { filter: blur(calc(1.5 * var(--width) * 0.2px)); }
+  to { filter: blur(calc(1.1 * var(--width) * 0.2px)); }
 }
 
 .music-cover {
