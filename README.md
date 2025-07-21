@@ -1,36 +1,16 @@
-# amalgamemusic
+# Amalgame Music
 
-Source code of [amalgamemusic.fr](https://amalgamemusic.com)
+Source code of [amalgamemusic.com](https://amalgamemusic.com)
 
-## Installation
+## Installation & basic usage
 
 ```sh
 git clone https://github.com/clemdee/amalgamemusic.git
 cd amalgamemusic
 pnpm install
-
-# switch to dev branch
-git switch dev
-```
-
-### Start dev server
-
-```sh
+# start dev server
 pnpm dev
-
-# Start and expose host to LAN for mobile testing
-# pnpm dev --host
-```
-
-> [!IMPORTANT]
-> Changes on `main` branch will automatically be deployed to production, so this branch is protected.
-> Use the `dev` branch to work on a feature until it is ready to be deployed.
-
-## Build for Production
-
-```sh
+# build
 pnpm build
-
-# Test the build
-# pnpm preview
+pnpm preview
 ```
