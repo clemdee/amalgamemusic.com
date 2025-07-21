@@ -14,6 +14,12 @@
         :rotate="isCurrent"
         :float="isPlaying"
       />
+      <MusicItemPlayButton
+        class="play"
+        :loading="isLoading"
+        :playing="isPlaying"
+        @click="play"
+      />
     </div>
 
     <div class="bottom-part">
@@ -28,14 +34,7 @@
         <MusicTags :tags="props.music.tags" />
       </div>
 
-      <div class="controls-container">
-        <MusicItemPlayButton
-          class="play"
-          :loading="isLoading"
-          :playing="isPlaying"
-          @click="play"
-        />
-      </div>
+      <div class="controls-container" />
     </div>
   </div>
 </template>
@@ -81,11 +80,10 @@ const play = () => {
   flex-direction: column;
   justify-content: flex-start;
 
-  border: 0.1rem solid #fff2;
+  border: 0.1rem solid #ffffff09;
   border-radius: 1rem;
   backdrop-filter: blur(0.2rem);
-  background-color: #fff2;
-  box-shadow: 0 0.3rem 2rem #0002;
+  // box-shadow: 0 0.3rem 2rem #0002;
   transition: background-color 100ms ease;
 
   .top-part {
@@ -95,6 +93,19 @@ const play = () => {
 
     .cover {
       width: 5rem;
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    .play-button {
+      --_size: 6rem;
+      grid-row: 1;
+      grid-column: 1;
+      z-index: 1;
+      box-shadow: none;
+      color: white;
+      mix-blend-mode: soft-light;
+      background: none;
     }
   }
 
@@ -110,6 +121,7 @@ const play = () => {
       flex-direction: column;
       justify-content: space-between;
       gap: 1rem;
+      text-align: center;
 
       .title {
         display: -webkit-box;
@@ -132,19 +144,18 @@ const play = () => {
     }
   }
 
-  &:hover,
+  & .play-button:hover,
   &.current,
   &:has(.play:focus-visible) {
-    .controls-container {
-      width: auto;
-      overflow: visible;
-      opacity: 1;
+    .play-button {
+      mix-blend-mode: normal;
+      filter: drop-shadow(0rem 0rem 0.2rem #3338);
     }
   }
 
   &:hover,
   &:has(.play:focus-visible) {
-    background-color: #eef3;
+    background-color: #eeeeff18;
   }
 }
 </style>

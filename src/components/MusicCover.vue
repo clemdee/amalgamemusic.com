@@ -144,9 +144,9 @@ onMounted(() => {
   width: 100%;
 
   .music-cover-image {
-
     position: relative;
     width: 70%;
+    margin-top: 10%;
 
     .wrapper {
       perspective: calc(10px * var(--_flatness));

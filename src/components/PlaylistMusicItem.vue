@@ -91,15 +91,15 @@ const play = () => {
 .playlist-music-item {
   height: 5rem;
   width: 100%;
-  border: 0.1rem solid #fff2;
-  border-radius: 0.5rem;
-  backdrop-filter: blur(0.2rem);
-  background-color: #8882;
-  box-shadow: 0 0.3rem 2rem #0002;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  overflow: hidden;
+  border: 0.1rem solid #ffffff09;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.3rem 2rem #0002;
+  backdrop-filter: blur(0.2rem);
   transition: background-color 100ms ease;
 
   .left-part {
@@ -146,9 +146,13 @@ const play = () => {
     }
   }
 
+  &.current {
+    background-color: #88a2;
+  }
+
   &:hover,
   &:has(.play:focus-visible) {
-    background-color: #eef3;
+    background-color: #ccf3;
   }
 
   .middle-part {
