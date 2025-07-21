@@ -165,6 +165,7 @@
 </template>
 
 <script lang="ts" setup>
+import { onKeyStroke } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import { usePlayer } from '~/composables/player';
 import { usePlaylist } from '~/composables/playlist';
@@ -203,6 +204,38 @@ const volume = computed({
 });
 
 const downloadPopoverOpened = ref(false);
+
+onKeyStroke(' ', (e) => {
+  const hasFocusVisible = !!document.querySelector('#app:has(:focus-visible)');
+  if (hasFocusVisible) return;
+  e.preventDefault();
+  player.togglePlay();
+}, { dedupe: true });
+
+onKeyStroke('l', (e) => {
+  e.preventDefault();
+  player.toggleRepeat();
+}, { dedupe: true });
+
+onKeyStroke('m', (e) => {
+  e.preventDefault();
+  player.toggleMute();
+}, { dedupe: true });
+
+onKeyStroke('q', (e) => {
+  e.preventDefault();
+  playlistPanel.toggle();
+}, { dedupe: true });
+
+onKeyStroke('p', (e) => {
+  e.preventDefault();
+  playlist.playPrevious();
+}, { dedupe: true });
+
+onKeyStroke('n', (e) => {
+  e.preventDefault();
+  playlist.playNext();
+}, { dedupe: true });
 </script>
 
 <style lang="scss" scoped>
