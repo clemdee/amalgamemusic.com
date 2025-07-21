@@ -16,7 +16,7 @@ const useFormattedSeconds = (seconds: number) => computed(() => {
 
 const current = ref<Music | undefined>(undefined);
 
-const isRepeat = ref(true);
+const isRepeat = ref(false);
 
 const toggleRepeat = (state?: boolean) => {
   state ??= !isRepeat.value;
