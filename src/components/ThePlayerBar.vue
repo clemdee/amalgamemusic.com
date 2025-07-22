@@ -167,6 +167,7 @@
 <script lang="ts" setup>
 import { onKeyStroke } from '@vueuse/core';
 import { computed, ref } from 'vue';
+import { useMediaSession } from '~/composables/mediaSession';
 import { usePlayer } from '~/composables/player';
 import { usePlaylist } from '~/composables/playlist';
 import AutoScrollingText from './AutoScrollingText.vue';
@@ -236,6 +237,8 @@ onKeyStroke('n', (e) => {
   e.preventDefault();
   playlist.playNext();
 }, { dedupe: true });
+
+useMediaSession();
 </script>
 
 <style lang="scss" scoped>

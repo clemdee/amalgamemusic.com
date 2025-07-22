@@ -4,6 +4,7 @@ import { computed, reactive, ref } from 'vue';
 import { useOn } from './event';
 import { connectOutputNode, useAudioContext } from './musicParts';
 import { usePartsPlayer } from './partsPlayer';
+import { clamp } from './utils';
 
 const { on, dispatch } = useOn(['end']);
 
@@ -60,7 +61,7 @@ const currentTime = computed(() => partsPlayer.currentTime);
 const setTime = (seconds: number) => {
   if (!current.value) return;
   if (isLoading.value) return;
-  partsPlayer.currentTime = seconds;
+  partsPlayer.currentTime = clamp(seconds, 0, duration.value);
   if (isPlaying.value) {
     play();
   }
