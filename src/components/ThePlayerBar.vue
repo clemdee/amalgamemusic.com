@@ -397,9 +397,10 @@ useMediaSession();
 
     .volume-slider {
       input[type=range] {
-        appearance: none;
-        -webkit-appearance: none;
+        appearance: slider-vertical;
+        -webkit-appearance: slider-vertical;
         height: 6rem;
+        width: 1rem;
         margin-top: 0.4rem;
         accent-color: var(--accent-color);
         background-color: transparent;
@@ -407,6 +408,7 @@ useMediaSession();
 
         &::-webkit-slider-runnable-track,
         &::-moz-range-track {
+          appearance: none;
           -webkit-appearance: none;
           width: 0.4rem;
           background-color: var(--accent-color);
@@ -416,6 +418,7 @@ useMediaSession();
 
         &::-webkit-slider-thumb,
         &::-moz-range-thumb {
+          appearance: none;
           -webkit-appearance: none;
           width: 0.8rem;
           aspect-ratio: 1;
@@ -426,10 +429,8 @@ useMediaSession();
     &:hover {
       .wrapper {
         border-color: #fff2;
-        // background-color: #8882;
-        // box-shadow: 0 0.3rem 2rem #0002;
-      backdrop-filter: blur(0.05rem);
-      background-color: #2b2b40aa;
+        backdrop-filter: blur(0.05rem);
+        background-color: #2b2b40aa;
       }
     }
 
