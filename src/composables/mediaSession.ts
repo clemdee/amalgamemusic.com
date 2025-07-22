@@ -1,3 +1,4 @@
+import { watchImmediate } from '@vueuse/core';
 import { watch } from 'vue';
 import { usePlayer } from './player';
 import { usePlaylist } from './playlist';
@@ -5,28 +6,43 @@ import { usePlaylist } from './playlist';
 const player = usePlayer();
 const playlist = usePlaylist();
 
-export const useMediaSession = () => {
-  if (!('mediaSession' in navigator)) return;
+// Use a dummy Audio so that mediaSession can be used
+const dummyAudioSrc = '/src/assets/audio/dummy.m4a';
+const dummyAudio = new Audio(dummyAudioSrc);
+dummyAudio.loop = true;
+dummyAudio.volume = 0.000001;
 
-  watch(() => player.isPlaying, (isPlaying) => {
+export const useMediaSession = () => {
+  if (!navigator.mediaSession) return;
+
+  watchImmediate(() => player.isPlaying, () => {
     if (!player.current) {
       navigator.mediaSession.playbackState = 'none';
       return;
     }
-    navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+    if (player.isPlaying) {
+      dummyAudio.play();
+      navigator.mediaSession.playbackState = 'playing';
+    }
+    else {
+      dummyAudio.pause();
+      navigator.mediaSession.playbackState = 'paused';
+    }
   });
 
   watch(() => player.current, () => {
     if (!player.current) {
+      dummyAudio.src = '';
       navigator.mediaSession.metadata = null;
       return;
     }
+    dummyAudio.src = dummyAudio.src = dummyAudioSrc;
     navigator.mediaSession.metadata = new MediaMetadata({
       title: player.current.title,
       artist: 'Amalgame',
       artwork: [
         {
-          src: '../assets/images/amalgame.png',
+          src: '/src/assets/images/amalgame.png',
           sizes: '1024x1024',
           type: 'image/png',
         },
@@ -34,7 +50,7 @@ export const useMediaSession = () => {
     });
   });
 
-  watch(() => player.currentTime, () => {
+  watchImmediate(() => player.currentTime, () => {
     if (!player.current) {
       navigator.mediaSession.setPositionState();
       return;
@@ -55,6 +71,7 @@ export const useMediaSession = () => {
   });
 
   navigator.mediaSession.setActionHandler('stop', () => {
+    dummyAudio.src = '';
     player.pause();
   });
 
@@ -73,11 +90,21 @@ export const useMediaSession = () => {
     player.setTime(seekTime);
   });
 
-  navigator.mediaSession.setActionHandler('previoustrack', () => {
-    playlist.playPrevious();
+  watchImmediate(() => playlist.previous, () => {
+    navigator.mediaSession.setActionHandler(
+      'previoustrack',
+      playlist.previous
+        ? () => { playlist.playPrevious(); }
+        : null,
+    );
   });
 
-  navigator.mediaSession.setActionHandler('nexttrack', () => {
-    playlist.playNext();
+  watchImmediate(() => playlist.next, () => {
+    navigator.mediaSession.setActionHandler(
+      'nexttrack',
+      playlist.next
+        ? () => { playlist.playNext(); }
+        : null,
+    );
   });
 };
