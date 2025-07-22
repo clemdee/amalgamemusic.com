@@ -86,7 +86,7 @@
             :class="{
               off: player.isMuted,
             }"
-            @click="player.toggleMute()"
+            @pointerdown="muteHandler"
           >
             <iconify-icon
               :icon="player.isMuted
@@ -192,6 +192,18 @@ const setTime = (event: MouseEvent) => {
   const x = event.clientX;
   const percentage = (x - start) / (end - start);
   player.setTimePercentage(percentage);
+};
+
+const muteHandler = (event: PointerEvent) => {
+  if (event.pointerType === 'mouse') {
+    player.toggleMute();
+  }
+  else {
+    const popoverOpened = !!document.querySelector('.volume:is(:focus, :focus-within)');
+    if (popoverOpened) {
+      player.toggleMute();
+    }
+  }
 };
 
 const VOLUME_EXPONENT = 2.5;
@@ -389,8 +401,6 @@ useMediaSession();
       align-items: center;
       gap: 0.3rem;
 
-      padding: 0.4rem;
-      margin: -0.4rem;
       border: 0.1rem solid transparent;
       border-radius: 1rem;
     }
@@ -426,15 +436,17 @@ useMediaSession();
       }
     }
 
-    &:hover {
+    &:is(:hover, :focus, :focus-within) {
       .wrapper {
+        padding: 0.4rem;
+        margin: -0.4rem;
         border-color: #fff2;
         backdrop-filter: blur(0.05rem);
         background-color: #2b2b40aa;
       }
     }
 
-    &:not(:hover) {
+    &:not(:is(:hover, :focus, :focus-within)) {
       color: gray;
 
       .volume-slider {
