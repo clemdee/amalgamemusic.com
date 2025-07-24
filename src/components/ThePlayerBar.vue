@@ -46,14 +46,15 @@
         {{ player.currentTimeFormatted }}
       </div>
 
-      <div
-        class="time"
-        @click="setTime"
-      >
-        <div class="track">
-          <div class="current" />
-          <div class="handle" />
-        </div>
+      <div class="time">
+        <InputRange
+          :model-value="player.currentTime"
+          :min="0"
+          :max="player.duration"
+          :step="5"
+          :disabled="!player.current"
+          @update:model-value="player.setTime"
+        />
 
         <div
           v-show="player.isRepeat"
@@ -172,6 +173,7 @@ import { usePlayer } from '~/composables/player';
 import { usePlaylist } from '~/composables/playlist';
 import AutoScrollingText from './AutoScrollingText.vue';
 import DownloadPopover from './DownloadPopover.vue';
+import InputRange from './InputRange.vue';
 import MusicCover from './MusicCover.vue';
 import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
@@ -183,16 +185,6 @@ const playlistPanel = usePlaylistPanel();
 
 const title = computed(() => player.current?.title ?? '');
 const tags = computed(() => player.current?.tags ?? []);
-const currentTimePercentage = computed(() => player.currentTimePercentage);
-
-const setTime = (event: MouseEvent) => {
-  const target = event.currentTarget as HTMLElement;
-  const start = target.offsetLeft;
-  const end = start + target.clientWidth;
-  const x = event.clientX;
-  const percentage = (x - start) / (end - start);
-  player.setTimePercentage(percentage);
-};
 
 const muteHandler = (event: PointerEvent) => {
   if (event.pointerType === 'mouse') {
@@ -313,46 +305,8 @@ useMediaSession();
   }
 
   .time {
-    --percentage: v-bind('currentTimePercentage');
     flex-grow: 1;
     position: relative;
-    display: inline-grid;
-    place-items: center;
-    height: 2rem;
-    cursor: pointer;
-
-    .track {
-      --height: 0.3rem;
-      position: relative;
-      height: var(--height);
-      width: 100%;
-      border-radius: 1rem;
-      background-color: #446;
-      transition: all linear 200ms;
-
-      .current {
-        position: absolute;
-        inset-block: 0rem;
-        inset-inline-start: 0rem;
-        width: calc(100% * var(--percentage));
-        border-radius: inherit;
-        background-color: var(--accent-color);
-        transition: all linear 50ms;
-      }
-
-      .handle {
-        position: absolute;
-        inset-block-start: 50%;
-        inset-inline-start: calc(100% * var(--percentage));
-        translate: -50% -50%;
-        aspect-ratio: 1;
-        height: var(--height);
-        border: 0rem solid black;
-        border-radius: 100%;
-        background-color: var(--accent-color);
-        transition: all linear 50ms;
-      }
-    }
 
     .loop-markers {
       --loop-start-percentage: v-bind('player.loopStartPercentage');
@@ -457,30 +411,8 @@ useMediaSession();
 
   &.disabled {
     .time {
-      cursor: default;
-
-      .handle {
-        display: none;
-      }
-
       .loop-markers {
         display: none;
-      }
-    }
-  }
-
-  &:not(.disabled) {
-    .time:hover {
-      .track {
-        height: 0.5rem;
-      }
-
-      .handle {
-        height: 0.9rem;
-        border: 0.08rem solid black;
-        background-color: #fff;
-        transition: all linear 100ms;
-        cursor: grab;
       }
     }
   }
