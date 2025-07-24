@@ -84,7 +84,7 @@ section {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   gap: 5rem;
   min-width: 100%;
   padding: 3rem max(2rem, min(5rem, 10%));

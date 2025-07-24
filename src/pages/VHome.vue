@@ -68,8 +68,4 @@ const views = [highlightView, ...tagViews, recentlyUploadedView];
 h2 {
   margin-bottom: 4rem;
 }
-
-.musics {
-  width: 100%;
-}
 </style>
