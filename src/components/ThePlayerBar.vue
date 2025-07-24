@@ -100,17 +100,15 @@
               "
             />
           </button>
-          <div class="volume-slider">
-            <input
-              v-model="volume"
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              orient="vertical"
-              :title="`${Math.round(volume * 100)}%`"
-            />
-          </div>
+
+          <InputRange
+            v-model="volume"
+            class="volume-slider"
+            :min="0"
+            :max="1"
+            :step="0.05"
+            vertical
+          />
         </div>
       </div>
 
@@ -360,34 +358,10 @@ useMediaSession();
     }
 
     .volume-slider {
-      input[type=range] {
-        appearance: slider-vertical;
-        -webkit-appearance: slider-vertical;
-        height: 6rem;
-        width: 1rem;
-        margin-top: 0.4rem;
-        accent-color: var(--accent-color);
-        background-color: transparent;
-        cursor: pointer;
-
-        &::-webkit-slider-runnable-track,
-        &::-moz-range-track {
-          appearance: none;
-          -webkit-appearance: none;
-          width: 0.4rem;
-          background-color: var(--accent-color);
-          background: linear-gradient(to top, var(--accent-color) 0% var(--percentage), #446 var(--percentage) 100%);
-          border-radius: 1rem;
-        }
-
-        &::-webkit-slider-thumb,
-        &::-moz-range-thumb {
-          appearance: none;
-          -webkit-appearance: none;
-          width: 0.8rem;
-          aspect-ratio: 1;
-        }
-      }
+      height: 5.5rem;
+      margin-top: 0.7rem;
+      margin-bottom: 0.4rem;
+      width: 1.5rem;
     }
 
     &:is(:hover, :focus, :focus-within) {
