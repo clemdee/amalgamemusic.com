@@ -208,35 +208,45 @@ const volume = computed({
 
 const downloadPopoverOpened = ref(false);
 
-onKeyStroke(' ', (e) => {
+const hasModifiers = (event: KeyboardEvent) => {
+  return event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
+};
+
+onKeyStroke(' ', (event) => {
+  if (hasModifiers(event)) return;
   const hasFocusVisible = !!document.querySelector('#app:has(:focus-visible)');
   if (hasFocusVisible) return;
-  e.preventDefault();
+  event.preventDefault();
   player.togglePlay();
 }, { dedupe: true });
 
-onKeyStroke('l', (e) => {
-  e.preventDefault();
+onKeyStroke('l', (event) => {
+  if (hasModifiers(event)) return;
+  event.preventDefault();
   player.toggleRepeat();
 }, { dedupe: true });
 
-onKeyStroke('m', (e) => {
-  e.preventDefault();
+onKeyStroke('m', (event) => {
+  if (hasModifiers(event)) return;
+  event.preventDefault();
   player.toggleMute();
 }, { dedupe: true });
 
-onKeyStroke('q', (e) => {
-  e.preventDefault();
+onKeyStroke('q', (event) => {
+  if (hasModifiers(event)) return;
+  event.preventDefault();
   playlistPanel.toggle();
 }, { dedupe: true });
 
-onKeyStroke('p', (e) => {
-  e.preventDefault();
+onKeyStroke('p', (event) => {
+  if (hasModifiers(event)) return;
+  event.preventDefault();
   playlist.playPrevious();
 }, { dedupe: true });
 
-onKeyStroke('n', (e) => {
-  e.preventDefault();
+onKeyStroke('n', (event) => {
+  if (hasModifiers(event)) return;
+  event.preventDefault();
   playlist.playNext();
 }, { dedupe: true });
 
