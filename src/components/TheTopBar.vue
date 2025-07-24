@@ -6,8 +6,13 @@
   >
     <div class="single-line">
       <div class="left">
-        <img src="/src/assets/images/amalgame.png" />
-        <TopBarTitle />
+        <RouterLink
+          to="/"
+          class="link"
+        >
+          <img src="/src/assets/images/amalgame.png" />
+          <TopBarTitle />
+        </RouterLink>
       </div>
 
       <div class="right">
@@ -46,8 +51,8 @@ import TopBarTitle from './TopBarTitle.vue';
 
 const links = ref<Link[]>([
   {
-    title: 'Listen',
-    url: '/',
+    title: 'Browse',
+    url: '/browse',
   },
   {
     title: 'About',
@@ -91,23 +96,30 @@ const { height } = useElementSize(() => fullscreenElement.value);
       justify-content: flex-start;
       align-items: center;
       gap: 1rem;
-      cursor: default;
 
-      &:hover {
-        color: var(--accent-color);
-        transition: color 100ms linear;
-      }
+      .link {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 1rem;
 
-      img {
-        width: 3rem;
-        aspect-ratio: 1;
-        border-radius: 100%;
-      }
+        &:hover {
+          color: var(--accent-color);
+          transition: color 100ms linear;
+        }
 
-      h1 {
-        font-size: 1.6rem;
-        // Adjust for baseline
-        padding-top: 0.15rem;
+        img {
+          width: 3rem;
+          aspect-ratio: 1;
+          border-radius: 100%;
+        }
+
+        h1 {
+          font-size: 1.6rem;
+          // Adjust for baseline
+          padding-top: 0.15rem;
+        }
       }
     }
 
