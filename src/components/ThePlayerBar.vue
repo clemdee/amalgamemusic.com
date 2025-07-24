@@ -87,6 +87,7 @@
             :class="{
               off: player.isMuted,
             }"
+            @keydown.space.enter="player.toggleMute"
             @pointerdown="muteHandler"
           >
             <iconify-icon
