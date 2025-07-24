@@ -7,6 +7,7 @@ export interface CreateMusicParameter {
   id: string
   title: string
   src: string
+  uploadTime: string
   time: {
     duration: number
     loopStart?: number
@@ -24,6 +25,7 @@ export interface Music {
   id: MusicId
   title: string
   src: string
+  uploadTime: string
   time: {
     duration: number
     loopStart: number
@@ -55,6 +57,7 @@ export const createMusic = (data: CreateMusicParameter): Music => {
     id,
     title: data.title,
     src: data.src,
+    uploadTime: data.uploadTime,
     time: {
       duration: data.time.duration,
       loopStart: data.time.loopStart ?? 0,
