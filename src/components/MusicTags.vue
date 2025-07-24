@@ -3,13 +3,13 @@
     class="music-tags"
   >
     <span
-      v-for="tag in props.tags"
-      :key="tag"
+      v-for="tag in tags"
+      :key="tag.name"
       class="tag"
       :class="[`size-${size}`]"
-      :title="tag"
+      :title="tag.name"
     >
-      <span class="hashtag">#</span>{{ tag }}
+      <span class="hashtag">#</span>{{ tag.name }}
     </span>
   </div>
 </template>
@@ -22,6 +22,11 @@ const props = defineProps<{
   tags: MusicTags
   size?: 'small' | 'normal'
 }>();
+
+const tags = computed(() => {
+  // Only display tags without value
+  return props.tags.filter(tag => !tag.value);
+});
 
 const size = computed(() => props.size ?? 'normal');
 </script>

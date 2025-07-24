@@ -1,7 +1,9 @@
+import type { Tag } from './tags';
 import { reactive, readonly } from 'vue';
+import { createTags } from './tags';
 
 export type MusicId = string & { _: '__MusicId__' };
-export type MusicTags = readonly string[];
+export type MusicTags = readonly Tag[];
 
 export interface CreateMusicParameter {
   id: string
@@ -51,7 +53,7 @@ const createDefaultParts = (data: CreateMusicParameter): Music['parts'] => [{
 
 export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
-  const tags = Object.freeze(data.tags?.slice() ?? []);
+  const tags = Object.freeze(createTags(data.tags ?? []));
 
   return readonly(reactive({
     id,
