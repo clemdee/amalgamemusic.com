@@ -144,12 +144,10 @@ document.addEventListener('pointerup', () => {
   }
 
   &.disabled {
-    .range {
-      cursor: default;
+    cursor: default;
 
-      .thumb {
-        display: none;
-      }
+    .thumb {
+      display: none;
     }
   }
 
