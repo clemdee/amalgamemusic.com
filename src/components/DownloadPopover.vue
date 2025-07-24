@@ -11,7 +11,7 @@
         >
           {{ props.music.title }}
         </span>
-        <span class="extension">.{{ props.music.file.extension }}</span>
+        <span class="extension">.{{ extension }}</span>
       </h2>
       <CC />
       <button
@@ -47,13 +47,17 @@ const opened = defineModel<boolean>();
 
 const loading = ref(false);
 
+const extension = computed(() => {
+  return props.music.src.match('[^.]+$')?.[0] ?? '';
+});
+
 const downloadName = computed(() => {
-  return `${props.music.title}.${props.music.file.extension}`;
+  return `${props.music.title}.${extension.value}`;
 });
 
 const download = async () => {
   loading.value = true;
-  downloadFile(props.music.file.src, downloadName.value);
+  downloadFile(props.music.src, downloadName.value);
   await wait(1000);
   loading.value = false;
 };

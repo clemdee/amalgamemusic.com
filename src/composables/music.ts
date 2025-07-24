@@ -23,10 +23,7 @@ export interface CreateMusicParameter {
 export interface Music {
   id: MusicId
   title: string
-  file: {
-    src: string
-    extension: string
-  }
+  src: string
   time: {
     duration: number
     loopStart: number
@@ -52,16 +49,12 @@ const createDefaultParts = (data: CreateMusicParameter): Music['parts'] => [{
 
 export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
-  const extension = data.src.match('[^.]+$')?.[0] ?? '';
   const tags = Object.freeze(data.tags?.slice() ?? []);
 
   return readonly(reactive({
     id,
     title: data.title,
-    file: {
-      src: data.src,
-      extension,
-    },
+    src: data.src,
     time: {
       duration: data.time.duration,
       loopStart: data.time.loopStart ?? 0,
