@@ -215,8 +215,12 @@ const hasModifiers = (event: KeyboardEvent) => {
 
 onKeyStroke(' ', (event) => {
   if (hasModifiers(event)) return;
+  // Don't allow to play/pause shortcut when another element is focused
+  // So that is doesn't interfere with focused element action
+  // Still allow when time range is focused because in that case it makes sense
   const hasFocusVisible = !!document.querySelector('#app:has(:focus-visible)');
-  if (hasFocusVisible) return;
+  const timeHasFocusVisible = !!document.querySelector('#app .time:has(:focus-visible)');
+  if (hasFocusVisible && !timeHasFocusVisible) return;
   event.preventDefault();
   player.togglePlay();
 }, { dedupe: true });
