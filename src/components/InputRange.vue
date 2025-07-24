@@ -3,6 +3,7 @@
     class="range"
     :class="{
       disabled: props.disabled,
+      vertical: props.vertical,
     }"
     @pointerdown="pointerDownHandler"
     @pointermove="pointerMoveHandler"
@@ -12,10 +13,10 @@
       <div
         class="thumb"
         tabindex="0"
-        @keydown.left="setTime(modelValue - step)"
-        @keydown.down="setTime(modelValue - step)"
-        @keydown.right="setTime(modelValue + step)"
-        @keydown.up="setTime(modelValue + step)"
+        @keydown.left="setValue(modelValue - step)"
+        @keydown.down="setValue(modelValue - step)"
+        @keydown.right="setValue(modelValue + step)"
+        @keydown.up="setValue(modelValue + step)"
       />
     </div>
   </div>
@@ -30,6 +31,7 @@ const props = defineProps<{
   max?: number
   step?: number
   disabled?: boolean
+  vertical?: boolean
 }>();
 
 const modelValue = defineModel<number>({
@@ -49,29 +51,38 @@ const modelValuePercentage = computed({
   },
 });
 
-const setTime = (value: number) => {
+const setValue = (value: number) => {
   modelValue.value = clamp(value, min.value, max.value);
 };
 
-const setTimeFromTrack = (event: MouseEvent) => {
+const setValueFromTrack = (event: MouseEvent) => {
   const target = event.currentTarget as HTMLElement;
-  const start = target.getBoundingClientRect().x;
-  const end = start + target.clientWidth;
-  const x = event.clientX;
-  const percentage = (x - start) / (end - start);
-  modelValuePercentage.value = percentage;
+  if (props.vertical) {
+    const end = target.getBoundingClientRect().y;
+    const start = end + target.clientHeight;
+    const y = event.clientY;
+    const percentage = (y - start) / (end - start);
+    modelValuePercentage.value = clamp(percentage, 0, 1);
+  }
+  else {
+    const start = target.getBoundingClientRect().x;
+    const end = start + target.clientWidth;
+    const x = event.clientX;
+    const percentage = (x - start) / (end - start);
+    modelValuePercentage.value = clamp(percentage, 0, 1);
+  }
 };
 
 const isPointerDown = ref(false);
 
 const pointerDownHandler = (event: MouseEvent) => {
   isPointerDown.value = true;
-  setTimeFromTrack(event);
+  setValueFromTrack(event);
 };
 
 const pointerMoveHandler = (event: MouseEvent) => {
   if (!isPointerDown.value) return;
-  setTimeFromTrack(event);
+  setValueFromTrack(event);
 };
 
 document.addEventListener('pointerup', () => {
@@ -121,6 +132,14 @@ document.addEventListener('pointerup', () => {
       background-color: var(--accent-color);
       transition: all linear 50ms;
       outline-offset: 0.2rem;
+    }
+  }
+
+  &.vertical {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    .thumb {
+      translate: -50% 50%;
     }
   }
 
