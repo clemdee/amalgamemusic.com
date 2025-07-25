@@ -5,13 +5,13 @@ import { usePlayer } from './player';
 const player = usePlayer();
 
 interface PlaylistItem {
-  id: number
+  id: string
   music: Music
 };
 
 let __playlistNextUID = 0;
-const createPlaylistItem = (music: Music) => ({
-  id: __playlistNextUID++,
+const createPlaylistItem = (music: Music): PlaylistItem => ({
+  id: `${__playlistNextUID++}`,
   music,
 });
 
