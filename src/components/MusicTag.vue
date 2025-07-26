@@ -1,0 +1,47 @@
+<template>
+  <component
+    :is="element"
+    class="music-tag"
+  >
+    <span
+      class="tag"
+      :class="[`size-${size}`]"
+      :title="tag.name"
+    >
+      <span class="hashtag">#</span>{{ tag.name }}
+    </span>
+  </component>
+</template>
+
+<script lang="ts" setup>
+import type { Tag } from '~/composables/tags';
+import { computed } from 'vue';
+
+const props = defineProps<{
+  element?: string
+  tag: Tag
+  size?: 'small' | 'normal'
+}>();
+
+const element = computed(() => props.element ?? 'div');
+const size = computed(() => props.size ?? 'normal');
+</script>
+
+<style lang="scss" scoped>
+.music-tag {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  background-color: #111;
+
+  &.size-small {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .hashtag {
+    color: #aaa;
+  }
+}
+</style>

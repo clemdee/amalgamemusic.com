@@ -1,13 +1,14 @@
+import PrimeVue from 'primevue/config';
 import { createApp } from 'vue';
 import App from './App.vue';
 import { router } from './router/routes';
 import './assets/styles/reset.scss';
 import './assets/styles/base.scss';
-
 import 'iconify-icon';
 
 const app = createApp(App);
 app.use(router);
+app.use(PrimeVue, { unstyled: true });
 app.mount('#app');
 
 tsParticles.load('tsparticles', {

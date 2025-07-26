@@ -20,6 +20,7 @@
     "@vueuse/core": "^13.5.0",
     "colorjs.io": "^0.5.2",
     "iconify-icon": "^3.0.0",
+    "primevue": "^4.3.6",
     "vue": "^3.5.17",
     "vue-router": "^4.4.5",
     "vue-slicksort": "^2.0.5"
