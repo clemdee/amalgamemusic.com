@@ -213,43 +213,50 @@ const hasModifiers = (event: KeyboardEvent) => {
   return event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
 };
 
+const hasFocusVisible = () => !!document.querySelector('#app:has(:focus-visible)');
+const hasTimeFocusVisible = () => !!document.querySelector('#app .time:has(:focus-visible)');
+const hasInputFocus = () => !!document.querySelector('#app input:focus');
+
 onKeyStroke(' ', (event) => {
   if (hasModifiers(event)) return;
   // Don't allow to play/pause shortcut when another element is focused
   // So that is doesn't interfere with focused element action
   // Still allow when time range is focused because in that case it makes sense
-  const hasFocusVisible = !!document.querySelector('#app:has(:focus-visible)');
-  const timeHasFocusVisible = !!document.querySelector('#app .time:has(:focus-visible)');
-  if (hasFocusVisible && !timeHasFocusVisible) return;
+  if (hasFocusVisible() && !hasTimeFocusVisible()) return;
   event.preventDefault();
   player.togglePlay();
 }, { dedupe: true });
 
 onKeyStroke('l', (event) => {
+  if (hasInputFocus()) return;
   if (hasModifiers(event)) return;
   event.preventDefault();
   player.toggleRepeat();
 }, { dedupe: true });
 
 onKeyStroke('m', (event) => {
+  if (hasInputFocus()) return;
   if (hasModifiers(event)) return;
   event.preventDefault();
   player.toggleMute();
 }, { dedupe: true });
 
 onKeyStroke('q', (event) => {
+  if (hasInputFocus()) return;
   if (hasModifiers(event)) return;
   event.preventDefault();
   playlistPanel.toggle();
 }, { dedupe: true });
 
 onKeyStroke('p', (event) => {
+  if (hasInputFocus()) return;
   if (hasModifiers(event)) return;
   event.preventDefault();
   playlist.playPrevious();
 }, { dedupe: true });
 
 onKeyStroke('n', (event) => {
+  if (hasInputFocus()) return;
   if (hasModifiers(event)) return;
   event.preventDefault();
   playlist.playNext();
