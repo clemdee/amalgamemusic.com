@@ -32,29 +32,6 @@
       class="content"
       :inert="!opened"
     >
-      <div class="row-sort">
-        <div class="title">
-          Sort by
-        </div>
-        <div class="sort">
-          <button
-            class="sort-dir"
-            :title="sortDir"
-            @click="toggleSortDir"
-          >
-            <iconify-icon :icon="sortDirIcon" />
-          </button>
-
-          <div class="sort-by">
-            <InputSelect
-              v-model="sortBy"
-              class="select"
-              :options="sortOptions"
-            />
-          </div>
-        </div>
-      </div>
-
       <div
         v-for="tagsGroup in [
           { title: 'Filters', tags: customTags },
@@ -78,6 +55,29 @@
             element="button"
             @click="toggleTag(tag.name)"
           />
+        </div>
+      </div>
+
+      <div class="row-sort">
+        <div class="title">
+          Sort by
+        </div>
+        <div class="sort">
+          <button
+            class="sort-dir"
+            :title="sortDir"
+            @click="toggleSortDir"
+          >
+            <iconify-icon :icon="sortDirIcon" />
+          </button>
+
+          <div class="sort-by">
+            <InputSelect
+              v-model="sortBy"
+              class="select"
+              :options="sortOptions"
+            />
+          </div>
         </div>
       </div>
     </div>
