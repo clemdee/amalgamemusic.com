@@ -1,6 +1,6 @@
 import type { Tag } from './tags';
 import { reactive, readonly } from 'vue';
-import { createTags } from './tags';
+import { createTag, createTags } from './tags';
 
 export type MusicId = string & { _: '__MusicId__' };
 export type MusicTags = readonly Tag[];
@@ -53,7 +53,12 @@ const createDefaultParts = (data: CreateMusicParameter): Music['parts'] => [{
 
 export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
-  const tags = Object.freeze(createTags(data.tags ?? []));
+  const tags = createTags(data.tags ?? []);
+
+  const hasLoop = data.time.loopStart !== undefined || data.time.loopEnd;
+  if (hasLoop) {
+    tags.push(createTag('.loop'));
+  }
 
   return readonly(reactive({
     id,
@@ -70,6 +75,6 @@ export const createMusic = (data: CreateMusicParameter): Music => {
       offset: part.offset ?? 0,
       duration: part.duration,
     })) ?? createDefaultParts(data),
-    tags,
+    tags: Object.freeze(tags),
   }));
 };
