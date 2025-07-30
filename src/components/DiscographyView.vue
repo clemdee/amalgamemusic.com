@@ -26,13 +26,6 @@
     </div>
 
     <div class="musics">
-      <div
-        v-if="viewDiscography.length === 0"
-        class="no-item"
-      >
-        No item matches current filters
-      </div>
-
       <MusicItem
         v-for="music in viewDiscography"
         :key="music.id"
@@ -110,6 +103,12 @@ const discographyLimited = computed(() => {
 });
 
 const viewDiscography = computed(() => discographyLimited.value);
+
+const musicCount = computed(() => viewDiscography.value.length);
+
+defineExpose({
+  musicCount,
+});
 </script>
 
 <style lang="scss" scoped>
