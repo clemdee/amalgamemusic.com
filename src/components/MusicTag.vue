@@ -17,10 +17,12 @@
 import type { Tag } from '~/composables/tags';
 import { computed } from 'vue';
 
+export type TagSize = 'small' | 'normal';
+
 const props = defineProps<{
   element?: string
   tag: Tag
-  size?: 'small' | 'normal'
+  size?: TagSize
 }>();
 
 const element = computed(() => props.element ?? 'div');

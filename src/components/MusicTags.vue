@@ -12,13 +12,14 @@
 </template>
 
 <script lang="ts" setup>
+import type { TagSize } from './MusicTag.vue';
 import type { MusicTags } from '~/composables/music';
 import { computed } from 'vue';
 import MusicTag from './MusicTag.vue';
 
 const props = defineProps<{
   tags: MusicTags
-  size?: 'small' | 'normal'
+  size?: TagSize
 }>();
 
 const tags = computed(() => {
