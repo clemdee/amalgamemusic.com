@@ -55,14 +55,20 @@
         </div>
       </div>
 
-      <div class="tags">
+      <div
+        v-for="tagsGroup in [
+          { title: 'Filters', tags: customTags },
+          { title: 'Tags', tags: normalTags },
+        ]"
+        :key="tagsGroup.title"
+        class="tags"
+      >
         <div class="title">
-          Tags
+          {{ tagsGroup.title }}
         </div>
-
-        <div class="tags-select">
+        <div class="tags-select default">
           <MusicTag
-            v-for="tag in allTags"
+            v-for="tag in tagsGroup.tags"
             :key="tag.name"
             class="tag"
             :class="{
@@ -70,7 +76,7 @@
             }"
             :tag="tag"
             element="button"
-            @click="toggleTag(tag)"
+            @click="toggleTag(tag.name)"
           />
         </div>
       </div>
@@ -80,12 +86,11 @@
 
 <script lang="ts" setup>
 import type { SortBy, SortDir } from '~/components/DiscographyView.vue';
-import type { Tag } from '~/composables/tags';
 import { useStorage } from '@vueuse/core';
 import { computed } from 'vue';
 import InputSelect from '~/components/InputSelect.vue';
 import MusicTag from '~/components/MusicTag.vue';
-import { isTagHidden } from '~/composables/tags';
+import { createTags, isTagHidden } from '~/composables/tags';
 import { useDiscography } from '~/stores/discography';
 
 const discography = useDiscography();
@@ -112,7 +117,9 @@ const sortDirIcon = computed(() => {
   return sortDir.value === 'ascending' ? 'tabler:sort-ascending' : 'tabler:sort-descending';
 });
 
-const allTags = computed(() => {
+const customTags = computed(() => createTags(['.highlight', '.loop']));
+
+const normalTags = computed(() => {
   const tagNames = discography.value
     .flatMap(music => music.tags)
     .filter(tag => !isTagHidden(tag))
@@ -123,10 +130,10 @@ const allTags = computed(() => {
     .map(tagName => ({ name: tagName }));
 });
 
-const toggleTag = (toggledTag: Tag) => {
-  const index = tags.value.findIndex(tag => tag === toggledTag.name);
+const toggleTag = (toggledTagName: string) => {
+  const index = tags.value.indexOf(toggledTagName);
   if (index === -1) {
-    tags.value.push(toggledTag.name);
+    tags.value.push(toggledTagName);
   }
   else {
     tags.value.splice(index, 1);

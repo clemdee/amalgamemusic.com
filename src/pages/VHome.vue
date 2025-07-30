@@ -25,7 +25,7 @@ import { getTag } from '~/composables/tags';
 const highlightView: DiscographyViewParameters = {
   title: `Creator's Highlight`,
   moreLink: '/browse',
-  tags: ['highlight'],
+  tags: ['.highlight'],
   sortBy: (musicA, musicB) => {
     const highlightA = getTag<number>(musicA.tags, 'highlight')?.value ?? 0;
     const highlightB = getTag<number>(musicB.tags, 'highlight')?.value ?? 0;
