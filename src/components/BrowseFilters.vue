@@ -138,6 +138,8 @@ const toggleTag = (toggledTagName: string) => {
   else {
     tags.value.splice(index, 1);
   }
+  // Need this for some reason in order to force emitting update
+  tags.value = [...tags.value];
 };
 </script>
 

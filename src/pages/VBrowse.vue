@@ -4,9 +4,9 @@
 
     <BrowseFilters
       v-model:search="search"
-      v-model:tags="tags"
       v-model:sort-by="sortBy"
       v-model:sort-dir="sortDir"
+      v-model:tags="tags"
     />
 
     <div class="music-count">
@@ -30,16 +30,20 @@
 
 <script lang="ts" setup>
 import type { SortBy, SortDir } from '~/components/DiscographyView.vue';
-import { computed, ref, useTemplateRef } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import BrowseFilters from '~/components/BrowseFilters.vue';
 import DiscographyView from '~/components/DiscographyView.vue';
+import { useRouteQuery } from '~/composables/query';
 
 const viewComponent = useTemplateRef('view');
 
-const search = ref('');
-const tags = ref<string[]>([]);
-const sortBy = ref<SortBy>('title');
-const sortDir = ref<SortDir>('ascending');
+const search = useRouteQuery<string>('search', '');
+const tags = useRouteQuery<string[]>('tags', [], {
+  fromQuery: query => query?.split(',').filter(Boolean) ?? [],
+  toQuery: names => names.join(','),
+});
+const sortBy = useRouteQuery<SortBy>('sortBy', 'title');
+const sortDir = useRouteQuery<SortDir>('sortDir', 'ascending');
 
 const musicCount = computed((): number | undefined => {
   if (!viewComponent.value) return;
