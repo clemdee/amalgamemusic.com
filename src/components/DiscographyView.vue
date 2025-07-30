@@ -65,7 +65,7 @@ const musicSorter: Record<SortBy, SortFn<Music>> = {
   random: (_musicA, _musicB) => Math.random() - 0.5,
 };
 
-const search = computed(() => new RegExp(props.search ?? '', 'iu'));
+const search = computed(() => props.search ?? '');
 const tags = computed(() => createTags(props.tags ?? []));
 const sortBy = computed(() => {
   if (typeof props.sortBy === 'function') return props.sortBy;
@@ -78,7 +78,7 @@ const allDiscography = useDiscography();
 
 const discographySearched = computed(() => {
   return allDiscography.value.filter(
-    music => music.title.match(search.value),
+    music => music.title.toLocaleLowerCase().match(search.value.toLocaleLowerCase()),
   );
 });
 
