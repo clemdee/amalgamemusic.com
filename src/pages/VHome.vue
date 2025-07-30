@@ -7,6 +7,7 @@
     >
       <DiscographyView
         :title="view.title"
+        :more-link="view.moreLink"
         :tags="view.tags"
         :sort-by="view.sortBy"
         :sort-dir="view.sortDir"
@@ -23,6 +24,7 @@ import { getTag } from '~/composables/tags';
 
 const highlightView: DiscographyViewParameters = {
   title: `Creator's Highlight`,
+  moreLink: '/browse',
   tags: ['highlight'],
   sortBy: (musicA, musicB) => {
     const highlightA = getTag<number>(musicA.tags, 'highlight')?.value ?? 0;
@@ -35,6 +37,7 @@ const highlightView: DiscographyViewParameters = {
 
 const recentlyUploadedView: DiscographyViewParameters = {
   title: 'Recently Uploaded',
+  moreLink: '/browse',
   sortBy: 'uploadTime',
   sortDir: 'descending',
   limit: 6,
@@ -43,18 +46,21 @@ const recentlyUploadedView: DiscographyViewParameters = {
 const tagViews: DiscographyViewParameters[] = [
   {
     title: 'Video Game Music',
+    moreLink: '/browse',
     tags: ['VGM'],
     sortBy: 'random',
     limit: 6,
   },
   {
     title: 'Want some funk',
+    moreLink: '/browse',
     tags: ['funk'],
     sortBy: 'random',
     limit: 6,
   },
   {
     title: 'Getting experimental',
+    moreLink: '/browse',
     tags: ['experimental'],
     sortBy: 'random',
     limit: 6,
