@@ -28,6 +28,10 @@ export const getTag = <T>(tags: Tags, name: string): Tag<T> => {
   return tags.find(tag => tag.name === name) as Tag<T>;
 };
 
+export const isTagHidden = (tag: Tag) => {
+  return tag.name.startsWith('.');
+};
+
 export const hasTag = (tags: Tags, tagToMatch: Tag) => {
   return tags.some(tag => tag.name === tagToMatch.name);
 };

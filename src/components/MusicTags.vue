@@ -15,6 +15,7 @@
 import type { TagSize } from './MusicTag.vue';
 import type { MusicTags } from '~/composables/music';
 import { computed } from 'vue';
+import { isTagHidden } from '~/composables/tags';
 import MusicTag from './MusicTag.vue';
 
 const props = defineProps<{
@@ -23,8 +24,7 @@ const props = defineProps<{
 }>();
 
 const tags = computed(() => {
-  // Only display tags without value
-  return props.tags.filter(tag => !tag.value);
+  return props.tags.filter(tag => !isTagHidden(tag));
 });
 
 const size = computed(() => props.size ?? 'normal');

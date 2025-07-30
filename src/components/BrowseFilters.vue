@@ -85,6 +85,7 @@ import { useStorage } from '@vueuse/core';
 import { computed } from 'vue';
 import InputSelect from '~/components/InputSelect.vue';
 import MusicTag from '~/components/MusicTag.vue';
+import { isTagHidden } from '~/composables/tags';
 import { useDiscography } from '~/stores/discography';
 
 const discography = useDiscography();
@@ -114,7 +115,7 @@ const sortDirIcon = computed(() => {
 const allTags = computed(() => {
   const tagNames = discography.value
     .flatMap(music => music.tags)
-    .filter(tag => !tag.value)
+    .filter(tag => !isTagHidden(tag))
     .map(tag => tag.name)
     .toSorted();
   const tagNamesUnique = [...new Set(tagNames)];

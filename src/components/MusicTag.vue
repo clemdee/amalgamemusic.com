@@ -6,9 +6,9 @@
     <span
       class="tag"
       :class="[`size-${size}`]"
-      :title="tag.name"
+      :title="name"
     >
-      <span class="hashtag">#</span>{{ tag.name }}
+      <span class="hashtag">#</span>{{ name }}
     </span>
   </component>
 </template>
@@ -27,6 +27,7 @@ const props = defineProps<{
 
 const element = computed(() => props.element ?? 'div');
 const size = computed(() => props.size ?? 'normal');
+const name = computed(() => props.tag.name.replace(/^\.*/, ''));
 </script>
 
 <style lang="scss" scoped>
