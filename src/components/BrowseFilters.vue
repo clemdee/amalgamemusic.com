@@ -144,6 +144,13 @@ const toggleTag = (toggledTagName: string) => {
 </script>
 
 <style lang="scss" scoped>
+@keyframes overflow-open {
+  to { overflow: visible; }
+}
+@keyframes overflow-close {
+  to { overflow: hidden; }
+}
+
 .browse-filters {
   display: flex;
   flex-flow: column;
@@ -228,16 +235,17 @@ const toggleTag = (toggledTagName: string) => {
     justify-content: flex-start;
     align-items: stretch;
     height: 0rem;
-    // I don't know why the sort select outline is cropped on the left when focused
-    // even though overflow is only set on 'y' here
-    // So play with margins and paddings to temporary solve the issue
+    // We have to use `overflow` and not only `overflow-y`
+    // because of a chromium bug that makes content scroll y on overflow
+    // So play with margins and paddings to not crop anything on x
     margin-inline: -1.5rem;
     padding-inline: 1.5rem;
     margin-bottom: -1rem;
     padding-bottom: 1rem;
-    overflow-y: hidden;
+    overflow: hidden;
     transition: height 300ms ease-in-out;
     transition-behavior: allow-discrete;
+    animation: overflow-close 0ms 0ms forwards;
 
     & > * {
       margin-top: 1.5rem;
@@ -245,6 +253,7 @@ const toggleTag = (toggledTagName: string) => {
   }
 
   &.opened .content {
+    animation: overflow-open 0ms 300ms forwards;
     height: auto;
   }
 

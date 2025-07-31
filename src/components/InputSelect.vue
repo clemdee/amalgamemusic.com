@@ -5,7 +5,7 @@
     :options="props.options"
     option-label="label"
     option-value="value"
-    append-to="#app"
+    append-to="self"
     pt:label:class="select-label"
     pt:overlay:class="select-overlay"
     pt:list:class="select-list"
@@ -39,6 +39,7 @@ const option = defineModel<Option<T>['value']>({ required: true });
 
 <style lang="scss" scoped>
 .select {
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -64,7 +65,12 @@ const option = defineModel<Option<T>['value']>({ required: true });
 </style>
 
 <style lang="scss">
+// We still need overlay styles as global
+// because teleport does not generate the component scope hash
 .select-overlay {
+  position: fixed;
+  inset-inline: 0rem;
+
   .select-list {
     display: flex;
     flex-direction: column;
