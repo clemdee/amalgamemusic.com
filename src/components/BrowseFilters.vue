@@ -152,6 +152,7 @@ const toggleTag = (toggledTagName: string) => {
 }
 
 .browse-filters {
+  --items-background-color: #113a;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -174,7 +175,7 @@ const toggleTag = (toggledTagName: string) => {
     padding-block: 0.7rem 0.5rem;
     border: none;
     border-radius: 0.5rem;
-    background-color: #111;
+    background-color: var(--items-background-color);
     transition:
       background-color 200ms ease-in-out,
       color 200ms ease-in-out;
@@ -223,7 +224,7 @@ const toggleTag = (toggledTagName: string) => {
         padding-block: 0.7rem 0.5rem;
         border: none;
         border-radius: 0.5rem;
-        background-color: #111;
+        background-color: var(--items-background-color);;
         outline-offset: 0.2rem;
       }
     }
@@ -273,11 +274,12 @@ const toggleTag = (toggledTagName: string) => {
         padding: 0rem;
         border: none;
         border-radius: 0.5rem;
-        background-color: #111;
+        background-color: var(--items-background-color);
       }
 
       .sort-by {
         .select {
+          --background-color: var(--items-background-color);
           min-width: 10rem;
         }
       }
@@ -300,6 +302,7 @@ const toggleTag = (toggledTagName: string) => {
       .tag {
         user-select: none;
         cursor: pointer;
+        background-color: var(--items-background-color);
 
         &.on {
           background-color: var(--accent-color);

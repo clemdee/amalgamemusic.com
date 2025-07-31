@@ -50,7 +50,7 @@ const option = defineModel<Option<T>['value']>({ required: true });
   padding-block: 0.7rem 0.5rem;
   border-radius: 0.5rem;
   color: var(--font-color);
-  background-color: #111;
+  background-color: var(--background-color);
   user-select: none;
   cursor: pointer;
 
@@ -82,7 +82,7 @@ const option = defineModel<Option<T>['value']>({ required: true });
     list-style-type: none;
     overflow: hidden;
     color: var(--font-color);
-    background-color: #111;
+    background-color: var(--background-color);
     box-shadow: 0 0.3rem 2rem #0002;
 
     .select-option {
@@ -90,7 +90,7 @@ const option = defineModel<Option<T>['value']>({ required: true });
       padding: .5rem 1rem;
       align-content: center;
       color: var(--font-color);
-      background-color: #111;
+      background-color: var(--background-color);
       cursor: pointer;
 
       // Style focused item, or selected item if no other item is being focused
