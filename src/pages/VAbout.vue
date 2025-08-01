@@ -7,64 +7,62 @@
       <br />
       <br />
       <p>
-        I'm a french composer <span class="pronouns">(they/them)</span> who just want to compose cool music to listen to!
+        I'm a french composer <span class="pronouns">(they/them)</span> who just like to compose whatever cool music comes to their mind!
       </p>
       <br />
       <p>
-        I thrive to learn and to create, so if you are interested, let's share this adventure along the way you want:
+        I may not be very active, but if you like what I do you can check me out on other platforms:
       </p>
     </article>
 
     <div class="socials">
       <a
-        href="#"
+        href="https://twitch.tv/amalgamemusic"
         class="socials-item"
         title="twitch"
-        style="--accent-color: #9146FF;"
+        style="--accent-color: #9146ff;"
       >
-        <iconify-icon
-          icon="mdi:twitch"
-          title="playlist"
-        />
+        <iconify-icon icon="mdi:twitch" />
         <span class="title">twitch</span>
       </a>
 
       <a
-        href="#"
+        href="https://instagram.com/amalgamemusic"
         class="socials-item"
         title="instagram"
-        style="--accent-color: #fcaf45;"
+        style="--accent-color: #c43086;"
       >
-        <iconify-icon
-          icon="mdi:instagram"
-          title="playlist"
-        />
+        <iconify-icon icon="mdi:instagram" />
         <span class="title">instagram</span>
       </a>
 
       <a
-        href="#"
+        href="https://www.youtube.com/@amalgame_music"
         class="socials-item"
         title="youtube"
         style="--accent-color: #ff0000;"
       >
-        <iconify-icon
-          icon="mdi:youtube"
-          title="playlist"
-        />
+        <iconify-icon icon="mdi:youtube" />
         <span class="title">youtube</span>
       </a>
 
       <a
-        href="#"
+        href="https://soundcloud.com/amalgamemusic"
+        class="socials-item"
+        title="soundcloud"
+        style="--accent-color: #ff6310;"
+      >
+        <iconify-icon icon="mdi:soundcloud" />
+        <span class="title">soundcloud</span>
+      </a>
+
+      <a
+        href="https://www.fiverr.com/clemdee/compose-custom-music-for-your-video-game"
         class="socials-item"
         title="fiverr"
         style="--accent-color: #1dbf73;"
       >
-        <iconify-icon
-          icon="jam:fiverr-circle"
-          title="playlist"
-        />
+        <iconify-icon icon="jam:fiverr-circle" />
         <span class="title">fiverr</span>
       </a>
     </div>
