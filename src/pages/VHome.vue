@@ -46,21 +46,21 @@ const recentlyUploadedView: DiscographyViewParameters = {
 const tagViews: DiscographyViewParameters[] = [
   {
     title: 'Video Game Music',
-    moreLink: '/browse?sortBy=random&tags=VGM',
+    moreLink: '/browse?tags=VGM',
     tags: ['VGM'],
     sortBy: 'random',
     limit: 6,
   },
   {
     title: 'Want some funk',
-    moreLink: '/browse?sortBy=random&tags=funk',
+    moreLink: '/browse?tags=funk',
     tags: ['funk'],
     sortBy: 'random',
     limit: 6,
   },
   {
     title: 'Getting experimental',
-    moreLink: '/browse?sortBy=random&tags=experimental',
+    moreLink: '/browse?tags=experimental',
     tags: ['experimental'],
     sortBy: 'random',
     limit: 6,
