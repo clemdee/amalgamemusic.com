@@ -170,6 +170,7 @@ import { computed, ref } from 'vue';
 import { useMediaSession } from '~/composables/mediaSession';
 import { usePlayer } from '~/composables/player';
 import { usePlaylist } from '~/composables/playlist';
+import { clamp } from '~/composables/utils';
 import AutoScrollingText from './AutoScrollingText.vue';
 import DownloadPopover from './DownloadPopover.vue';
 import InputRange from './InputRange.vue';
@@ -203,7 +204,7 @@ const volume = computed({
     return player.volume ** (1 / VOLUME_EXPONENT);
   },
   set (sliderVolume: number) {
-    player.volume = sliderVolume ** VOLUME_EXPONENT; ;
+    player.volume = clamp(sliderVolume ** VOLUME_EXPONENT, 0, 1);
   },
 });
 
@@ -225,6 +226,34 @@ onKeyStroke(' ', (event) => {
   if (hasFocusVisible() && !hasTimeFocusVisible()) return;
   event.preventDefault();
   player.togglePlay();
+}, { dedupe: true });
+
+onKeyStroke('ArrowUp', (event) => {
+  if (hasInputFocus()) return;
+  if (hasModifiers(event)) return;
+  volume.value += 0.05;
+  event.preventDefault();
+}, { dedupe: true });
+
+onKeyStroke('ArrowDown', (event) => {
+  if (hasInputFocus()) return;
+  if (hasModifiers(event)) return;
+  volume.value -= 0.05;
+  event.preventDefault();
+}, { dedupe: true });
+
+onKeyStroke('ArrowLeft', (event) => {
+  if (hasInputFocus()) return;
+  if (hasModifiers(event)) return;
+  player.setTime(player.currentTime - 5);
+  event.preventDefault();
+}, { dedupe: true });
+
+onKeyStroke('ArrowRight', (event) => {
+  if (hasInputFocus()) return;
+  if (hasModifiers(event)) return;
+  player.setTime(player.currentTime + 5);
+  event.preventDefault();
 }, { dedupe: true });
 
 onKeyStroke('l', (event) => {
