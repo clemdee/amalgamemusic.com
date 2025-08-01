@@ -9,22 +9,24 @@
       v-model:tags="tags"
     />
 
-    <div class="music-count">
-      <span v-if="!musicCount">
-        No item matches current filters
-      </span>
-      <span v-else>
-        Displaying {{ musicCount }} items
-      </span>
-    </div>
+    <div>
+      <div class="music-count">
+        <span v-if="!musicCount">
+          No item matches current filters
+        </span>
+        <span v-else>
+          Displaying {{ musicCount }} / {{ totalMusicCount }} items
+        </span>
+      </div>
 
-    <DiscographyView
-      ref="view"
-      :search="search"
-      :tags="tags"
-      :sort-by="sortBy"
-      :sort-dir="sortDir"
-    />
+      <DiscographyView
+        ref="view"
+        :search="search"
+        :tags="tags"
+        :sort-by="sortBy"
+        :sort-dir="sortDir"
+      />
+    </div>
   </section>
 </template>
 
@@ -34,6 +36,7 @@ import { computed, useTemplateRef } from 'vue';
 import BrowseFilters from '~/components/BrowseFilters.vue';
 import DiscographyView from '~/components/DiscographyView.vue';
 import { useRouteQuery } from '~/composables/query';
+import { useDiscography } from '~/stores/discography';
 
 const viewComponent = useTemplateRef('view');
 
@@ -49,10 +52,22 @@ const musicCount = computed((): number | undefined => {
   if (!viewComponent.value) return;
   return viewComponent.value.musicCount ?? 0;
 });
+
+const discography = useDiscography();
+const totalMusicCount = computed(() => discography.value.length);
 </script>
 
 <style lang="scss" scoped>
-h2 {
-  align-self: center;
+section {
+  gap: 3rem;
+
+  h2 {
+    align-self: center;
+  }
+
+  .music-count {
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+  }
 }
 </style>
