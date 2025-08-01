@@ -25,6 +25,10 @@
           :icon="opened ? 'cuida:caret-up-outline' : 'cuida:caret-down-outline'"
         />
         <span>{{ opened ? 'Hide' : 'Show' }} all filters</span>
+        <span
+          v-show="showToggleButtonHint"
+          class="hint"
+        />
       </button>
     </div>
 
@@ -108,6 +112,10 @@ const sortOptions = [
   { label: 'Random', value: 'random' },
 ];
 
+const showToggleButtonHint = computed(() => {
+  return tags.value.length > 0 || sortBy.value !== 'uploadTime';
+});
+
 const toggleSortDir = () => {
   sortDir.value = sortDir.value === 'ascending' ? 'descending' : 'ascending';
 };
@@ -164,6 +172,7 @@ const toggleTag = (toggledTagName: string) => {
   backdrop-filter: blur(0.2rem);
 
   button.toggle {
+    position: relative;
     display: flex;
     flex-flow: row;
     justify-content: center;
@@ -188,6 +197,16 @@ const toggleTag = (toggledTagName: string) => {
   &.opened button.toggle {
     background-color: var(--accent-color);
     color: #000;
+  }
+
+  &:not(.opened) button.toggle .hint {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.4rem;
+    width: 0.4rem;
+    aspect-ratio: 1;
+    border-radius: 100%;
+    background-color: var(--accent-color);
   }
 
   .title {
