@@ -7,6 +7,7 @@
       v-model:sort-by="sortBy"
       v-model:sort-dir="sortDir"
       v-model:tags="tags"
+      class="browse-filters"
     />
 
     <div>
@@ -62,6 +63,11 @@ section {
   gap: 3rem;
 
   h2 {
+    align-self: center;
+  }
+
+  .browse-filters {
+    max-width: 80rem;
     align-self: center;
   }
 

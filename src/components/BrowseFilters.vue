@@ -218,8 +218,8 @@ const toggleTag = (toggledTagName: string) => {
 
   .row-search {
     display: flex;
-    flex-flow: row;
-    justify-content: flex-start;
+    flex-flow: row wrap;
+    justify-content: flex-end;
     align-content: flex-start;
     align-items: stretch;
     gap: 1rem;
