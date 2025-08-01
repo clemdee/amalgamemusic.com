@@ -28,6 +28,7 @@ export interface Music {
   title: string
   src: string
   uploadTime: string
+  hasLoop: boolean
   time: {
     duration: number
     loopStart: number
@@ -55,7 +56,7 @@ export const createMusic = (data: CreateMusicParameter): Music => {
   const id = createMusicId(data.id);
   const tags = createTags(data.tags ?? []);
 
-  const hasLoop = data.time.loopStart !== undefined || data.time.loopEnd;
+  const hasLoop = data.time.loopStart !== undefined || data.time.loopEnd !== undefined;
   if (hasLoop) {
     tags.push(createTag('.loop'));
   }
@@ -65,6 +66,7 @@ export const createMusic = (data: CreateMusicParameter): Music => {
     title: data.title,
     src: data.src,
     uploadTime: data.uploadTime,
+    hasLoop,
     time: {
       duration: data.time.duration,
       loopStart: data.time.loopStart ?? 0,

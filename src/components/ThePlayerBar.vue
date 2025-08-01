@@ -57,7 +57,7 @@
         />
 
         <div
-          v-show="player.isRepeat"
+          v-show="player.isRepeat && player.current?.hasLoop"
           class="loop-markers"
         >
           <div class="loop-marker start" />
