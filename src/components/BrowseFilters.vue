@@ -99,8 +99,8 @@ const opened = useStorage('search-controls-opened', false);
 
 const search = defineModel<string>('search', { default: '' });
 const tags = defineModel<string[]>('tags', { default: [] });
-const sortBy = defineModel<SortBy>('sortBy', { default: 'title' });
-const sortDir = defineModel<SortDir>('sortDir', { default: 'ascending' });
+const sortBy = defineModel<SortBy>('sortBy', { default: 'uploadTime' });
+const sortDir = defineModel<SortDir>('sortDir', { default: 'descending' });
 
 const sortOptions = [
   { label: 'Title', value: 'title' },

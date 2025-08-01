@@ -42,8 +42,8 @@ const tags = useRouteQuery<string[]>('tags', [], {
   fromQuery: query => query?.split(',').filter(Boolean) ?? [],
   toQuery: names => names.join(','),
 });
-const sortBy = useRouteQuery<SortBy>('sortBy', 'title');
-const sortDir = useRouteQuery<SortDir>('sortDir', 'ascending');
+const sortBy = useRouteQuery<SortBy>('sortBy', 'uploadTime');
+const sortDir = useRouteQuery<SortDir>('sortDir', 'descending');
 
 const musicCount = computed((): number | undefined => {
   if (!viewComponent.value) return;

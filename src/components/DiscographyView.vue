@@ -71,7 +71,7 @@ const sortBy = computed(() => {
   if (typeof props.sortBy === 'function') return props.sortBy;
   return musicSorter[props.sortBy ?? 'uploadTime'] ?? (() => 0);
 });
-const sortDir = computed(() => props.sortDir ?? 'ascending');
+const sortDir = computed(() => props.sortDir ?? 'descending');
 const limit = computed(() => props.limit ?? 0);
 
 const allDiscography = useDiscography();
