@@ -228,6 +228,20 @@ onKeyStroke(' ', (event) => {
   player.togglePlay();
 }, { dedupe: true });
 
+onKeyStroke('p', (event) => {
+  if (hasInputFocus()) return;
+  if (hasModifiers(event)) return;
+  event.preventDefault();
+  playlist.playPrevious();
+}, { dedupe: true });
+
+onKeyStroke('n', (event) => {
+  if (hasInputFocus()) return;
+  if (hasModifiers(event)) return;
+  event.preventDefault();
+  playlist.playNext();
+}, { dedupe: true });
+
 onKeyStroke('ArrowUp', (event) => {
   if (hasInputFocus()) return;
   if (hasModifiers(event)) return;
@@ -256,13 +270,6 @@ onKeyStroke('ArrowRight', (event) => {
   event.preventDefault();
 }, { dedupe: true });
 
-onKeyStroke('l', (event) => {
-  if (hasInputFocus()) return;
-  if (hasModifiers(event)) return;
-  event.preventDefault();
-  player.toggleRepeat();
-}, { dedupe: true });
-
 onKeyStroke('m', (event) => {
   if (hasInputFocus()) return;
   if (hasModifiers(event)) return;
@@ -270,25 +277,18 @@ onKeyStroke('m', (event) => {
   player.toggleMute();
 }, { dedupe: true });
 
+onKeyStroke('l', (event) => {
+  if (hasInputFocus()) return;
+  if (hasModifiers(event)) return;
+  event.preventDefault();
+  player.toggleRepeat();
+}, { dedupe: true });
+
 onKeyStroke('q', (event) => {
   if (hasInputFocus()) return;
   if (hasModifiers(event)) return;
   event.preventDefault();
   playlistPanel.toggle();
-}, { dedupe: true });
-
-onKeyStroke('p', (event) => {
-  if (hasInputFocus()) return;
-  if (hasModifiers(event)) return;
-  event.preventDefault();
-  playlist.playPrevious();
-}, { dedupe: true });
-
-onKeyStroke('n', (event) => {
-  if (hasInputFocus()) return;
-  if (hasModifiers(event)) return;
-  event.preventDefault();
-  playlist.playNext();
 }, { dedupe: true });
 
 useMediaSession();
