@@ -2,18 +2,40 @@
   <PlayerBarPopover
     v-model="opened"
   >
-    <div class="download-popover">
+    <div class="share-popover">
       <h2>
-        Download
+        <iconify-icon
+          icon="mdi:share-variant-outline"
+          title="share"
+        />
+
         <span
           class="title"
           :title="props.music.title"
         >
           {{ props.music.title }}
         </span>
-        <span class="extension">.{{ extension }}</span>
       </h2>
-      <CC />
+
+      <div
+        class="share-url"
+        type="text"
+      >
+        <div class="share-url-link">
+          {{ props.music.url }}
+        </div>
+
+        <button
+          class="copy-link"
+          @click="copyLink"
+        >
+          <iconify-icon
+            icon="mdi:content-copy"
+            title="copy url"
+          />
+        </button>
+      </div>
+
       <button
         class="download"
         :disabled="loading"
@@ -24,10 +46,18 @@
           icon="svg-spinners:ring-resize"
           title="download"
         />
+
         <span v-else>
-          Download
+          <iconify-icon
+            icon="mdi:download"
+            title="download"
+          />
+
+          Download track
         </span>
       </button>
+
+      <CC />
     </div>
   </PlayerBarPopover>
 </template>
@@ -44,6 +74,10 @@ const props = defineProps<{
 }>();
 
 const opened = defineModel<boolean>();
+
+const copyLink = () => {
+  navigator.clipboard.writeText(`${props.music.url}`);
+};
 
 const loading = ref(false);
 
@@ -64,7 +98,7 @@ const download = async () => {
 </script>
 
 <style lang="scss" scoped>
-.download-popover {
+.share-popover {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
@@ -74,9 +108,13 @@ const download = async () => {
   h2 {
     display: flex;
     align-items: center;
-    column-gap: 1ch;
-
+    column-gap: 1rem;
     font-size: 1.2rem;
+
+    iconify-icon {
+      font-size: 1.4rem;
+      margin-bottom: 0.1rem;
+    }
 
     .title {
       display: -webkit-box;
@@ -84,26 +122,66 @@ const download = async () => {
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       overflow: hidden;
-
       max-width: 20rem;
-      border-radius: 0.5rem;
-      padding: 0.5rem 1rem;
+    }
+  }
 
-      font-size: 1rem;
-      font-style: italic;
+  .share-url {
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-start;
+    align-items: stretch;
+    border-radius: 0.5rem;
+    overflow: clip;
+
+    .share-url-link {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1rem;
       background-color: #111;
     }
 
-    .extension {
-      font-size: 1rem;
-      font-style: italic;
+    button.copy-link {
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 0.5rem 1rem;
+      background-color: #111;
+
+      &::before {
+        position: absolute;
+        left: 0;
+        content: '';
+        height: 50%;
+        border-left: 0.1rem solid #2b2b40dd;
+      }
+
+      iconify-icon {
+        font-size: 1.2rem;
+      }
     }
   }
+
   button.download {
     align-self: stretch;
+    display: grid;
+    place-content: center;
+
     padding: 1rem 3rem;
     border-radius: 1rem;
     background-color: #111;
+    height: 3rem;
+
+    iconify-icon {
+      font-size: 1.2rem;
+    }
+
+    span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      column-gap: 1ch;
+    }
   }
 }
 </style>

@@ -126,26 +126,22 @@
       </button>
 
       <button
-        class="download"
+        class="share"
         :class="{
-          off: !downloadPopoverOpened,
+          off: !sharePopoverOpened,
         }"
         :disabled="!player.current"
-        @click="downloadPopoverOpened = !downloadPopoverOpened"
+        @click="sharePopoverOpened = !sharePopoverOpened"
       >
-        <!-- <iconify-icon
-          icon="mdi:copyright"
-          title="copyright"
-        /> -->
         <iconify-icon
-          icon="mdi:download"
-          title="download"
+          icon="mdi:share-variant-outline"
+          title="share"
         />
       </button>
 
-      <DownloadPopover
+      <SharePopover
         v-if="player.current"
-        v-model="downloadPopoverOpened"
+        v-model="sharePopoverOpened"
         :music="player.current"
       />
 
@@ -172,11 +168,11 @@ import { usePlayer } from '~/composables/player';
 import { usePlaylist } from '~/composables/playlist';
 import { clamp } from '~/composables/utils';
 import AutoScrollingText from './AutoScrollingText.vue';
-import DownloadPopover from './DownloadPopover.vue';
 import InputRange from './InputRange.vue';
 import MusicCover from './MusicCover.vue';
 import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
+import SharePopover from './SharePopover.vue';
 import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 
 const player = usePlayer();
@@ -208,7 +204,7 @@ const volume = computed({
   },
 });
 
-const downloadPopoverOpened = ref(false);
+const sharePopoverOpened = ref(false);
 
 const hasModifiers = (event: KeyboardEvent) => {
   return event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
