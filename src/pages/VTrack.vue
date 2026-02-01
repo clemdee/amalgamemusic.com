@@ -41,6 +41,10 @@ section {
     align-self: center;
   }
 
+  .music-item {
+    width: min(80dvw, 16rem);
+  }
+
   .more {
     display: flex;
     flex-flow: row;
