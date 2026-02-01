@@ -36,4 +36,3 @@ jobs:
       - name: Deploy over SSH
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.PATH }} && ./deploy.sh"
-
