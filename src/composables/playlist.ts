@@ -24,6 +24,13 @@ const _playlistData = ref({
 const items = computed<PlaylistItem[]>(() => _playlistData.value.items);
 const currentIndex = computed(() => _playlistData.value.index);
 
+const isRepeat = ref(false);
+
+const toggleRepeat = (state?: boolean) => {
+  state ??= !isRepeat.value;
+  isRepeat.value = state;
+};
+
 const currentItem = computed<PlaylistItem | undefined>(() => {
   return items.value[currentIndex.value];
 });
@@ -47,9 +54,15 @@ const previous = computed<PlaylistItem | undefined>(() => items.value[currentInd
 const next = computed<PlaylistItem | undefined>(() => items.value[currentIndex.value + 1]);
 
 const playAtIndex = (index: number) => {
-  if (index < 0 || index >= items.value.length) return;
-  _playlistData.value.index = index;
-  player.play();
+  if (index < 0) return;
+  if (index >= items.value.length) {
+    if (!isRepeat.value) return;
+    playAtIndex(0);
+  }
+  else {
+    _playlistData.value.index = index;
+    player.play();
+  }
 };
 
 const playPrevious = () => {
@@ -98,6 +111,10 @@ const move = (oldIndex: number, newIndex: number) => {
   _updatePlaylist(newItems);
 };
 
+const clear = () => {
+  _updatePlaylist([], -1);
+};
+
 player.on('end', () => {
   if (!player.isRepeat) {
     playNext();
@@ -117,6 +134,9 @@ export const usePlaylist = () => {
     queue,
     queueNext,
     unqueueAtIndex,
+    isRepeat,
+    toggleRepeat,
     move,
+    clear,
   });
 };

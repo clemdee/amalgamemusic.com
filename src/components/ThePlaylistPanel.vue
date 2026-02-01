@@ -7,7 +7,35 @@
     }"
     :inert="!opened"
   >
-    <h2>Play queue</h2>
+    <header>
+      <h2>Play queue</h2>
+
+      <div class="actions">
+        <button
+          :class="{
+            off: !playlist.isRepeat,
+          }"
+          @click="playlist.toggleRepeat()"
+        >
+          <iconify-icon
+            icon="mdi:repeat"
+            title="repeat"
+          />
+        </button>
+
+        <button
+          :class="{
+            off: playlist.items.length === 0,
+          }"
+          @click="playlist.clear()"
+        >
+          <iconify-icon
+            icon="mdi:trash-can-outline"
+            title="clear"
+          />
+        </button>
+      </div>
+    </header>
 
     <template v-if="playlist.items.length > 0">
       <SlickList
@@ -141,6 +169,27 @@ export const usePlaylistPanel = () => {
 
     .list {
       pointer-events: none;
+    }
+  }
+
+  header {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    .actions {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.1rem;
+
+      iconify-icon {
+        font-size: 2rem;
+      }
     }
   }
 
