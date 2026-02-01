@@ -16,7 +16,7 @@
           No item matches current filters
         </span>
         <span v-else>
-          Displaying {{ musicCount }} / {{ totalMusicCount }} items
+          Displaying {{ musicCount }} / {{ totalMusicCount }} tracks
         </span>
       </div>
 
