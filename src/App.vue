@@ -29,6 +29,8 @@ import ThePlaylistPanel from './components/ThePlaylistPanel.vue';
   position: relative;
 
   #main {
+    display: flex;
+    flex-flow: column;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
