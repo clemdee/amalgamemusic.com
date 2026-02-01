@@ -5,6 +5,7 @@
       current: isCurrent,
       playing: isPlaying,
     }"
+    @contextmenu="(event: MouseEvent) => contextMenu.show(event)"
   >
     <div class="top-part">
       <MusicCover
@@ -47,6 +48,7 @@ import { usePlaylist } from '~/composables/playlist';
 import MusicCover from './MusicCover.vue';
 import MusicTags from './MusicTags.vue';
 import MusicItemPlayButton from './PlayButton.vue';
+import { useContextMenu } from './TheContextMenu.vue';
 
 const props = defineProps<{
   music: Music
@@ -72,6 +74,38 @@ const play = () => {
     player.togglePlay();
   }
 };
+
+const contextMenu = useContextMenu([
+  {
+    label: 'Play',
+    icon: 'material-symbols-light:play-arrow-outline-rounded',
+    command: () => {
+      playlist.queue(props.music);
+      playlist.playAtIndex(playlist.items.length - 1);
+    },
+  },
+  {
+    label: 'Enqueue',
+    icon: 'material-symbols-light:playlist-add-rounded',
+    command: () => {
+      playlist.queue(props.music);
+    },
+  },
+  {
+    label: 'Enqueue Next',
+    icon: 'material-symbols-light:playlist-add-rounded',
+    command: () => {
+      playlist.queueNext(props.music);
+    },
+  },
+  {
+    label: 'Copy Link',
+    icon: 'material-symbols-light:link-2-rounded',
+    command: () => {
+      navigator.clipboard.writeText(`${props.music.url}`);
+    },
+  },
+]);
 </script>
 
 <style lang="scss" scoped>

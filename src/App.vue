@@ -7,10 +7,12 @@
     <ThePlaylistPanel />
   </div>
   <ThePlayerBar />
+  <TheContextMenu :ref="(element) => registerContextMenu(element)" />
 </template>
 
 <script setup lang="ts">
 import TheTopBar from '~/components/TheTopBar.vue';
+import TheContextMenu, { registerContextMenu } from './components/TheContextMenu.vue';
 import ThePlayerBar from './components/ThePlayerBar.vue';
 import ThePlaylistPanel from './components/ThePlaylistPanel.vue';
 </script>

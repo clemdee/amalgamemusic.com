@@ -26,6 +26,7 @@ export interface CreateMusicParameter {
 export interface Music {
   id: MusicId
   title: string
+  url: string
   src: string
   uploadTime: string
   hasLoop: boolean
@@ -64,6 +65,7 @@ export const createMusic = (data: CreateMusicParameter): Music => {
   return readonly(reactive({
     id,
     title: data.title,
+    url: new URL(`/track/${id}`, window.location.origin).href,
     src: data.src,
     uploadTime: data.uploadTime,
     hasLoop,
