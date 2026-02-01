@@ -15,7 +15,7 @@
         <MusicCover
           class="cover"
           :music="props.music"
-          :rotate="isCurrent"
+          :rotation="isCurrent && player.currentRepeatedTime || 0"
           :shadow="true"
         />
 

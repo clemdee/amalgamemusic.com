@@ -59,6 +59,12 @@ const togglePlay = (state?: boolean) => {
 
 const currentTime = computed(() => partsPlayer.currentTime);
 
+const currentRepeatedTime = computed(() => {
+  if (!current.value) return 0;
+  const loopDuration = current.value.time.loopEnd - current.value.time.loopStart;
+  return currentTime.value + loopDuration * repeatCount.value;
+});
+
 const setTime = (seconds: number) => {
   if (!current.value) return;
   if (isLoading.value) return;
@@ -163,6 +169,7 @@ export const usePlayer = () => {
     currentTime,
     currentTimePercentage,
     currentTimeFormatted,
+    currentRepeatedTime,
     setTime,
     setTimePercentage,
     loopStart,

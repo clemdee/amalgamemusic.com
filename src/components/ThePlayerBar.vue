@@ -11,8 +11,8 @@
       <MusicCover
         class="cover"
         :music="player.current"
+        :rotation="player.currentRepeatedTime"
         :shadow="true"
-        :rotate="true"
       />
       <div class="info-container">
         <AutoScrollingText :text="title" />

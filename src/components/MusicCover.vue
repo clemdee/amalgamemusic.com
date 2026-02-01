@@ -8,7 +8,6 @@
       v-if="props.music"
       class="music-cover-image"
       :class="{
-        rotate: props.rotate,
         float: props.float,
       }"
     >
@@ -64,7 +63,7 @@ import { clamp } from '~/composables/utils';
 
 const props = defineProps<{
   music: Music | undefined
-  rotate?: boolean
+  rotation?: number
   shadow?: boolean
   float?: boolean
 }>();
@@ -77,6 +76,9 @@ const faces = computed(() => getFaces(hash.value, params));
 
 const rootElement = useTemplateRef('root');
 const { width } = useElementSize(() => rootElement.value);
+
+const rotation = computed(() => props.rotation ?? 0);
+
 const tiltVX = ref(0);
 const tiltVY = ref(0);
 const tiltX = ref(0);
@@ -160,7 +162,10 @@ onMounted(() => {
     }
 
     .spin-wrapper {
+      --_rotation: calc(v-bind('rotation') * -25deg);
       transform: rotateY(-45deg);
+      rotate: y var(--_rotation);
+      transition: rotate 0.3s linear;
     }
 
     .tilt-wrapper {
@@ -238,12 +243,6 @@ onMounted(() => {
       transform-style: preserve-3d;
       transform-origin: center;
       rotate: x -24deg;
-    }
-
-    &.rotate {
-      .spin-wrapper {
-        animation: spin 15s infinite linear;
-      }
     }
 
     &.float {

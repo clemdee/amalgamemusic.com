@@ -11,9 +11,9 @@
       <MusicCover
         class="cover"
         :music="props.music"
+        :rotation="isCurrent && player.currentRepeatedTime || 0"
+        :float="isCurrent"
         :shadow="true"
-        :rotate="isCurrent"
-        :float="isPlaying"
       />
       <MusicItemPlayButton
         class="play"
