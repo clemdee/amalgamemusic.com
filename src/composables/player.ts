@@ -33,6 +33,7 @@ const partsPlayer = usePartsPlayer({
 
 const isLoading = ref(false);
 const isPlaying = computed(() => partsPlayer.isPlaying);
+const repeatCount = computed(() => partsPlayer.repeatCount);
 
 const pause = () => {
   partsPlayer.pause();
@@ -153,6 +154,7 @@ export const usePlayer = () => {
     togglePlay,
     isRepeat,
     toggleRepeat,
+    repeatCount,
     volume,
     isMuted,
     toggleMute,

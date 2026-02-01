@@ -1,7 +1,7 @@
 import type { MaybeRef } from 'vue';
 import type { Music } from './music';
 import type { MusicPart } from './musicParts';
-import { syncRefs } from '@vueuse/core';
+import { syncRefs, watchImmediate } from '@vueuse/core';
 import { computed, reactive, ref, toRef } from 'vue';
 import { preloadMusicParts } from './musicParts';
 import { usePartsPlanner } from './partsPlanner';
@@ -89,9 +89,14 @@ export const usePartsPlayer = (parameters: {
 
   timer.on('end', pause);
 
+  watchImmediate(current, () => {
+    timer.loopCount = 0;
+  });
+
   return reactive({
     currentTime,
     isPlaying: computed(() => timer.running),
+    repeatCount: computed(() => timer.loopCount),
     play,
     pause,
   });
