@@ -44,7 +44,9 @@ const step = computed(() => props.step ?? (max.value - min.value) / 10);
 
 const modelValuePercentage = computed({
   get () {
-    return (modelValue.value - min.value) / (max.value - min.value);
+    const value = (modelValue.value - min.value) / (max.value - min.value); ;
+    if (Number.isNaN(value)) return 0;
+    return value;
   },
   set (valuePercentage) {
     modelValue.value = valuePercentage * (max.value - min.value) + min.value;
