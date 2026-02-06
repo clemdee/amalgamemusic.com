@@ -162,7 +162,8 @@
 
 <script lang="ts" setup>
 import { onKeyStroke } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useMediaSession } from '~/composables/mediaSession';
 import { usePlayer } from '~/composables/player';
 import { usePlaylist } from '~/composables/playlist';
@@ -175,6 +176,8 @@ import MusicItemPlayButton from './PlayButton.vue';
 import SharePopover from './SharePopover.vue';
 import { usePlaylistPanel } from './ThePlaylistPanel.vue';
 
+const route = useRoute();
+const router = useRouter();
 const player = usePlayer();
 const playlist = usePlaylist();
 const playlistPanel = usePlaylistPanel();
@@ -202,6 +205,17 @@ const volume = computed({
   set (sliderVolume: number) {
     player.volume = clamp(sliderVolume ** VOLUME_EXPONENT, 0, 1);
   },
+});
+
+onMounted(async () => {
+  await router.isReady();
+  if ('loop' in route.query) {
+    player.isRepeat = true;
+
+    // Remove query parameter from url
+    const { loop: _loop, ...newQuery } = route.query;
+    router.replace({ query: newQuery });
+  }
 });
 
 const sharePopoverOpened = ref(false);
