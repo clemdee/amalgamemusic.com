@@ -157,6 +157,7 @@ const { height } = useElementSize(() => fullscreenElement.value);
       gap: 0rem;
       top: 0rem;
       height: 100%;
+      min-height: 100%;
       margin-bottom: calc(var(--fullscreen-height) * -1px);
 
       .fullscreen {
