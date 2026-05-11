@@ -120,6 +120,14 @@ const contextMenu = useContextMenu([
   // box-shadow: 0 0.3rem 2rem #0002;
   transition: background-color 100ms ease;
 
+  // --x and --y come from App.vue
+  background: radial-gradient(
+    circle at var(--x) var(--y),
+    #fff1,
+    transparent 200px
+  );
+  background-attachment: fixed;
+
   .top-part {
     display: grid;
     place-items: center;

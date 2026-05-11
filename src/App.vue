@@ -11,10 +11,13 @@
 </template>
 
 <script setup lang="ts">
+import { useMouse } from '@vueuse/core';
 import TheTopBar from '~/components/TheTopBar.vue';
 import TheContextMenu, { registerContextMenu } from './components/TheContextMenu.vue';
 import ThePlayerBar from './components/ThePlayerBar.vue';
 import ThePlaylistPanel from './components/ThePlaylistPanel.vue';
+
+const { x, y } = useMouse();
 </script>
 
 <style lang="scss">
@@ -36,6 +39,9 @@ import ThePlaylistPanel from './components/ThePlaylistPanel.vue';
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+
+    --x: calc(v-bind('x') * 1px);
+    --y: calc(v-bind('y') * 1px);
   }
 }
 </style>

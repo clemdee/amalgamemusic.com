@@ -158,9 +158,6 @@ onMounted(() => {
       transform-style: preserve-3d;
     }
 
-    .float-wrapper {
-    }
-
     .spin-wrapper {
       --_rotation: calc(v-bind('rotation') * -25deg);
       transform: rotateY(-45deg);
