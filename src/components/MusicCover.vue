@@ -57,7 +57,7 @@
 <script lang="ts" setup>
 import type { Music } from '~/composables/music';
 import { useElementSize } from '@vueuse/core';
-import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
 import { defaultCubeParams, getFaces } from '~/composables/cube';
 import { clamp } from '~/composables/utils';
 
@@ -79,40 +79,100 @@ const { width } = useElementSize(() => rootElement.value);
 
 const rotation = computed(() => props.rotation ?? 0);
 
-const tiltVX = ref(0);
-const tiltVY = ref(0);
 const tiltX = ref(0);
 const tiltY = ref(0);
 
 onMounted(() => {
   if (!rootElement.value) return;
 
-  let animationFrameId: ReturnType<typeof requestAnimationFrame>;
+  let rafId = 0;
 
-  const animateTilt = () => {
-    tiltX.value += Math.sign(tiltVX.value) * Math.abs(tiltVX.value) ** 1.8 / 40;
-    tiltY.value += Math.sign(tiltVY.value) * Math.abs(tiltVY.value) ** 1.8 / 40;
-    tiltVX.value -= Math.sign(tiltVX.value);
-    tiltVY.value -= Math.sign(tiltVY.value);
-    if (tiltVX.value === 0 && tiltVY.value === 0) return;
+  // spring state
+  let x = 0;
+  let y = 0;
+  let vx = 0;
+  let vy = 0;
 
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = requestAnimationFrame(animateTilt);
+  // "impulse" coming from mouse velocity
+  let impulseX = 0;
+  let impulseY = 0;
+
+  const step = () => {
+    // spring back to 0
+    const stiffness = 0.06;
+    const damping = 0.82;
+
+    vx += (0 - x) * stiffness + impulseX;
+    vy += (0 - y) * stiffness + impulseY;
+
+    impulseX *= 0.6;
+    impulseY *= 0.6;
+
+    vx *= damping;
+    vy *= damping;
+
+    x += vx;
+    y += vy;
+
+    tiltX.value = x;
+    tiltY.value = y;
+
+    const sleeping
+      = Math.abs(x) < 0.01
+        && Math.abs(y) < 0.01
+        && Math.abs(vx) < 0.01
+        && Math.abs(vy) < 0.01
+        && Math.abs(impulseX) < 0.01
+        && Math.abs(impulseY) < 0.01;
+
+    if (!sleeping) rafId = requestAnimationFrame(step);
+    else rafId = 0;
   };
 
-  rootElement.value.addEventListener('mousemove', (event) => {
-    tiltVX.value = clamp(-event.movementY, -30, 30);
-    tiltVY.value = clamp(event.movementX, -30, 30);
-    animateTilt();
-  });
+  const wake = () => {
+    if (!rafId) rafId = requestAnimationFrame(step);
+  };
 
-  rootElement.value.addEventListener('mouseleave', async () => {
-    await nextTick();
-    tiltVX.value = 0;
-    tiltVY.value = 0;
-    tiltX.value = 0;
-    tiltY.value = 0;
-  });
+  const mouseMove = (e: MouseEvent) => {
+    const rect = rootElement.value!.getBoundingClientRect();
+
+    // distance from cube center
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+
+    const dist = Math.hypot(dx, dy);
+    const influenceRadius = rect.width * 1.2;
+
+    if (dist > influenceRadius) return;
+
+    // proximity factor (1 near cube, 0 far)
+    const proximity = 1 - dist / influenceRadius;
+
+    // mouse velocity = main driver of tilt
+    const speedX = e.movementX;
+    const speedY = e.movementY;
+
+    const strength = 0.015 + proximity * 0.04;
+
+    // rotation lock: when spinning, remove horizontal tilt
+    const isRotating = Math.abs(rotation.value) > 0;
+    const rotationFactor = isRotating ? 0.05 : 1;
+
+    // IMPORTANT: same direction as mouse movement
+    impulseY += speedX * strength * rotationFactor; // horizontal tilt
+    impulseX -= speedY * strength; // vertical tilt always allowed
+
+    // clamp max tilt
+    x = clamp(x, -20, 20);
+    y = clamp(y, -20, 20);
+
+    wake();
+  };
+
+  document.addEventListener('mousemove', mouseMove);
 });
 </script>
 
@@ -158,17 +218,23 @@ onMounted(() => {
       transform-style: preserve-3d;
     }
 
+    .float-wrapper {
+      will-change: transform;
+    }
+
     .spin-wrapper {
       --_rotation: calc(v-bind('rotation') * -25deg);
       transform: rotateY(-45deg);
       rotate: y var(--_rotation);
       transition: rotate 0.3s linear;
+      will-change: transform;
     }
 
     .tilt-wrapper {
-      transform: rotate3d(0, 0, 0, 0deg);
-      transition: all 200ms;
-      transition-timing-function: cubic-bezier(1,1.43,.58,1.44);
+      transform:
+        rotateX(calc(var(--tilt-x-value) * 1deg))
+        rotateY(calc(var(--tilt-y-value) * 1deg));
+      will-change: transform;
     }
 
     .cube {
@@ -250,27 +316,6 @@ onMounted(() => {
       .shadow-element {
         animation: float-shadow 4s -2s infinite ease-in-out alternate-reverse;
       }
-    }
-  }
-
-  &:hover {
-    .tilt-wrapper {
-      transition-duration: calc(100ms - 1ms * clamp(
-        -100,
-        max(abs(var(--tilt-x-value)), abs(var(--tilt-y-value))),
-        100
-      ));
-
-      transform: rotate3d(
-        var(--tilt-x-value),
-        var(--tilt-y-value),
-        0,
-        clamp(
-          -80deg,
-          calc(1deg * max(abs(var(--tilt-x-value)), abs(var(--tilt-y-value)))),
-          80deg
-        )
-      );
     }
   }
 }
