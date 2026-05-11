@@ -56,8 +56,8 @@
 
 <script lang="ts" setup>
 import type { Music } from '~/composables/music';
-import { useElementSize } from '@vueuse/core';
-import { computed, onMounted, ref, useTemplateRef } from 'vue';
+import { useElementBounding, usePreferredReducedMotion } from '@vueuse/core';
+import { computed, onMounted, onUnmounted, reactive, useTemplateRef } from 'vue';
 import { defaultCubeParams, getFaces } from '~/composables/cube';
 import { clamp } from '~/composables/utils';
 
@@ -75,102 +75,121 @@ const params = defaultCubeParams;
 const faces = computed(() => getFaces(hash.value, params));
 
 const rootElement = useTemplateRef('root');
-const { width } = useElementSize(() => rootElement.value);
+const rect = reactive(useElementBounding(rootElement));
 
 const rotation = computed(() => props.rotation ?? 0);
 
-const tiltX = ref(0);
-const tiltY = ref(0);
+const preferredMotion = usePreferredReducedMotion();
+
+interface Tilt {
+  // Actual tilt position
+  x: number
+  y: number
+  // Spring state
+  vx: number
+  vy: number
+  // Impulse coming from mouse velocity
+  impulseX: number
+  impulseY: number
+}
+
+const tilt = reactive<Tilt>({
+  x: 0,
+  y: 0,
+  vx: 0,
+  vy: 0,
+  impulseX: 0,
+  impulseY: 0,
+});
+
+const TILT = {
+  influenceFactor: 0.6,
+  stiffness: 0.06,
+  damping: 0.82,
+  impulseBase: 0.015,
+  impulseFactor: 0.03,
+  impulseDamping: 0.6,
+  maxTilt: 20,
+};
+
+const isTilting = (tilt: Tilt) => {
+  return Math.abs(tilt.x) > 0.01
+    || Math.abs(tilt.y) > 0.01
+    || Math.abs(tilt.vx) > 0.01
+    || Math.abs(tilt.vy) > 0.01
+    || Math.abs(tilt.impulseX) > 0.01
+    || Math.abs(tilt.impulseY) > 0.01;
+};
 
 onMounted(() => {
   if (!rootElement.value) return;
 
-  let rafId = 0;
+  let rafId: number | undefined;
 
-  // spring state
-  let x = 0;
-  let y = 0;
-  let vx = 0;
-  let vy = 0;
+  const animateTiltRaf = () => {
+    tilt.vx += (-tilt.x) * TILT.stiffness + tilt.impulseX;
+    tilt.vy += (-tilt.y) * TILT.stiffness + tilt.impulseY;
 
-  // "impulse" coming from mouse velocity
-  let impulseX = 0;
-  let impulseY = 0;
+    tilt.impulseX *= TILT.impulseDamping;
+    tilt.impulseY *= TILT.impulseDamping;
 
-  const step = () => {
-    // spring back to 0
-    const stiffness = 0.06;
-    const damping = 0.82;
+    tilt.vx *= TILT.damping;
+    tilt.vy *= TILT.damping;
 
-    vx += (0 - x) * stiffness + impulseX;
-    vy += (0 - y) * stiffness + impulseY;
+    tilt.x = clamp(tilt.x + tilt.vx, -TILT.maxTilt, TILT.maxTilt);
+    tilt.y = clamp(tilt.y + tilt.vy, -TILT.maxTilt, TILT.maxTilt);
 
-    impulseX *= 0.6;
-    impulseY *= 0.6;
-
-    vx *= damping;
-    vy *= damping;
-
-    x += vx;
-    y += vy;
-
-    tiltX.value = x;
-    tiltY.value = y;
-
-    const sleeping
-      = Math.abs(x) < 0.01
-        && Math.abs(y) < 0.01
-        && Math.abs(vx) < 0.01
-        && Math.abs(vy) < 0.01
-        && Math.abs(impulseX) < 0.01
-        && Math.abs(impulseY) < 0.01;
-
-    if (!sleeping) rafId = requestAnimationFrame(step);
-    else rafId = 0;
+    if (isTilting(tilt)) {
+      rafId = requestAnimationFrame(animateTiltRaf);
+    }
+    else {
+      rafId = undefined;
+    }
   };
 
-  const wake = () => {
-    if (!rafId) rafId = requestAnimationFrame(step);
+  const startTiltRaf = () => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(animateTiltRaf);
   };
 
   const mouseMove = (e: MouseEvent) => {
-    const rect = rootElement.value!.getBoundingClientRect();
+    if (preferredMotion.value === 'reduce') return;
 
-    // distance from cube center
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
+    const cubeCenterX = rect.left + rect.width / 2;
+    const cubeCenterY = rect.top + rect.height / 2;
 
-    const dx = e.clientX - cx;
-    const dy = e.clientY - cy;
+    const distanceX = e.clientX - cubeCenterX;
+    const distanceY = e.clientY - cubeCenterY;
 
-    const dist = Math.hypot(dx, dy);
-    const influenceRadius = rect.width * 1.2;
+    const distance = Math.hypot(distanceX, distanceY);
+    const influenceRadius = rect.width * TILT.influenceFactor;
 
-    if (dist > influenceRadius) return;
+    if (distance > influenceRadius) return;
 
-    // proximity factor (1 near cube, 0 far)
-    const proximity = 1 - dist / influenceRadius;
+    // Proximity factor (1 near cube, 0 far)
+    const proximity = 1 - (distance / influenceRadius);
 
-    // mouse velocity = main driver of tilt
-    const speedX = e.movementX;
-    const speedY = e.movementY;
+    const dx = e.movementX;
+    const dy = e.movementY;
 
-    const strength = 0.015 + proximity * 0.04;
+    const strength = TILT.impulseBase + proximity * TILT.impulseFactor;
 
-    // rotation lock: when spinning, remove horizontal tilt
+    // Remove horizontal tilt if rotating
     const isRotating = Math.abs(rotation.value) > 0;
-    const rotationFactor = isRotating ? 0.05 : 1;
+    const rotationXFactor = isRotating ? 0.05 : 1;
 
-    // IMPORTANT: same direction as mouse movement
-    impulseY += speedX * strength * rotationFactor; // horizontal tilt
-    impulseX -= speedY * strength; // vertical tilt always allowed
+    tilt.impulseX -= dy * strength;
+    tilt.impulseY += dx * strength * rotationXFactor;
 
-    // clamp max tilt
-    x = clamp(x, -20, 20);
-    y = clamp(y, -20, 20);
-
-    wake();
+    startTiltRaf();
   };
+
+  onUnmounted(() => {
+    document.removeEventListener('mousemove', mouseMove);
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+    }
+  });
 
   document.addEventListener('mousemove', mouseMove);
 });
@@ -195,9 +214,9 @@ onMounted(() => {
 .music-cover {
   // 10^6 seems the max before visual glitches
   --_flatness: pow(10, 6);
-  --width: v-bind('width');
-  --tilt-x-value: v-bind('tiltX');
-  --tilt-y-value: v-bind('tiltY');
+  --width: v-bind('rect.width');
+  --tilt-x: v-bind('tilt.x');
+  --tilt-y: v-bind('tilt.y');
   // filter: blur(0.01rem);
 
   display: grid;
@@ -232,8 +251,8 @@ onMounted(() => {
 
     .tilt-wrapper {
       transform:
-        rotateX(calc(var(--tilt-x-value) * 1deg))
-        rotateY(calc(var(--tilt-y-value) * 1deg));
+        rotateX(calc(var(--tilt-x) * 1deg))
+        rotateY(calc(var(--tilt-y) * 1deg));
       will-change: transform;
     }
 
@@ -278,12 +297,12 @@ onMounted(() => {
       aspect-ratio: 1;
       pointer-events: none;
       z-index: -1;
-      --shadow-tilt-x-value: var(--tilt-x-value);
+      --shadow-tilt-x: var(--tilt-x);
 
       .tilt-wrapper {
-        --tilt-x-value: clamp(
+        --tilt-x: clamp(
           -5,
-          calc(var(--shadow-tilt-x-value) * 0.1),
+          calc(var(--shadow-tilt-x) * 0.1),
           5
         );
       }
