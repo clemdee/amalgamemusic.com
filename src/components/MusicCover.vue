@@ -145,12 +145,12 @@ onMounted(() => {
     raf.request(animateTiltRaf);
   };
 
-  const mouseMove = (e: MouseEvent) => {
+  const watchHandler = watchEffect(() => {
     const cubeCenterX = rect.left + rect.width / 2;
     const cubeCenterY = rect.top + rect.height / 2;
 
-    const distanceX = e.clientX - cubeCenterX;
-    const distanceY = e.clientY - cubeCenterY;
+    const distanceX = pointer.value.x - cubeCenterX;
+    const distanceY = pointer.value.y - cubeCenterY;
 
     const distance = Math.hypot(distanceX, distanceY);
     const influenceRadius = rect.width * TILT.influenceFactor;
@@ -160,8 +160,8 @@ onMounted(() => {
     // Proximity factor (1 near cube, 0 far)
     const proximity = 1 - (distance / influenceRadius);
 
-    const dx = e.movementX;
-    const dy = e.movementY;
+    const dx = pointer.value.vx;
+    const dy = pointer.value.vy;
 
     const strength = TILT.impulseBase + proximity * TILT.impulseFactor;
 
@@ -173,11 +173,6 @@ onMounted(() => {
     tilt.impulseY += dx * strength * rotationXFactor;
 
     startTiltRaf();
-  };
-
-  const watchHandler = watchEffect(() => {
-    if (!event.value) return;
-    mouseMove(event.value);
   });
 
   useEventListener(
@@ -186,6 +181,7 @@ onMounted(() => {
     (event: ContentVisibilityAutoStateChangeEvent) => {
       if (event.skipped) {
         watchHandler.pause();
+        raf.cancel(animateTiltRaf);
       }
       else {
         watchHandler.resume();
@@ -200,15 +196,58 @@ onMounted(() => {
 </script>
 
 <script lang="ts">
-const event = ref<MouseEvent>();
+export interface GlobalPointer {
+  x: number
+  y: number
+  vx: number
+  vy: number
+}
 
-const raf = createSharedRaf({
-  fpsLimit: 60,
+export const pointer = ref<GlobalPointer>({
+  x: 0,
+  y: 0,
+  vx: 0,
+  vy: 0,
 });
+
+let lastX = 0;
+let lastY = 0;
+let lastScrollX = window.scrollX;
+let lastScrollY = window.scrollY;
+const raw = { x: 0, y: 0 };
+
+const raf = createSharedRaf({ fpsLimit: 60 });
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (!prefersReducedMotion) {
-  document.addEventListener('mousemove', e => event.value = e, { passive: true });
+  document.addEventListener('pointermove', (e) => {
+    raw.x = e.clientX;
+    raw.y = e.clientY;
+  }, { passive: true });
+
+  // compute velocity INSIDE shared RAF
+  const scrollingElement = document.querySelector('#main');
+  if (scrollingElement) {
+    raf.request(() => {
+      const scrollDX = scrollingElement.scrollLeft - lastScrollX;
+      const scrollDY = scrollingElement.scrollTop - lastScrollY;
+
+      const vx = (raw.x - lastX) + scrollDX;
+      const vy = (raw.y - lastY) + scrollDY;
+
+      pointer.value = {
+        x: raw.x,
+        y: raw.y,
+        vx,
+        vy,
+      };
+
+      lastX = raw.x;
+      lastY = raw.y;
+      lastScrollX = scrollingElement.scrollLeft;
+      lastScrollY = scrollingElement.scrollTop;
+    });
+  }
 }
 </script>
 
