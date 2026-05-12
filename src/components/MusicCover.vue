@@ -59,6 +59,7 @@ import type { Music } from '~/composables/music';
 import { useElementBounding, useEventListener } from '@vueuse/core';
 import { computed, onMounted, onUnmounted, reactive, ref, useTemplateRef, watchEffect } from 'vue';
 import { defaultCubeParams, getFaces } from '~/composables/cube';
+import { createSharedRaf } from '~/composables/sharedRaf';
 import { clamp } from '~/composables/utils';
 
 const props = defineProps<{
@@ -122,8 +123,6 @@ const isTilting = (tilt: Tilt) => {
 onMounted(() => {
   if (!rootElement.value) return;
 
-  let rafId: number | undefined;
-
   const animateTiltRaf = () => {
     tilt.vx += (-tilt.x) * TILT.stiffness + tilt.impulseX;
     tilt.vy += (-tilt.y) * TILT.stiffness + tilt.impulseY;
@@ -137,17 +136,13 @@ onMounted(() => {
     tilt.x = clamp(tilt.x + tilt.vx, -TILT.maxTilt, TILT.maxTilt);
     tilt.y = clamp(tilt.y + tilt.vy, -TILT.maxTilt, TILT.maxTilt);
 
-    if (isTilting(tilt)) {
-      rafId = requestAnimationFrame(animateTiltRaf);
-    }
-    else {
-      rafId = undefined;
+    if (!isTilting(tilt)) {
+      raf.cancel(animateTiltRaf);
     }
   };
 
   const startTiltRaf = () => {
-    if (rafId) return;
-    rafId = requestAnimationFrame(animateTiltRaf);
+    raf.request(animateTiltRaf);
   };
 
   const mouseMove = (e: MouseEvent) => {
@@ -199,9 +194,6 @@ onMounted(() => {
   );
 
   onUnmounted(() => {
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-    }
     watchHandler.stop();
   });
 });
@@ -209,6 +201,10 @@ onMounted(() => {
 
 <script lang="ts">
 const event = ref<MouseEvent>();
+
+const raf = createSharedRaf({
+  fpsLimit: 60,
+});
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (!prefersReducedMotion) {
