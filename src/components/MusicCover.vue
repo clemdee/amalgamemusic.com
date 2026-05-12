@@ -56,8 +56,8 @@
 
 <script lang="ts" setup>
 import type { Music } from '~/composables/music';
-import { useElementBounding, usePreferredReducedMotion } from '@vueuse/core';
-import { computed, onMounted, onUnmounted, reactive, useTemplateRef } from 'vue';
+import { useElementBounding, useEventListener } from '@vueuse/core';
+import { computed, onMounted, onUnmounted, reactive, ref, useTemplateRef, watchEffect } from 'vue';
 import { defaultCubeParams, getFaces } from '~/composables/cube';
 import { clamp } from '~/composables/utils';
 
@@ -78,8 +78,6 @@ const rootElement = useTemplateRef('root');
 const rect = reactive(useElementBounding(rootElement));
 
 const rotation = computed(() => props.rotation ?? 0);
-
-const preferredMotion = usePreferredReducedMotion();
 
 interface Tilt {
   // Actual tilt position
@@ -153,8 +151,6 @@ onMounted(() => {
   };
 
   const mouseMove = (e: MouseEvent) => {
-    if (preferredMotion.value === 'reduce') return;
-
     const cubeCenterX = rect.left + rect.width / 2;
     const cubeCenterY = rect.top + rect.height / 2;
 
@@ -184,15 +180,40 @@ onMounted(() => {
     startTiltRaf();
   };
 
+  const watchHandler = watchEffect(() => {
+    if (!event.value) return;
+    mouseMove(event.value);
+  });
+
+  useEventListener(
+    rootElement,
+    'contentvisibilityautostatechange',
+    (event: ContentVisibilityAutoStateChangeEvent) => {
+      if (event.skipped) {
+        watchHandler.pause();
+      }
+      else {
+        watchHandler.resume();
+      }
+    },
+  );
+
   onUnmounted(() => {
-    document.removeEventListener('mousemove', mouseMove);
     if (rafId) {
       cancelAnimationFrame(rafId);
     }
+    watchHandler.stop();
   });
-
-  document.addEventListener('mousemove', mouseMove);
 });
+</script>
+
+<script lang="ts">
+const event = ref<MouseEvent>();
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!prefersReducedMotion) {
+  document.addEventListener('mousemove', e => event.value = e, { passive: true });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -228,6 +249,7 @@ onMounted(() => {
     position: relative;
     width: 70%;
     margin-top: 10%;
+    contain: layout size;
 
     .wrapper {
       perspective: calc(10px * var(--_flatness));

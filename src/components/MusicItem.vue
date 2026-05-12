@@ -119,6 +119,9 @@ const contextMenu = useContextMenu([
   backdrop-filter: blur(0.2rem);
   // box-shadow: 0 0.3rem 2rem #0002;
   transition: background-color 100ms ease;
+  contain: strict;
+  contain-intrinsic-height: 16rem;
+  content-visibility: auto;
 
   // --x and --y come from App.vue
   background: radial-gradient(
