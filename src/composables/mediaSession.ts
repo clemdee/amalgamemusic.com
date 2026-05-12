@@ -82,7 +82,7 @@ export const useMediaSession = () => {
 
   navigator.mediaSession.setActionHandler('seekforward', ({ seekOffset }) => {
     seekOffset ??= 5;
-    player.setTime(player.currentTime - seekOffset);
+    player.setTime(player.currentTime + seekOffset);
   });
 
   navigator.mediaSession.setActionHandler('seekto', ({ seekTime }) => {
