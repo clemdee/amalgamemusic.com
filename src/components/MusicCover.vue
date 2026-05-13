@@ -56,8 +56,8 @@
 
 <script lang="ts" setup>
 import type { Music } from '~/composables/music';
-import { useElementBounding, useEventListener } from '@vueuse/core';
-import { computed, onMounted, onUnmounted, reactive, ref, useTemplateRef, watchEffect } from 'vue';
+import { refAutoReset, useElementBounding, useEventListener } from '@vueuse/core';
+import { computed, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch, watchEffect } from 'vue';
 import { defaultCubeParams, getFaces } from '~/composables/cube';
 import { createSharedRaf } from '~/composables/sharedRaf';
 import { clamp } from '~/composables/utils';
@@ -79,6 +79,11 @@ const rootElement = useTemplateRef('root');
 const rect = reactive(useElementBounding(rootElement));
 
 const rotation = computed(() => props.rotation ?? 0);
+
+const isRotating = refAutoReset(false, 500);
+watch(rotation, () => {
+  isRotating.value = true;
+});
 
 interface Tilt {
   // Actual tilt position
@@ -166,8 +171,7 @@ onMounted(() => {
     const strength = TILT.impulseBase + proximity * TILT.impulseFactor;
 
     // Remove horizontal tilt if rotating
-    const isRotating = Math.abs(rotation.value) > 0;
-    const rotationXFactor = isRotating ? 0.05 : 1;
+    const rotationXFactor = isRotating.value ? 0.05 : 1;
 
     tilt.impulseX -= dy * strength;
     tilt.impulseY += dx * strength * rotationXFactor;
