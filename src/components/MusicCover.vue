@@ -229,29 +229,31 @@ if (!prefersReducedMotion) {
     raw.y = e.clientY;
   }, { passive: true });
 
-  // compute velocity INSIDE shared RAF
-  const scrollingElement = document.querySelector('#main');
-  if (scrollingElement) {
-    raf.request(() => {
-      const scrollDX = scrollingElement.scrollLeft - lastScrollX;
-      const scrollDY = scrollingElement.scrollTop - lastScrollY;
+  // Compute pointer every frame
+  let scrollingElement: Element | null;
+  raf.request(() => {
+    if (!scrollingElement) {
+      scrollingElement = document.querySelector('#main');
+      if (!scrollingElement) return;
+    }
+    const scrollDX = scrollingElement.scrollLeft - lastScrollX;
+    const scrollDY = scrollingElement.scrollTop - lastScrollY;
 
-      const vx = (raw.x - lastX) + scrollDX;
-      const vy = (raw.y - lastY) + scrollDY;
+    const vx = (raw.x - lastX) + scrollDX;
+    const vy = (raw.y - lastY) + scrollDY;
 
-      pointer.value = {
-        x: raw.x,
-        y: raw.y,
-        vx,
-        vy,
-      };
+    pointer.value = {
+      x: raw.x,
+      y: raw.y,
+      vx,
+      vy,
+    };
 
-      lastX = raw.x;
-      lastY = raw.y;
-      lastScrollX = scrollingElement.scrollLeft;
-      lastScrollY = scrollingElement.scrollTop;
-    });
-  }
+    lastX = raw.x;
+    lastY = raw.y;
+    lastScrollX = scrollingElement.scrollLeft;
+    lastScrollY = scrollingElement.scrollTop;
+  });
 }
 </script>
 
