@@ -118,7 +118,7 @@ const contextMenu = useContextMenu([
   border-radius: 1rem;
   backdrop-filter: blur(0.2rem);
   // box-shadow: 0 0.3rem 2rem #0002;
-  transition: background-color 100ms ease;
+  transition: background-color 500ms ease;
   contain: strict;
   contain-intrinsic-height: 16rem;
   content-visibility: auto;
