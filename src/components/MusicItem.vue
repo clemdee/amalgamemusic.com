@@ -34,8 +34,6 @@
 
         <MusicTags :tags="props.music.tags" />
       </div>
-
-      <div class="controls-container" />
     </div>
   </div>
 </template>
@@ -175,17 +173,6 @@ const contextMenu = useContextMenu([
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-    }
-
-    .controls-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      margin-top: -1rem;
-      overflow: hidden;
-      width: 0rem;
-      opacity: 0;
-      transition: opacity 200ms ease-out;
     }
   }
 
