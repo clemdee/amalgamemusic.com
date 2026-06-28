@@ -190,4 +190,41 @@ const contextMenu = useContextMenu([
     background-color: #eeeeff18;
   }
 }
+
+@media (width <= 42.5rem) {
+  .music-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+
+    contain-intrinsic-height: 8rem;
+
+    .top-part {
+      padding: 1rem 1rem;
+
+      .cover {
+        width: 3.5rem;
+      }
+
+      .play-button {
+        --_size: 4rem;
+      }
+    }
+
+    .bottom-part {
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      padding: 1rem;
+      padding-block-start: 2rem;
+
+      .info-container {
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 1rem;
+        text-align: start;
+      }
+    }
+  }
+}
 </style>
