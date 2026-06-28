@@ -9,6 +9,7 @@
     }"
     :title="text"
     @mouseenter="isAnimating = true"
+    @touchstart="isAnimating = true"
   >
     <div class="wrapper">
       <span ref="span">
