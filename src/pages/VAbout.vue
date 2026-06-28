@@ -7,7 +7,7 @@
       <br />
       <br />
       <p>
-        I'm a french composer <span class="pronouns">(they/them)</span> who just like to compose whatever cool music comes to their mind!
+        I'm a french composer <span class="pronouns">(she/they)</span> who just like to compose whatever cool music comes to their mind!
       </p>
       <br />
       <p>
